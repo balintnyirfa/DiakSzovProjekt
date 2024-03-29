@@ -1,10 +1,10 @@
 import React from 'react';
 import { Button, Pressable, StatusBar, StyleSheet, Text, View } from 'react-native';
 
-const HelloWorldApp = () => {
+const Welcome = () => {
   return (
     <View style={styles.main}>
-      <StatusBar backgroundColor="#D34F73"/>
+      <StatusBar backgroundColor="#D34F73" />
       <View style={styles.redBox}>
         <Text style={styles.welcomeText}>ÜDVÖZÖLLEK</Text>
         <Text style={styles.appNameText}>APP NÉV</Text>
@@ -74,4 +74,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default HelloWorldApp;
+export default Welcome;
