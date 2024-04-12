@@ -1,30 +1,25 @@
 import React from "react";
 import { StyleSheet, Text, View, StatusBar, TextInput, Pressable, Image } from "react-native";
 
-const Login = () => {
+export default function PasswordReset({ navigation }: { navigation: any }) {
     return (
         <View style={styles.main}>
             <StatusBar backgroundColor="#DBBEA1" />
             <View style={styles.whiteBox}>
-                <Text style={styles.header}>BEJELENTKEZÉS</Text>
+                <Text style={[styles.header, styles.boldFont]}>ÁLLÍTSD VISSZA A JELSZAVAD</Text>
                 <View style={styles.insideBox}>
-                    <Text style={styles.inputText}>Email cím</Text>
+                    <Text style={[styles.importantText, styles.regularFont]}>Fontos! Olyan email címet adj meg, amivel a profilodat regisztráltad!</Text>
+                    <Text style={[styles.inputText, styles.regularFont]}>Email</Text>
                     <TextInput
                         style={styles.inputField} />
-                    <Text style={styles.inputText}>Jelszó</Text>
-                    <TextInput
-                        style={[styles.inputField, styles.inputFieldB]} />
-                    <Pressable>
-                        <Text style={styles.passwordText}>Elfelejtettem a jelszavam</Text>
-                    </Pressable>
                 </View>
                 <Pressable style={styles.loginBtn}>
-                    <Text style={styles.loginBtnText}>BEJELENTKEZEK</Text>
+                    <Text style={[styles.loginBtnText, styles.boldFont]}>KÜLDÉS</Text>
                 </Pressable>
                 <View style={styles.returnBox}>
-                    <Pressable style={[styles.returnBtn, styles.returnBox]}>
+                    <Pressable style={[styles.returnButton, styles.returnButton]} onPress={() => navigation.navigate('Login')}>
                         <Image source={{ uri: 'https://i.postimg.cc/6Tx0KqGn/arrow-sm-left-svgrepo-com.png' }} style={styles.arrow} />
-                        <Text style={styles.returnBtnText}>Vissza</Text>
+                        <Text style={[styles.returnBtnText, styles.boldFont]}>Vissza</Text>
                     </Pressable>
                 </View>
             </View>
@@ -33,6 +28,18 @@ const Login = () => {
 };
 
 const styles = StyleSheet.create({
+    lightFont: {
+        fontFamily: 'Quicksand-Light',
+    },
+    regularFont: {
+        fontFamily: 'Quicksand-Regular',
+    },
+    semiBoldFont: {
+        fontFamily: 'Quicksand-SemiBold',
+    },
+    boldFont: {
+        fontFamily: 'Quicksand-Bold',
+    },
     main: {
         flex: 1,
         justifyContent: 'flex-end',
@@ -51,7 +58,8 @@ const styles = StyleSheet.create({
     },
     insideBox: {
         width: '100%',
-        paddingVertical: 30,
+        paddingTop: 40,
+        paddingBottom: 50,
         textAlign: 'left',
         alignItems: 'flex-start',
         justifyContent: 'flex-end',
@@ -59,20 +67,21 @@ const styles = StyleSheet.create({
     header: {
         fontSize: 24,
         color: '#000',
-        fontWeight: 'bold'
+        textAlign: 'center'
+    },
+    importantText:{
+        fontSize: 15,
+        textAlign: 'left',
+        marginBottom: 25
     },
     inputText: {
-        fontSize: 20,
+        fontSize: 18,
         color: '#000',
         marginBottom: 8,
     },
     inputField: {
         width: '100%',
         backgroundColor: '#D2D2D2',
-        marginBottom: 12,
-    },
-    inputFieldB: {
-        marginBottom: 3,
     },
     passwordText: {
         color: '#D34F73',
@@ -87,12 +96,9 @@ const styles = StyleSheet.create({
     },
     loginBtnText: {
         color: '#FFF',
-        fontWeight: 'bold',
         fontSize: 20
     },
     returnBox: {
-        flexDirection: 'row',
-        alignItems: 'center',
         //backgroundColor: '#242431',
         width: '100%',
     },
@@ -100,13 +106,17 @@ const styles = StyleSheet.create({
         height: 30,
         width: 30,
     },
-    returnBtn: {
+    returnButton: {
+        //backgroundColor: '#fff',
+        flexDirection: 'row',
+        justifyContent: 'flex-start',
+        alignItems: 'center',
+        width: '27%'
     },
     returnBtnText: {
         color: '#D34F73',
-        fontWeight: 'bold',
         fontSize: 16,
     }
 });
 
-export default Login;
+//export default Login;

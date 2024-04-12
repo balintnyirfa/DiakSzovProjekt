@@ -1,20 +1,24 @@
 import React from 'react';
-import { Button, Pressable, StatusBar, StyleSheet, Text, View } from 'react-native';
+import { Pressable, StatusBar, StyleSheet, Text, View } from 'react-native';
 
-const Welcome = () => {
+export default function Welcome({ navigation }: { navigation: any }) {
   return (
     <View style={styles.main}>
       <StatusBar backgroundColor="#D34F73" />
       <View style={styles.redBox}>
-        <Text style={styles.welcomeText}>ÜDVÖZÖLLEK</Text>
-        <Text style={styles.appNameText}>APP NÉV</Text>
+        <Text style={[styles.appNameText, styles.boldFont]}>DIÁKMESTEREK</Text>
+        <Text style={[styles.welcomeText, styles.boldFont]}>ÜDVÖZÖLLEK</Text>
       </View>
       <View style={styles.buttonBox}>
-        <Pressable style={[styles.button, styles.signUpBtn]}>
-          <Text style={[styles.buttonText, styles.signUpbuttonText]}>Regisztrálok</Text>
+        <Pressable
+          style={[styles.button, styles.signUpBtn]}
+          onPress={() => navigation.navigate('SignUp')}>
+          <Text style={[styles.buttonText, styles.signUpbuttonText, styles.boldFont]}>Regisztrálok</Text>
         </Pressable>
-        <Pressable style={[styles.button]}>
-          <Text style={styles.buttonText}>Már van fiókom</Text>
+        <Pressable
+          style={[styles.button]}
+          onPress={() => navigation.navigate('Login')}>
+          <Text style={[styles.buttonText, styles.boldFont]}>Már van fiókom</Text>
         </Pressable>
       </View>
     </View>
@@ -22,6 +26,18 @@ const Welcome = () => {
 };
 
 const styles = StyleSheet.create({
+  lightFont: {
+    fontFamily: 'Quicksand-Light',
+  },
+  regularFont: {
+    fontFamily: 'Quicksand-Regular',
+  },
+  semiBoldFont: {
+    fontFamily: 'Quicksand-SemiBold',
+  },
+  boldFont: {
+    fontFamily: 'Quicksand-Bold',
+  },
   main: {
     flex: 1,
     justifyContent: 'center',
@@ -47,12 +63,10 @@ const styles = StyleSheet.create({
   welcomeText: {
     color: '#FFF',
     fontSize: 36,
-    fontWeight: 'bold'
   },
   appNameText: {
     color: '#FF9FB9',
     fontSize: 42,
-    fontWeight: 'bold',
   },
   button: {
     width: 220,
@@ -67,11 +81,10 @@ const styles = StyleSheet.create({
   buttonText: {
     textAlign: 'center',
     fontSize: 20,
-    fontWeight: 'bold',
   },
   signUpbuttonText: {
     color: '#FFF',
   },
 });
 
-export default Welcome;
+//export default Welcome;
