@@ -1,7 +1,30 @@
-import React from "react";
-import { StyleSheet, Text, View, StatusBar, TextInput, Pressable, Image } from "react-native";
+import { fetchSignInMethodsForEmail, getAuth, sendPasswordResetEmail } from "firebase/auth";
+import React, { useState } from "react";
+import { StyleSheet, Text, View, StatusBar, TextInput, Pressable, Image, Alert } from "react-native";
 
 export default function PasswordReset({ navigation }: { navigation: any }) {
+    const [email, setEmail] = useState('');
+    const auth = getAuth();
+
+    const createAlert = () =>
+        Alert.alert('Siker!', 'Hamarosan érkezik az email!', [
+          {text: 'OK', onPress: () => console.log('OK Pressed')},
+        ]);
+
+    const handlePwdReset = async () => {
+        /*fetchSignInMethodsForEmail(auth, email).then((result) => {
+            console.log(result);
+        });*/
+        sendPasswordResetEmail(auth, email)
+            .then(() => {
+                createAlert();
+                console.log('Reset email sent!');
+            })
+            .catch((error) => {
+                console.log('Error: ', error);
+            });
+    }
+
     return (
         <View style={styles.main}>
             <StatusBar backgroundColor="#DBBEA1" />
@@ -11,9 +34,11 @@ export default function PasswordReset({ navigation }: { navigation: any }) {
                     <Text style={[styles.importantText, styles.regularFont]}>Fontos! Olyan email címet adj meg, amivel a profilodat regisztráltad!</Text>
                     <Text style={[styles.inputText, styles.regularFont]}>Email</Text>
                     <TextInput
-                        style={styles.inputField} />
+                        style={styles.inputField}
+                        onChangeText={text => setEmail(text)}
+                        value={email} />
                 </View>
-                <Pressable style={styles.loginBtn}>
+                <Pressable style={styles.loginBtn} onPress={handlePwdReset}>
                     <Text style={[styles.loginBtnText, styles.boldFont]}>KÜLDÉS</Text>
                 </Pressable>
                 <View style={styles.returnBox}>
@@ -69,7 +94,7 @@ const styles = StyleSheet.create({
         color: '#000',
         textAlign: 'center'
     },
-    importantText:{
+    importantText: {
         fontSize: 15,
         textAlign: 'left',
         marginBottom: 25
