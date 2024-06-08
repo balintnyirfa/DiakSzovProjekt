@@ -1,16 +1,43 @@
-import { signInWithEmailAndPassword } from "firebase/auth";
-import React, { useState } from "react";
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, View, StatusBar, TextInput, Pressable, Image } from "react-native";
-import { auth } from "../config/firebase";
+import { auth, db } from "../config/firebase";
+import { doc, getDoc } from "firebase/firestore";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function Login({ navigation }: { navigation: any }) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
+    const [user, setUser] = useState(null);
+
+    useEffect(() => {
+        const checkUser = async () => {
+            const storedUser = await AsyncStorage.getItem('user');
+            if (storedUser) {
+                setUser(JSON.parse(storedUser));
+            }
+        };
+
+        checkUser();
+    }, []);
+
+
     const handleLogin = async () => {
         if (email && password) {
             try {
-                await signInWithEmailAndPassword(auth, email, password);
+                const userCredential = await signInWithEmailAndPassword(auth, email, password);
+                const user = userCredential.user;                
+                await AsyncStorage.setItem('user', JSON.stringify(user));
+                const userDoc = doc(db, 'users', user.uid);
+                const userDocSnapshot = await getDoc(userDoc);
+
+                if (userDocSnapshot.exists()) {
+                    navigation.navigate('HomePage');
+                } else {
+                    navigation.navigate('UserNameSignUp');
+                }
+                return user;
             } catch (error) {
                 console.log('Error: ', error);
             }
@@ -19,13 +46,13 @@ export default function Login({ navigation }: { navigation: any }) {
 
     return (
         <View style={styles.main}>
-            <StatusBar backgroundColor="#DBBEA1" />
-            <View style={styles.whiteBox}>
+            <StatusBar backgroundColor="#B4FB01" />
+            <View style={[styles.whiteBox, styles.borderStyle]}>
                 <Text style={[styles.header, styles.boldFont]}>BEJELENTKEZÉS</Text>
                 <View style={styles.insideBox}>
                     <Text style={[styles.inputText, styles.regularFont]}>Email cím</Text>
                     <TextInput
-                        style={styles.inputField} 
+                        style={styles.inputField}
                         onChangeText={text => setEmail(text)}
                         value={email} />
                     <Text style={[styles.inputText, styles.regularFont]}>Jelszó</Text>
@@ -43,7 +70,7 @@ export default function Login({ navigation }: { navigation: any }) {
                 </Pressable>
                 <View style={styles.returnBox}>
                     <Pressable style={[styles.returnButton, styles.returnButton]} onPress={() => navigation.navigate('Welcome')}>
-                        <Image source={{ uri: 'https://i.postimg.cc/6Tx0KqGn/arrow-sm-left-svgrepo-com.png' }} style={styles.arrow} />
+                        <Image source={{ uri: 'https://i.postimg.cc/zGPDCCrc/arrow-sm-left-svgrepo-com-1.png' }} style={styles.arrow} />
                         <Text style={[styles.returnBtnText, styles.boldFont]}>Vissza</Text>
                     </Pressable>
                 </View>
@@ -69,7 +96,7 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'flex-end',
         alignItems: 'center',
-        backgroundColor: '#DBBEA1',
+        backgroundColor: '#B4FB01',
     },
     whiteBox: {
         width: '100%',
@@ -79,7 +106,7 @@ const styles = StyleSheet.create({
         borderTopRightRadius: 25,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#E1E1E1',
+        backgroundColor: '#FFFFFF',
     },
     insideBox: {
         width: '100%',
@@ -90,7 +117,7 @@ const styles = StyleSheet.create({
     },
     header: {
         fontSize: 24,
-        color: '#000',
+        color: '#373B2C',
     },
     inputText: {
         fontSize: 20,
@@ -98,19 +125,20 @@ const styles = StyleSheet.create({
         marginBottom: 8,
     },
     inputField: {
+        borderRadius: 6,
         width: '100%',
-        backgroundColor: '#D2D2D2',
+        backgroundColor: '#E0E0E0',
         marginBottom: 12,
     },
     inputFieldB: {
         marginBottom: 3,
     },
     passwordText: {
-        color: '#D34F73',
+        color: '#373B2C',
         fontSize: 12
     },
     loginBtn: {
-        backgroundColor: '#3F292B',
+        backgroundColor: '#373B2C',
         borderRadius: 20,
         marginBottom: 70,
         paddingHorizontal: 30,
@@ -136,7 +164,11 @@ const styles = StyleSheet.create({
         width: '27%'
     },
     returnBtnText: {
-        color: '#D34F73',
+        color: '#93B92E',
         fontSize: 16,
+    },
+    borderStyle: {
+        borderColor: '#373B2C',
+        borderWidth: 2,
     }
 });

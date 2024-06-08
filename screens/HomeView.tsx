@@ -3,20 +3,20 @@ import React, { useState } from "react";
 import { Image, Pressable, StatusBar, StyleSheet, Text, TextInput, View } from "react-native";
 import { auth } from "../config/firebase";
 import { get } from "firebase/database";
+import { initializeApp } from "firebase/app";
+import { getFirestore } from "firebase/firestore";
+
 import { Colors } from "react-native/Libraries/NewAppScreen";
 
 export default function Home() {
     const [name, setName] = useState('');
-    const auth = getAuth();
 
     onAuthStateChanged(auth, (user) => {
         if (user) {
             // User is signed in, see docs for a list of available properties
             // https://firebase.google.com/docs/reference/js/auth.user
-            const uid = user.uid;
-            const email = user.email;
-            const name = "Bálint";
-            setName(email ? email : '');
+            const name = auth.currentUser?.email;
+            setName(name ? name : 'hiba');
         } else {
             // User is signed out
             // ...
@@ -24,15 +24,11 @@ export default function Home() {
     });
 
     return (
-        <View style={styles.main}>            
-            <StatusBar backgroundColor="#E1E1E1"/>
+        <View style={styles.main}>
+            <StatusBar backgroundColor="#373B2C" />
             <View style={styles.header}>
                 <Text style={[styles.boldFont, styles.headerWelcome]}>Üdv,</Text>
-                <TextInput
-                    style={[styles.regularFont, styles.headerName]}
-                    editable={false}
-                    onChangeText={text => setName(text)}
-                    value={name} />
+                <Text style={[styles.regularFont, styles.headerName]}>{name}</Text>
             </View>
         </View>
     );
@@ -55,17 +51,20 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'flex-start',
         alignItems: 'center',
-        backgroundColor: '#DBBEA1',
+        backgroundColor: '#B4FB01',
     },
     header: {
         paddingHorizontal: 20,
         paddingVertical: 30,
         width: '100%',
-        backgroundColor: '#E1E1E1',
+        backgroundColor: '#FFFFFF',
         borderBottomLeftRadius: 25,
         borderBottomRightRadius: 25,
+        borderColor: '#373B2C',
+        borderWidth: 2,
     },
     headerWelcome: {
+        color: '#373B2C',
         fontSize: 40,
         margin: 0
     },

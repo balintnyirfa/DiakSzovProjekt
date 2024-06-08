@@ -1,29 +1,42 @@
 import React, { useState } from 'react';
 import { StyleSheet, Text, View, StatusBar, TextInput, Pressable, Image, Alert } from "react-native";
 import firebase from 'firebase/compat/app';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '../config/firebase';
-import { addDoc, doc } from 'firebase/firestore';
+import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
+import { auth, db } from '../config/firebase';
+import { addDoc, collection, doc, getFirestore } from 'firebase/firestore';
+import { initializeApp } from "firebase/app";
+
 
 export default function SignUp({ navigation }: { navigation: any }) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [confirmPassword, setConfirmPassword] = useState('');
 
     const handleSignUp = async () => {
         if (email && password) {
             try {
-                await createUserWithEmailAndPassword(auth, email, password);
+                const userCredentials = await createUserWithEmailAndPassword(auth, email, password);
+                //try {
+                //    const docref = await addDoc(collection(db, 'users'), {
+                //        id: auth.currentUser?.uid,
+                //        email: auth.currentUser?.email
+                //    });
+                //    console.log("Document written with ID: ", docref.id);
+                //} catch (error) {
+                //    console.error("Error adding document: ", error);
+                //}
+                const user = userCredentials.user;
+                navigation.navigate('Login');
+                return user;
             } catch (error) {
-                console.log("Sign up error: ", error);
+                console.log("User already exists in the database: ", error);
             }
         }
     }
 
     return (
         <View style={styles.main}>
-            <StatusBar backgroundColor="#DBBEA1" />
-            <View style={styles.whiteBox}>
+            <StatusBar backgroundColor="#B4FB01" />
+            <View style={[styles.whiteBox, styles.borderStyle]}>
                 <Text style={[styles.header, styles.boldFont]}>REGISZTRÁCIÓ</Text>
                 <View style={styles.insideBox}>
                     <Text style={[styles.inputText, styles.regularFont]}>Email cím</Text>
@@ -37,19 +50,13 @@ export default function SignUp({ navigation }: { navigation: any }) {
                         secureTextEntry
                         onChangeText={text => setPassword(text)}
                         value={password} />
-                    <Text style={[styles.inputText, styles.regularFont]}>Jelszó újra</Text>
-                    <TextInput
-                        style={[styles.inputField, styles.inputFieldB]}
-                        secureTextEntry
-                        onChangeText={text => setConfirmPassword(text)}
-                        value={confirmPassword} />
                 </View>
                 <Pressable style={styles.loginBtn} onPress={handleSignUp}>
                     <Text style={[styles.loginBtnText, styles.boldFont]}>REGISZTRÁLOK</Text>
                 </Pressable>
                 <View style={styles.returnBox}>
                     <Pressable style={[styles.returnButton, styles.returnButton]} onPress={() => navigation.navigate('Welcome')}>
-                        <Image source={{ uri: 'https://i.postimg.cc/6Tx0KqGn/arrow-sm-left-svgrepo-com.png' }} style={styles.arrow} />
+                        <Image source={{ uri: 'https://i.postimg.cc/zGPDCCrc/arrow-sm-left-svgrepo-com-1.png' }} style={styles.arrow} />
                         <Text style={[styles.returnBtnText, styles.boldFont]}>Vissza</Text>
                     </Pressable>
                 </View>
@@ -75,7 +82,7 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'flex-end',
         alignItems: 'center',
-        backgroundColor: '#DBBEA1',
+        backgroundColor: '#B4FB01',
     },
     whiteBox: {
         width: '100%',
@@ -85,7 +92,7 @@ const styles = StyleSheet.create({
         borderTopRightRadius: 25,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#E1E1E1',
+        backgroundColor: '#FFFFFF',
     },
     insideBox: {
         width: '100%',
@@ -96,7 +103,7 @@ const styles = StyleSheet.create({
     },
     header: {
         fontSize: 24,
-        color: '#000',
+        color: '#373B2C',
     },
     inputText: {
         fontSize: 20,
@@ -104,8 +111,9 @@ const styles = StyleSheet.create({
         marginBottom: 8,
     },
     inputField: {
+        borderRadius: 6,
         width: '100%',
-        backgroundColor: '#D2D2D2',
+        backgroundColor: '#E0E0E0',
         marginBottom: 12,
     },
     inputFieldB: {
@@ -116,7 +124,7 @@ const styles = StyleSheet.create({
         fontSize: 12
     },
     loginBtn: {
-        backgroundColor: '#3F292B',
+        backgroundColor: '#373B2C',
         borderRadius: 20,
         marginBottom: 70,
         paddingHorizontal: 30,
@@ -142,7 +150,11 @@ const styles = StyleSheet.create({
         width: '27%'
     },
     returnBtnText: {
-        color: '#D34F73',
+        color: '#93B92E',
         fontSize: 16,
+    },
+    borderStyle: { 
+        borderColor: '#373B2C',
+        borderWidth: 2,
     }
 });

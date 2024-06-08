@@ -4,7 +4,7 @@ import { Pressable, StatusBar, StyleSheet, Text, View } from 'react-native';
 export default function Welcome({ navigation }: { navigation: any }) {
   return (
     <View style={styles.main}>
-      <StatusBar backgroundColor="#D34F73" />
+      <StatusBar backgroundColor="#B4FB01" />
       <View style={styles.redBox}>
         <Text style={[styles.appNameText, styles.boldFont]}>DIÁKMESTEREK</Text>
         <Text style={[styles.welcomeText, styles.boldFont]}>ÜDVÖZÖLLEK</Text>
@@ -42,9 +42,11 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#DBBEA1',
+    backgroundColor: '#FFFFFF',
   },
   redBox: {
+    //borderColor: '#373B2C',
+    //borderWidth: 2,
     borderBottomLeftRadius: 500,
     borderBottomRightRadius: 500,
     paddingBottom: 90,
@@ -53,7 +55,7 @@ const styles = StyleSheet.create({
     width: 500,
     justifyContent: 'flex-end',
     alignItems: 'center',
-    backgroundColor: '#D34F73',
+    backgroundColor: '#B4FB01',
   },
   buttonBox: {
     flex: 1,
@@ -65,7 +67,7 @@ const styles = StyleSheet.create({
     fontSize: 36,
   },
   appNameText: {
-    color: '#FF9FB9',
+    color: '#687A3C',
     fontSize: 42,
   },
   button: {
@@ -75,12 +77,13 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
   },
   signUpBtn: {
-    backgroundColor: '#3F292B',
+    backgroundColor: '#687A3C',
     borderRadius: 20,
   },
   buttonText: {
     textAlign: 'center',
     fontSize: 20,
+    color: '#687A3C',
   },
   signUpbuttonText: {
     color: '#FFF',
