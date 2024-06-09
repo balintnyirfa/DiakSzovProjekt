@@ -131,7 +131,8 @@ const styles = StyleSheet.create({
         width: '100%'
     },
     jobTitles: {
-        fontSize: 22
+        fontSize: 22,
+        color: '#373B2C'
     },
     borderStyle: {
         borderColor: '#373B2C',
