@@ -3,7 +3,7 @@ import { Image, Pressable, Text, TextInput, View, StyleSheet, ScrollView } from 
 import { getAuth, onAuthStateChanged, signOut, updateCurrentUser } from 'firebase/auth';
 import { auth } from '../config/firebase';
 
-export default function Settings() {
+export default function Settings({navigation}) {
     const [name, setName] = useState('Bálint');
 
     const [newName, setNewName] = useState('');
@@ -50,10 +50,14 @@ export default function Settings() {
 
     }
 
-    const handleLogOut = async () => {
-        console.log("LOGOUT");
-        await signOut(auth);
-    }
+    const handleLogout = () => {
+        auth.signOut().then(() => {
+            navigation.navigate('Welcome');
+        })
+            .catch((error) => {
+                console.log(error);
+            });
+    };
 
     return (
         <View style={styles.main}>
@@ -86,7 +90,7 @@ export default function Settings() {
                     <Pressable onPress={handleUpdate} style={[styles.loginBtn]}>
                         <Text style={[styles.loginBtnText, styles.boldFont]}>{buttonText}</Text>
                     </Pressable>
-                    <Pressable onPress={handleLogOut} style={[styles.loginBtn]}>
+                    <Pressable onPress={handleLogout} style={[styles.loginBtn]}>
                         <Text style={[styles.loginBtnText, styles.boldFont]}>KIJELENTKEZÉS</Text>
                     </Pressable>
                 </ScrollView>

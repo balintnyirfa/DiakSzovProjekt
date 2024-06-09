@@ -1,7 +1,7 @@
 import React from 'react';
 import { Pressable, StatusBar, StyleSheet, Text, View } from 'react-native';
 
-export default function Welcome({ navigation }: { navigation: any }) {
+export default function Welcome({navigation}) {
   return (
     <View style={styles.main}>
       <StatusBar backgroundColor="#B4FB01" />
@@ -12,7 +12,7 @@ export default function Welcome({ navigation }: { navigation: any }) {
       <View style={styles.buttonBox}>
         <Pressable
           style={[styles.button, styles.signUpBtn]}
-          onPress={() => navigation.navigate('SignUp')}>
+          onPress={() => navigation.navigate("SignUp")}>
           <Text style={[styles.buttonText, styles.signUpbuttonText, styles.boldFont]}>Regisztrálok</Text>
         </Pressable>
         <Pressable

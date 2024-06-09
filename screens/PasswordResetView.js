@@ -3,7 +3,7 @@ import { StyleSheet, Text, View, StatusBar, TextInput, Pressable, Image, Alert }
 import { fetchSignInMethodsForEmail, getAuth, sendPasswordResetEmail } from "firebase/auth";
 import { auth, db } from "../config/firebase";
 
-export default function PasswordReset({ navigation }: { navigation: any }) {
+export default function PasswordReset({navigation}) {
     const [email, setEmail] = useState('');
 
     const createAlert = () =>

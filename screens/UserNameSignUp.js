@@ -6,13 +6,13 @@ import React, { useState } from "react";
 import { StyleSheet, Text, View, StatusBar, TextInput, Pressable, Image, Alert } from "react-native";
 import { db } from "../config/firebase";
 
-export default function UserNameSignUp({ navigation }: { navigation: any }) {
+export default function UserNameSignUp({navigation}) {
     const [name, setName] = useState('');
     const [telephone, setTelephone] = useState('');
     const [birthday, setBirthday] = useState('');
     const auth = getAuth();
 
-    const saveUsername = async (name: any, telephone: any, birthday: any) => {
+    const saveUsername = async () => {
         try {
             const newUser = {
                 id: auth.currentUser?.uid,

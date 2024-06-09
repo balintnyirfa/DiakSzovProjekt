@@ -8,7 +8,7 @@ import { getFirestore } from "firebase/firestore";
 
 import { Colors } from "react-native/Libraries/NewAppScreen";
 
-export default function Home() {
+export default function Home({navigation}) {
     const [name, setName] = useState('');
 
     onAuthStateChanged(auth, (user) => {
