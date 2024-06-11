@@ -1,9 +1,9 @@
 import { collection, doc, getDoc, getDocs, onSnapshot, query } from 'firebase/firestore';
 import React, { useEffect, useState } from 'react';
-import { FlatList, ScrollView, StatusBar, StyleSheet, Text, TextInput, View } from 'react-native';
+import { FlatList, Pressable, ScrollView, StatusBar, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { db } from '../config/firebase';
 
-export default function Jobs({navigation}) {
+export default function Jobs({ navigation }) {
     //const [loading, setLoading] = useState(false);
 
     const [jobs, setJobs] = useState([]);
@@ -22,7 +22,7 @@ export default function Jobs({navigation}) {
                         id: doc.id,
                         data: doc.data(),
                     }))
-                );                
+                );
                 setJobSum(querySnapshot.size);
             });
             //setLoading(false);
@@ -51,6 +51,7 @@ export default function Jobs({navigation}) {
                         //        <Text>Loading...</Text>
                         //    </View>) : 
                         (jobs.map((job) =>
+                            <TouchableOpacity key={job.id} onPress={() => navigation.navigate('JobDetails', { jobData: job.data })}>
                                 <View key={job.id} style={[styles.jobCard, styles.borderStyle]}>
                                     <View style={styles.jobNamePart}>
                                         <Text style={[styles.jobTitles, styles.boldFont]}>{job.data.name}</Text>
@@ -60,8 +61,8 @@ export default function Jobs({navigation}) {
                                         <Text style={[styles.jobTitles, styles.regularFont]}>{job.data.city}</Text>
                                     </View>
                                 </View>
-                            )
-                        )
+                            </TouchableOpacity>
+                        ))
                     }
                 </ScrollView>
             </View>
@@ -109,7 +110,7 @@ const styles = StyleSheet.create({
     },
     jobs: {
         width: '100%',
-        paddingHorizontal: 15,
+        paddingHorizontal: 20,
         paddingVertical: 10
     },
     jobCard: {

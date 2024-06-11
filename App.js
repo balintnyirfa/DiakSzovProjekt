@@ -5,13 +5,14 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Welcome from './screens/WelcomeView';
 import Login from './screens/LoginView';
 import SignUp from './screens/SignUpView';
+import UserNameSignUp from './screens/UserNameSignUp';
 import PasswordReset from './screens/PasswordResetView';
-import Home from './screens/HomeView';
-import Settings from './screens/SettingsView';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Image, StyleSheet } from 'react-native';
+import Home from './screens/HomeView';
+import Settings from './screens/SettingsView';
 import Jobs from './screens/JobsView';
-import UserNameSignUp from './screens/UserNameSignUp';
+import JobDetails from './screens/JobDetailsView';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -103,7 +104,11 @@ export default function App() {
         <Stack.Screen
           name='HomePage'
           component={Tabs}
-          options={{ headerShown: false, }} />
+          options={{ headerShown: false }} />
+        <Stack.Screen
+          name='JobDetails'
+          component={JobDetails}
+          options={{ headerShown: false }} />
       </Stack.Navigator>
     </NavigationContainer>
   );

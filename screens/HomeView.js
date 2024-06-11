@@ -72,17 +72,16 @@ export default function Home({ navigation }) {
                         //        <Text>Loading...</Text>
                         //    </View>) : 
                         (jobs.map((job) =>
-                            <View key={job.id} style={[styles.jobCard, styles.borderStyle]}>
-                                <View style={styles.jobNamePart}>
-                                    <Text style={[styles.jobTitles, styles.boldFont]}>{job.data.name}</Text>
+                                <View key={job.id} style={[styles.jobCard, styles.borderStyle]}>
+                                    <View style={styles.jobNamePart}>
+                                        <Text style={[styles.jobTitles, styles.boldFont]}>{job.data.name}</Text>
+                                    </View>
+                                    <View style={styles.jobOtherPart}>
+                                        <Text style={[styles.jobTitles, styles.regularFont]}>{job.data.city}</Text>
+                                        <Text style={[styles.jobTitles, styles.regularFont]}>{job.data.city}</Text>
+                                    </View>
                                 </View>
-                                <View style={styles.jobOtherPart}>
-                                    <Text style={[styles.jobTitles, styles.regularFont]}>{job.data.city}</Text>
-                                    <Text style={[styles.jobTitles, styles.regularFont]}>{job.data.city}</Text>
-                                </View>
-                            </View>
-                        )
-                        )
+                        ))
                     }
                 </View>
                 <View style={styles.jobs}>
