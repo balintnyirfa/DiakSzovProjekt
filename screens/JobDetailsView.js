@@ -1,8 +1,39 @@
+import { getAuth } from "firebase/auth";
+import { setDoc } from "firebase/firestore";
+import { auth, db } from "../config/firebase";
 import React from "react";
-import { StyleSheet, Text, View, StatusBar, ScrollView, Pressable, Image } from "react-native";
+import { doc } from "firebase/firestore";
+import { StyleSheet, Text, View, StatusBar, ScrollView, Pressable, Image, Alert } from "react-native";
 
 export default function JobDetails({ navigation, route }) {
     const { jobData } = route.params;
+
+    const auth = getAuth();
+
+    const createAlert = () =>
+        {
+            Alert.alert('Siker!', 'Sikeres jelentkezés!', [
+                { text: 'OK', onPress: () => console.log('OK Pressed') },
+            ]);
+        };
+
+    const applyForJob = async () => {
+        try {
+            const userId = auth.currentUser?.uid || '';
+            const newApply = {
+                email: auth.currentUser?.email,
+                jobName: jobData.name,
+                accepted: false
+            };
+            setDoc(doc(db, 'appliedStudents', userId), newApply)
+            .then(() => {
+                createAlert();
+                navigation.navigate('Jobs');
+            });
+        } catch (error) {
+            console.log(error)
+        }
+    }
 
     return (
         <View style={styles.main}>
@@ -25,10 +56,14 @@ export default function JobDetails({ navigation, route }) {
                         <Text style={[styles.boldFont, styles.headerText]}>Leírás</Text>
                         <Text style={[styles.regularFont, styles.jobTitles]}>{jobData.description}</Text>
                     </View>
+                    <View style={[styles.boxes, styles.borderStyle, styles.jobCard]}>
+                        <Text style={[styles.boldFont, styles.headerText]}>Kategória</Text>
+                        <Text style={[styles.regularFont, styles.jobTitles]}>{jobData.category_id.name}</Text>
+                    </View>
                 </View>
             </ScrollView>
             <View style={styles.returnBox}>
-                <Pressable style={[styles.applyButton]}>
+                <Pressable style={[styles.applyButton]} onPress={applyForJob}>
                     <Text style={[styles.applyButtonText, styles.boldFont]}>JELENTKEZEK</Text>
                 </Pressable>
             </View>

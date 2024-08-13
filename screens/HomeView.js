@@ -74,10 +74,10 @@ export default function Home({ navigation }) {
                         (jobs.map((job) =>
                                 <View key={job.id} style={[styles.jobCard, styles.borderStyle]}>
                                     <View style={styles.jobNamePart}>
-                                        <Text style={[styles.jobTitles, styles.boldFont]}>{job.data.name}</Text>
+                                        <Text style={[styles.jobTitles, styles.boldFont]}>{job.data.company}</Text>
                                     </View>
                                     <View style={styles.jobOtherPart}>
-                                        <Text style={[styles.jobTitles, styles.regularFont]}>{job.data.city}</Text>
+                                        <Text style={[styles.jobTitles, styles.regularFont]}>{job.data.name}</Text>
                                         <Text style={[styles.jobTitles, styles.regularFont]}>{job.data.city}</Text>
                                     </View>
                                 </View>

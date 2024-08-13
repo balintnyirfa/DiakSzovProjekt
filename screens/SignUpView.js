@@ -42,6 +42,7 @@ export default function SignUp({navigation}) {
                     <Text style={[styles.inputText, styles.regularFont]}>Email cím</Text>
                     <TextInput
                         style={styles.inputField}
+                        keyboardType='email-address'
                         onChangeText={text => setEmail(text)}
                         value={email} />
                     <Text style={[styles.inputText, styles.regularFont]}>Jelszó</Text>

@@ -3,13 +3,20 @@ import { initializeApp } from "firebase/app";
 import { addDoc, collection, doc, getFirestore, setDoc } from "firebase/firestore";
 
 import React, { useState } from "react";
-import { StyleSheet, Text, View, StatusBar, TextInput, Pressable, Image, Alert } from "react-native";
+import { StyleSheet, Text, View, StatusBar, TextInput, Pressable, Image, Alert, ScrollView } from "react-native";
 import { db } from "../config/firebase";
 
-export default function UserNameSignUp({navigation}) {
+export default function UserNameSignUp({ navigation }) {
     const [name, setName] = useState('');
     const [telephone, setTelephone] = useState('');
     const [birthday, setBirthday] = useState('');
+
+    const [idCardNum, setIdCardNum] = useState('');
+    const [studentIdNum, setStudentIdNum] = useState('');
+    const [taxIdNum, setTaxIdNum] = useState('');
+    const [tajNum, setTajNum] = useState('');
+    const [address, setAddress] = useState('');
+
     const auth = getAuth();
 
     const saveUsername = async () => {
@@ -19,7 +26,12 @@ export default function UserNameSignUp({navigation}) {
                 name: name,
                 email: auth.currentUser?.email,
                 telephone: telephone,
-                birthdate: birthday
+                birthdate: birthday,
+                idCardNum: idCardNum,
+                studentIdNum: studentIdNum,
+                taxIdNum: taxIdNum,
+                tajNum: tajNum,
+                address: address
             };
             const userId = auth.currentUser?.uid || '';
             setDoc(doc(db, 'users', userId), newUser)
@@ -36,30 +48,59 @@ export default function UserNameSignUp({navigation}) {
             <StatusBar backgroundColor="#B4FB01" />
             <View style={styles.whiteBox}>
                 <Text style={[styles.header, styles.boldFont]}>KÖVETKEZŐ</Text>
-                <View style={styles.insideBox}>
-                    <Text style={[styles.importantText, styles.regularFont]}>Add meg a további adataid a regisztráció befejezéséhez!</Text>
-                    <Text style={[styles.inputText, styles.regularFont]}>Név</Text>
-                    <TextInput
-                        style={styles.inputField}
-                        onChangeText={text => setName(text)}
-                        value={name} />
-                    <Text style={[styles.inputText, styles.regularFont]}>Telefon</Text>
-                    <TextInput
-                        style={styles.inputField}
-                        onChangeText={text => setTelephone(text)}
-                        value={telephone} />
-                    <Text style={[styles.inputText, styles.regularFont]}>Születésnap</Text>
-                    <TextInput
-                        style={styles.inputField}
-                        onChangeText={text => setBirthday(text)}
-                        value={birthday} />
-                </View>
-                <Pressable style={styles.loginBtn} onPress={() => saveUsername(name, telephone, birthday)}>
-                    <Text style={[styles.loginBtnText, styles.boldFont]}>BEFEJEZÉS</Text>
+                <ScrollView>
+                    <View style={styles.insideBox}>
+                        <Text style={[styles.importantText, styles.regularFont]}>Add meg a további adataid a regisztráció befejezéséhez!</Text>
+                        <Text style={[styles.inputText, styles.regularFont]}>Név</Text>
+                        <TextInput
+                            style={styles.inputField}
+                            onChangeText={text => setName(text)}
+                            value={name} />
+                        <Text style={[styles.inputText, styles.regularFont]}>Telefon</Text>
+                        <TextInput
+                            style={styles.inputField}
+                            keyboardType="phone-pad"
+                            onChangeText={text => setTelephone(text)}
+                            value={telephone} />
+                        <Text style={[styles.inputText, styles.regularFont]}>Születésnap</Text>
+                        <TextInput
+                            style={styles.inputField}
+                            onChangeText={text => setBirthday(text)}
+                            value={birthday} />
+                        <Text style={[styles.inputText, styles.regularFont]}>Személyi igazolvány szám</Text>
+                        <TextInput
+                            style={styles.inputField}
+                            onChangeText={text => setIdCardNum(text)}
+                            value={idCardNum} />
+                        <Text style={[styles.inputText, styles.regularFont]}>Diákigazolvány szám</Text>
+                        <TextInput
+                            style={styles.inputField}
+                            onChangeText={text => setStudentIdNum(text)}
+                            value={studentIdNum} />
+                        <Text style={[styles.inputText, styles.regularFont]}>Adószám</Text>
+                        <TextInput
+                            style={styles.inputField}
+                            onChangeText={text => setTaxIdNum(text)}
+                            value={taxIdNum} />
+                        <Text style={[styles.inputText, styles.regularFont]}>TAJ szám</Text>
+                        <TextInput
+                            style={styles.inputField}
+                            onChangeText={text => setTajNum(text)}
+                            value={tajNum} />
+                        <Text style={[styles.inputText, styles.regularFont]}>Lakcím</Text>
+                        <TextInput
+                            style={styles.inputField}
+                            onChangeText={text => setAddress(text)}
+                            value={address} />
+                    </View>
+                </ScrollView>
+                <Pressable style={styles.loginBtn} onPress={() => saveUsername()}>
+                    <Text style={[styles.loginBtnText, styles.boldFont]}>KÖVETKEZŐ</Text>
                 </Pressable>
             </View>
         </View>
     );
+    // onPress={() => saveUsername(name, telephone, birthday)}
 };
 
 const styles = StyleSheet.create({
@@ -83,6 +124,7 @@ const styles = StyleSheet.create({
     },
     whiteBox: {
         width: '100%',
+        flex: 3,
         paddingHorizontal: 30,
         paddingVertical: 30,
         borderTopLeftRadius: 25,
@@ -154,7 +196,7 @@ const styles = StyleSheet.create({
         color: '#93B92E',
         fontSize: 16,
     },
-    borderStyle: { 
+    borderStyle: {
         borderColor: '#373B2C',
         borderWidth: 2,
     }

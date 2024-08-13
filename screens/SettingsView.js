@@ -17,7 +17,7 @@ export default function Settings({navigation}) {
     const user = auth.currentUser;
 
     const handlePicChange = () => {
-        //PRofilkép csere
+        //Profilkép csere
     }
 
     const handleUpdate = () => {
@@ -25,18 +25,18 @@ export default function Settings({navigation}) {
         if (isEditable) {
             //Szerkesztés
             setbuttonText('Szerkesztés');
-            console.log('Szerkesztés');
+            console.log('Mentés');
         } else {
             //Mentés
             setbuttonText('Mentés');
-            console.log('Mentés');
+            console.log('Szerkesztés');
 
             if (user) {
-                /*const updatedUser = {
+                const updatedUser = {
                     displayName: newName,
                     email: newEmail,
-                    phoneNumber: newPhone,
-                };*/
+                    telephone: newPhone,
+                };
                 updateCurrentUser(auth, user).then(() => {
                     console.log('Sikeres mentés');
                 }).catch((error) => {

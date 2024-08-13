@@ -6,6 +6,7 @@ import Welcome from './screens/WelcomeView';
 import Login from './screens/LoginView';
 import SignUp from './screens/SignUpView';
 import UserNameSignUp from './screens/UserNameSignUp';
+//import OtherData from './screens/OtherDataView';
 import PasswordReset from './screens/PasswordResetView';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Image, StyleSheet } from 'react-native';
