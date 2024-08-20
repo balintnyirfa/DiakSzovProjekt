@@ -8,7 +8,7 @@ export default function Jobs({ navigation, route }) {
 
     const [jobs, setJobs] = useState([]);
     const [jobSum, setJobSum] = useState(0);
-
+    const [selectedCategory, setSelectedCategory] = useState(null);
     const [categories, setCategories] = useState([]);
 
     useEffect(() => {
@@ -42,7 +42,8 @@ export default function Jobs({ navigation, route }) {
                 // For each job, fetch its category and combine the data
                 const jobsWithCategoryData = await Promise.all(jobsData.map(async job => {
                     const categoryDoc = await getDoc(doc(db, 'job_categories', job.data.category_id));
-                    const categoryData = categoryDoc.data();
+                    const categoryData = categoryDoc.exists() ? categoryDoc.data() : null;
+                    console.log(`Job ID: ${job.id}, Category Data: ${categoryData ? categoryData.name : 'No Category'}`);
                     return { ...job, category: categoryData };
                 }));
 
@@ -58,6 +59,11 @@ export default function Jobs({ navigation, route }) {
         fetchCategories();
     }, []);
 
+    // Filter jobs based on selected category
+    const filteredJobs = selectedCategory
+        ? jobs.filter(job => job.data.category_id === selectedCategory)
+        : jobs;
+
     return (
         <View style={styles.main}>
             <StatusBar backgroundColor="#373B2C" />
@@ -66,11 +72,11 @@ export default function Jobs({ navigation, route }) {
                 <Text style={[styles.regularFont, styles.headerName]}>Aktív: {jobSum} db</Text>
             </View>
             <View style={styles.categories}>
-                <ScrollView horizontal={true}>
+                <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
                     {
-                        (categories.map((category) =>
-                            <TouchableOpacity key={category.id}>
-                                <View key={category.id} style={[styles.categoryCard, styles.borderStyle]}>
+                        (categories.map((category, index) =>
+                            <TouchableOpacity key={category.id} onPress={() => setSelectedCategory(prevCategory => prevCategory === category.id ? null : category.id)}>
+                                <View key={category.id} style={[styles.categoryCard, styles.borderStyle, index === 0 && styles.firstCategoryCard]}>
                                     <Text style={[styles.jobTitles, styles.boldFont]}>{category.data.name}</Text>
                                 </View>
                             </TouchableOpacity>
@@ -80,7 +86,7 @@ export default function Jobs({ navigation, route }) {
                 </ScrollView>
             </View>
             <View style={styles.jobs}>
-                <ScrollView>
+                <ScrollView horizontal={false} showsHorizontalScrollIndicator={false}>
                     {
                         /*loading ?
                             (
@@ -88,11 +94,12 @@ export default function Jobs({ navigation, route }) {
                             <Text>Loading...</Text>
                             </View>) :
                         */
-                        (jobs.map((job) =>
+                        (filteredJobs.map((job) =>
                             <TouchableOpacity key={job.id} onPress={() => navigation.navigate('JobDetails', { jobData: job.data })}>
                                 <View key={job.id} style={[styles.jobCard, styles.borderStyle]}>
-                                    <View style={styles.jobNamePart}>
+                                    <View style={styles.jobOtherPart}>
                                         <Text style={[styles.jobTitles, styles.boldFont]}>{job.data.company}</Text>
+                                        <Text style={[styles.jobTitles, styles.lightFont]}>{job.category ? job.category.name : 'No category!'}</Text>
                                     </View>
                                     <View style={styles.jobOtherPart}>
                                         <Text style={[styles.jobTitles, styles.regularFont]}>{job.data.name}</Text>
@@ -151,19 +158,33 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         paddingVertical: 10
     },
+    firstCategoryCard: {        
+        width: 200,
+        alignItems: 'center',
+        flexDirection: 'column',
+        backgroundColor: '#FFFFFF',
+        marginTop: 5,
+        marginLeft: 20,
+        marginRight: 7,
+        paddingHorizontal: 20,
+        paddingVertical: 10,
+        borderRadius: 25,
+    },
     categoryCard: {
         width: 200,
         alignItems: 'center',
         flexDirection: 'column',
         backgroundColor: '#FFFFFF',
         marginTop: 5,
-        marginHorizontal: 20,
+        marginHorizontal: 7,
         paddingHorizontal: 20,
         paddingVertical: 10,
         borderRadius: 25,
     },
     jobs: {
+        flex: 1,
         width: '100%',
+        flexDirection: 'row',
         paddingHorizontal: 20,
         paddingVertical: 10
     },
@@ -171,7 +192,7 @@ const styles = StyleSheet.create({
         width: '100%',
         flexDirection: 'column',
         backgroundColor: '#FFFFFF',
-        marginVertical: 5,
+        marginVertical: 7,
         paddingHorizontal: 20,
         paddingVertical: 20,
         borderRadius: 25,

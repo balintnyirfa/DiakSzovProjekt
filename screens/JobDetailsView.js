@@ -1,35 +1,39 @@
 import { getAuth } from "firebase/auth";
-import { setDoc } from "firebase/firestore";
+import { setDoc, query, collection, getDocs, setCategories, doc } from "firebase/firestore";
 import { auth, db } from "../config/firebase";
-import React from "react";
-import { doc } from "firebase/firestore";
-import { StyleSheet, Text, View, StatusBar, ScrollView, Pressable, Image, Alert } from "react-native";
+import React, { useEffect, useState } from 'react';
+import { View, Text, ScrollView, Pressable, Image, StyleSheet, StatusBar, Alert } from 'react-native';
+import uuid from 'react-native-uuid';
+import 'react-native-get-random-values';
 
 export default function JobDetails({ navigation, route }) {
     const { jobData } = route.params;
-
     const auth = getAuth();
 
-    const createAlert = () =>
-        {
-            Alert.alert('Siker!', 'Sikeres jelentkezés!', [
-                { text: 'OK', onPress: () => console.log('OK Pressed') },
-            ]);
-        };
+    const createAlert = () => {
+        Alert.alert('Siker!', 'Sikeres jelentkezés!', [
+            { text: 'OK', onPress: () => console.log('OK Pressed') },
+        ]);
+    };
 
     const applyForJob = async () => {
         try {
             const userId = auth.currentUser?.uid || '';
+            const applicationId = uuid.v4(); // Generate a unique ID for the application
             const newApply = {
                 email: auth.currentUser?.email,
                 jobName: jobData.name,
-                accepted: false
+                companyName: jobData.company,
+                accepted: false,
+                appliedAt: new Date(),
+                userId: userId,
+                //jobId: jobData?.id,
             };
-            setDoc(doc(db, 'appliedStudents', userId), newApply)
-            .then(() => {
-                createAlert();
-                navigation.navigate('Jobs');
-            });
+            setDoc(doc(db, 'applicants', applicationId), newApply)
+                .then(() => {
+                    createAlert();
+                    navigation.navigate('Jobs');
+                });
         } catch (error) {
             console.log(error)
         }
@@ -58,7 +62,7 @@ export default function JobDetails({ navigation, route }) {
                     </View>
                     <View style={[styles.boxes, styles.borderStyle, styles.jobCard]}>
                         <Text style={[styles.boldFont, styles.headerText]}>Kategória</Text>
-                        <Text style={[styles.regularFont, styles.jobTitles]}>{jobData.category_id.name}</Text>
+                        <Text style={[styles.regularFont, styles.jobTitles]}>Kategória neve</Text>
                     </View>
                 </View>
             </ScrollView>
@@ -121,6 +125,7 @@ const styles = StyleSheet.create({
         width: '100%',
         flexDirection: "row",
         backgroundColor: "#FFFFFF",
+        paddingVertical: 12
     },
     jobs: {
         width: '100%',
