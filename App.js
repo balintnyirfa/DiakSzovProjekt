@@ -26,11 +26,12 @@ function Tabs() {
         tabBarInactiveTintColor: '#000000',
         tabBarStyle: {
           //height: 160,
-          position: 'absolute',
+          //position: 'absolute',
           backgroundColor: '#FFFFFF',
-          borderTopLeftRadius: 25,
-          borderTopRightRadius: 25,
+          //borderTopLeftRadius: 25,
+          //borderTopRightRadius: 25,
           borderColor: '#373B2C',
+          borderTopWidth: 2,
           borderWidth: 2,
         },
         tabBarIcon: ({ focused, color, size }) => {

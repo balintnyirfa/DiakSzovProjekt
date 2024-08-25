@@ -43,7 +43,7 @@ export default function Jobs({ navigation, route }) {
                 const jobsWithCategoryData = await Promise.all(jobsData.map(async job => {
                     const categoryDoc = await getDoc(doc(db, 'job_categories', job.data.category_id));
                     const categoryData = categoryDoc.exists() ? categoryDoc.data() : null;
-                    console.log(`Job ID: ${job.id}, Category Data: ${categoryData ? categoryData.name : 'No Category'}`);
+                    //console.log(`Job ID: ${job.id}, Category Data: ${categoryData ? categoryData.name : 'No Category'}`);
                     return { ...job, category: categoryData };
                 }));
 
@@ -70,23 +70,23 @@ export default function Jobs({ navigation, route }) {
             <View style={[styles.header, styles.borderStyle]}>
                 <Text style={[styles.boldFont, styles.headerWelcome]}>Aktuális munkáink</Text>
                 <Text style={[styles.regularFont, styles.headerName]}>Aktív: {jobSum} db</Text>
-            </View>
-            <View style={styles.categories}>
-                <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-                    {
-                        (categories.map((category, index) =>
-                            <TouchableOpacity key={category.id} onPress={() => setSelectedCategory(prevCategory => prevCategory === category.id ? null : category.id)}>
-                                <View key={category.id} style={[styles.categoryCard, styles.borderStyle, index === 0 && styles.firstCategoryCard]}>
-                                    <Text style={[styles.jobTitles, styles.boldFont]}>{category.data.name}</Text>
-                                </View>
-                            </TouchableOpacity>
+                <View style={styles.categories}>
+                    <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
+                        {
+                            (categories.map((category, index) =>
+                                <TouchableOpacity key={category.id} onPress={() => setSelectedCategory(prevCategory => prevCategory === category.id ? null : category.id)}>
+                                    <View key={category.id} style={[styles.categoryCard, index === 0 && styles.firstCategoryCard]}>
+                                        <Text style={[styles.categoryTitles, styles.boldFont]}>{category.data.name}</Text>
+                                    </View>
+                                </TouchableOpacity>
 
-                        ))
-                    }
-                </ScrollView>
+                            ))
+                        }
+                    </ScrollView>
+                </View>
             </View>
             <View style={styles.jobs}>
-                <ScrollView horizontal={false} showsHorizontalScrollIndicator={false}>
+                <ScrollView horizontal={false} showsVerticalScrollIndicator={false}>
                     {
                         /*loading ?
                             (
@@ -158,28 +158,28 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         paddingVertical: 10
     },
-    firstCategoryCard: {        
+    firstCategoryCard: {
         width: 200,
         alignItems: 'center',
         flexDirection: 'column',
-        backgroundColor: '#FFFFFF',
+        backgroundColor: '#687A3C',
         marginTop: 5,
-        marginLeft: 20,
+        //marginLeft: 20,
         marginRight: 7,
         paddingHorizontal: 20,
         paddingVertical: 10,
-        borderRadius: 25,
+        borderRadius: 15,
     },
     categoryCard: {
         width: 200,
         alignItems: 'center',
         flexDirection: 'column',
-        backgroundColor: '#FFFFFF',
+        backgroundColor: '#687A3C',
         marginTop: 5,
         marginHorizontal: 7,
         paddingHorizontal: 20,
         paddingVertical: 10,
-        borderRadius: 25,
+        borderRadius: 15,
     },
     jobs: {
         flex: 1,
@@ -209,6 +209,10 @@ const styles = StyleSheet.create({
     jobTitles: {
         fontSize: 22,
         color: '#373B2C'
+    },
+    categoryTitles: {
+        fontSize: 20,
+        color: '#FFFFFF'
     },
     borderStyle: {
         borderColor: '#373B2C',

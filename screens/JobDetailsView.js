@@ -45,6 +45,9 @@ export default function JobDetails({ navigation, route }) {
             <View style={[styles.header, styles.borderStyle]}>
                 <Text style={[styles.boldFont, styles.headerText]}>{jobData.company}</Text>
                 <Text style={[styles.regularFont, styles.headerName]}>{jobData.city}</Text>
+                <Pressable style={[styles.applyButton]} onPress={applyForJob}>
+                    <Text style={[styles.applyButtonText, styles.boldFont]}>JELENTKEZEK</Text>
+                </Pressable>
             </View>
             <ScrollView style={styles.scrollView}>
                 <View style={styles.jobs}>
@@ -56,27 +59,24 @@ export default function JobDetails({ navigation, route }) {
                         <Text style={[styles.boldFont, styles.jobTitles]}>Fizetés: </Text>
                         <Text style={[styles.regularFont, styles.jobTitles]}>{jobData.payment} Forint/óra</Text>
                     </View>
+                    <View style={[styles.jobCard, styles.boxes, styles.borderStyle]}>
+                        <Text style={[styles.boldFont, styles.jobTitles]}>Kategória:</Text>
+                        <Text style={[styles.regularFont, styles.jobTitles]}>Név</Text>
+                    </View>
                     <View style={[styles.boxes, styles.borderStyle, styles.jobCard]}>
                         <Text style={[styles.boldFont, styles.headerText]}>Leírás</Text>
                         <Text style={[styles.regularFont, styles.jobTitles]}>{jobData.description}</Text>
                     </View>
-                    <View style={[styles.boxes, styles.borderStyle, styles.jobCard]}>
-                        <Text style={[styles.boldFont, styles.headerText]}>Kategória</Text>
-                        <Text style={[styles.regularFont, styles.jobTitles]}>Kategória neve</Text>
-                    </View>
+                </View>
+                <View style={styles.returnBox}>
+                    <Pressable style={[styles.returnButton]} onPress={() => navigation.navigate('Jobs')}>
+                        <Image source={{ uri: 'https://i.postimg.cc/mkjYJVQY/arrow-sm-left-svgrepo-com-1.png' }} style={styles.arrow} />
+                        <Text style={[styles.returnBtnText, styles.boldFont]}>Vissza</Text>
+                    </Pressable>
                 </View>
             </ScrollView>
-            <View style={styles.returnBox}>
-                <Pressable style={[styles.applyButton]} onPress={applyForJob}>
-                    <Text style={[styles.applyButtonText, styles.boldFont]}>JELENTKEZEK</Text>
-                </Pressable>
-            </View>
-            <View style={styles.returnBox}>
-                <Pressable style={[styles.returnButton]} onPress={() => navigation.navigate('Jobs')}>
-                    <Image source={{ uri: 'https://i.postimg.cc/mkjYJVQY/arrow-sm-left-svgrepo-com-1.png' }} style={styles.arrow} />
-                    <Text style={[styles.returnBtnText, styles.boldFont]}>Vissza</Text>
-                </Pressable>
-            </View>
+
+
         </View>
     );
 }
@@ -135,6 +135,7 @@ const styles = StyleSheet.create({
     jobCard: {
         width: '100%',
         flexDirection: 'column',
+        justifyContent: "space-between",
         backgroundColor: '#FFFFFF',
         marginVertical: 5,
         paddingHorizontal: 20,
@@ -172,7 +173,8 @@ const styles = StyleSheet.create({
         alignItems: "center",
         justifyContent: "center",
         backgroundColor: "#687A3C",
-        borderRadius: 6,
+        borderRadius: 15,
+        marginTop: 22,
         paddingVertical: 8
     },
     applyButtonText: {
