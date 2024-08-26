@@ -7,7 +7,7 @@ import uuid from 'react-native-uuid';
 import 'react-native-get-random-values';
 
 export default function JobDetails({ navigation, route }) {
-    const { jobData } = route.params;
+    const { jobData, jobCategory } = route.params;
     const auth = getAuth();
 
     const createAlert = () => {
@@ -19,7 +19,7 @@ export default function JobDetails({ navigation, route }) {
     const applyForJob = async () => {
         try {
             const userId = auth.currentUser?.uid || '';
-            const applicationId = uuid.v4(); // Generate a unique ID for the application
+            const applicationId = uuid.v4();
             const newApply = {
                 email: auth.currentUser?.email,
                 jobName: jobData.name,
@@ -61,7 +61,7 @@ export default function JobDetails({ navigation, route }) {
                     </View>
                     <View style={[styles.jobCard, styles.boxes, styles.borderStyle]}>
                         <Text style={[styles.boldFont, styles.jobTitles]}>Kategória:</Text>
-                        <Text style={[styles.regularFont, styles.jobTitles]}>Név</Text>
+                        <Text style={[styles.regularFont, styles.jobTitles]}>{jobCategory.name}</Text>
                     </View>
                     <View style={[styles.boxes, styles.borderStyle, styles.jobCard]}>
                         <Text style={[styles.boldFont, styles.headerText]}>Leírás</Text>

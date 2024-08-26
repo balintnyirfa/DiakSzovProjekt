@@ -64,18 +64,47 @@ export default function Jobs({ navigation, route }) {
         ? jobs.filter(job => job.data.category_id === selectedCategory)
         : jobs;
 
+
+    const renderJobItem = ({ item }) => (
+        <TouchableOpacity key={item.id} onPress={() => navigation.navigate('JobDetails', { jobData: item.data, jobCategory: item.category, jobId: item.id })}>
+            <View style={[styles.jobCard, styles.borderStyle]}>
+                <View style={styles.jobOtherPart}>
+                    <Text style={[styles.jobTitles, styles.boldFont]}>{item.data.company}</Text>
+                    <Text style={[styles.jobTitles, styles.lightFont]}>{item.category ? item.category.name : 'No category!'}</Text>
+                </View>
+                <View style={styles.jobOtherPart}>
+                    <Text style={[styles.jobTitles, styles.regularFont]}>{item.data.name}</Text>
+                    <Text style={[styles.jobTitles, styles.regularFont]}>{item.data.city}</Text>
+                </View>
+            </View>
+        </TouchableOpacity>
+    );
+
+
+    /*(categories.map((category, index) =>
+        <TouchableOpacity key={category.id} onPress={() => setSelectedCategory(prevCategory => prevCategory === category.id ? null : category.id)}>
+            <View key={category.id} style={[styles.categoryCard, index === 0 && styles.firstCategoryCard]}>
+                <Text style={[styles.categoryTitles, styles.boldFont]}>{category.data.name}</Text>
+            </View>
+        </TouchableOpacity>
+
+    ))*/
+
     return (
         <View style={styles.main}>
             <StatusBar backgroundColor="#373B2C" />
             <View style={[styles.header, styles.borderStyle]}>
                 <Text style={[styles.boldFont, styles.headerWelcome]}>Aktuális munkáink</Text>
                 <Text style={[styles.regularFont, styles.headerName]}>Aktív: {jobSum} db</Text>
+                <FlatList>
+
+                </FlatList>
                 <View style={styles.categories}>
                     <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
                         {
-                            (categories.map((category, index) =>
+                            (categories.map((category) =>
                                 <TouchableOpacity key={category.id} onPress={() => setSelectedCategory(prevCategory => prevCategory === category.id ? null : category.id)}>
-                                    <View key={category.id} style={[styles.categoryCard, index === 0 && styles.firstCategoryCard]}>
+                                    <View key={category.id} style={[styles.categoryCard]}>
                                         <Text style={[styles.categoryTitles, styles.boldFont]}>{category.data.name}</Text>
                                     </View>
                                 </TouchableOpacity>
@@ -86,30 +115,11 @@ export default function Jobs({ navigation, route }) {
                 </View>
             </View>
             <View style={styles.jobs}>
-                <ScrollView horizontal={false} showsVerticalScrollIndicator={false}>
-                    {
-                        /*loading ?
-                            (
-                            <View>
-                            <Text>Loading...</Text>
-                            </View>) :
-                        */
-                        (filteredJobs.map((job) =>
-                            <TouchableOpacity key={job.id} onPress={() => navigation.navigate('JobDetails', { jobData: job.data })}>
-                                <View key={job.id} style={[styles.jobCard, styles.borderStyle]}>
-                                    <View style={styles.jobOtherPart}>
-                                        <Text style={[styles.jobTitles, styles.boldFont]}>{job.data.company}</Text>
-                                        <Text style={[styles.jobTitles, styles.lightFont]}>{job.category ? job.category.name : 'No category!'}</Text>
-                                    </View>
-                                    <View style={styles.jobOtherPart}>
-                                        <Text style={[styles.jobTitles, styles.regularFont]}>{job.data.name}</Text>
-                                        <Text style={[styles.jobTitles, styles.regularFont]}>{job.data.city}</Text>
-                                    </View>
-                                </View>
-                            </TouchableOpacity>
-                        ))
-                    }
-                </ScrollView>
+                <FlatList
+                    data={filteredJobs}
+                    renderItem={renderJobItem}
+                    keyExtractor={(item, index) => `${item.id}-${index}`}
+                />
             </View>
 
         </View>
@@ -137,7 +147,8 @@ const styles = StyleSheet.create({
     },
     header: {
         paddingHorizontal: 20,
-        paddingVertical: 30,
+        paddingTop: 30,
+        paddingBottom: 20,
         width: '100%',
         backgroundColor: '#FFFFFF',
         borderBottomLeftRadius: 25,
@@ -145,39 +156,40 @@ const styles = StyleSheet.create({
         color: '#373B2C',
     },
     headerWelcome: {
-        fontSize: 38,
+        fontSize: 30,
         margin: 0,
         color: '#373B2C'
     },
     headerName: {
-        fontSize: 28,
+        fontSize: 25,
         margin: 0
     },
     categories: {
         width: '100%',
         flexDirection: 'column',
-        paddingVertical: 10
+        paddingTop: 10
     },
-    firstCategoryCard: {
+    /*firstCategoryCard: {
         width: 200,
         alignItems: 'center',
         flexDirection: 'column',
         backgroundColor: '#687A3C',
         marginTop: 5,
-        //marginLeft: 20,
+        marginLeft: 20,
         marginRight: 7,
         paddingHorizontal: 20,
         paddingVertical: 10,
         borderRadius: 15,
-    },
+    },*/
     categoryCard: {
-        width: 200,
+        //width: 100,
         alignItems: 'center',
         flexDirection: 'column',
         backgroundColor: '#687A3C',
         marginTop: 5,
-        marginHorizontal: 7,
-        paddingHorizontal: 20,
+        //marginHorizontal: 7,
+        marginRight: 7,
+        paddingHorizontal: 15,
         paddingVertical: 10,
         borderRadius: 15,
     },
@@ -211,7 +223,7 @@ const styles = StyleSheet.create({
         color: '#373B2C'
     },
     categoryTitles: {
-        fontSize: 20,
+        fontSize: 18,
         color: '#FFFFFF'
     },
     borderStyle: {
@@ -219,3 +231,23 @@ const styles = StyleSheet.create({
         borderWidth: 2,
     }
 });
+
+
+/*<ScrollView horizontal={false} showsVerticalScrollIndicator={false}>
+                    {
+                        (filteredJobs.map((job) =>
+                            <TouchableOpacity key={job.id} onPress={() => navigation.navigate('JobDetails', { jobData: job.data, jobCategory: job.category })}>
+                                <View key={job.id} style={[styles.jobCard, styles.borderStyle]}>
+                                    <View style={styles.jobOtherPart}>
+                                        <Text style={[styles.jobTitles, styles.boldFont]}>{job.data.company}</Text>
+                                        <Text style={[styles.jobTitles, styles.lightFont]}>{job.category ? job.category.name : 'No category!'}</Text>
+                                    </View>
+                                    <View style={styles.jobOtherPart}>
+                                        <Text style={[styles.jobTitles, styles.regularFont]}>{job.data.name}</Text>
+                                        <Text style={[styles.jobTitles, styles.regularFont]}>{job.data.city}</Text>
+                                    </View>
+                                </View>
+                            </TouchableOpacity>
+                        ))
+                    }
+                </ScrollView>*/
