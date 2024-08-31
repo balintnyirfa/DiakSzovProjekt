@@ -32,7 +32,7 @@ export default function Settings({ navigation }) {
                 <ScrollView showsVerticalScrollIndicator={false}>
                     <View style={[styles.topSection, styles.borderStyle]}>
                         <Text style={[styles.header, styles.boldFont]}>Adataim</Text>
-                        <Pressable>
+                        <Pressable onPress={() => navigation.navigate('UserUpdate')}>
                             <Text style={[styles.text, styles.regularFont]}>Fiók adatok</Text>
                         </Pressable>
                         <Pressable>

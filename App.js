@@ -14,6 +14,7 @@ import Home from './screens/HomeView';
 import Settings from './screens/SettingsView';
 import Jobs from './screens/JobsView';
 import JobDetails from './screens/JobDetailsView';
+import UserUpdate from './screens/UserUpdateView'
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -110,6 +111,10 @@ export default function App() {
         <Stack.Screen
           name='JobDetails'
           component={JobDetails}
+          options={{ headerShown: false }} />
+        <Stack.Screen
+          name='UserUpdate'
+          component={UserUpdate}
           options={{ headerShown: false }} />
       </Stack.Navigator>
     </NavigationContainer>

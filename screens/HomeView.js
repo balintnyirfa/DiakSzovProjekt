@@ -1,12 +1,13 @@
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
-import { doc, getDoc, collection, limit, onSnapshot, query } from "firebase/firestore";
+import { doc, getDoc, collection, limit, onSnapshot, query, getDocs } from "firebase/firestore";
 import React, { useState, useEffect } from "react";
-import { Image, Pressable, ScrollView, StatusBar, StyleSheet, Text, TextInput, View } from "react-native";
+import { Image, Pressable, ScrollView, StatusBar, StyleSheet, Text, TextInput, TouchableNativeFeedbackComponent, TouchableOpacity, View } from "react-native";
 import { auth, db } from "../config/firebase";
 
 
 export default function Home({ navigation }) {
     const [name, setName] = useState('');
+    const [jobs, setJobs] = useState([]);
 
     onAuthStateChanged(auth, async (user) => {
         if (user) {
@@ -26,34 +27,57 @@ export default function Home({ navigation }) {
         }
     });
 
-    const [jobs, setJobs] = useState([]);
-
-    const [jobSum, setJobSum] = useState(0);
-
-    const fetchJobData = async () => {
-        try {
-            //setLoading(true);
-
-            const q = await query(collection(db, 'jobs'), limit(2));
-
-            await onSnapshot(q, (querySnapshot) => {
-                setJobs(
-                    querySnapshot.docs.map((doc) => ({
-                        id: doc.id,
-                        data: doc.data(),
-                    }))
-                );
-                setJobSum(querySnapshot.size);
-            });
-            //setLoading(false);
-        } catch (error) {
-            console.log(error);
-        }
-    };
 
     useEffect(() => {
+        const fetchCategories = async () => {
+            try {
+                // Fetch categories from Firestore
+                const q = query(collection(db, 'job_categories'));
+                const querySnapshot = await getDocs(q);
+                const categoriesData = querySnapshot.docs.map(doc => ({
+                    id: doc.id,
+                    data: doc.data(),
+                }));
+
+                // Update state with categories data
+                setCategories(categoriesData);
+            } catch (error) {
+                console.log(error);
+            }
+        };
+
+        const fetchJobData = async () => {
+            try {
+                // Fetch jobs from Firestore
+                const q = query(collection(db, 'jobs'));
+                const querySnapshot = await getDocs(q);
+                const jobsData = querySnapshot.docs.map(doc => ({
+                    id: doc.id,
+                    data: doc.data(),
+                }));
+
+                // For each job, fetch its category and combine the data
+                const jobsWithCategoryData = await Promise.all(jobsData.map(async job => {
+                    const categoryDoc = await getDoc(doc(db, 'job_categories', job.data.category_id));
+                    const categoryData = categoryDoc.exists() ? categoryDoc.data() : null;
+                    //console.log(`Job ID: ${job.id}, Category Data: ${categoryData ? categoryData.name : 'No Category'}`);
+                    return { ...job, category: categoryData };
+                }));
+
+                const latestTwoJobs = jobsWithCategoryData
+                    .sort((a, b) => b.data.created_at - a.data.created_at)
+                    .slice(0, 2);
+
+                // Update state with combined data
+                setJobs(latestTwoJobs);
+            } catch (error) {
+                console.log(error);
+            }
+        };
+
         fetchJobData();
-    });
+        fetchCategories();
+    }, []);
 
     return (
         <View style={styles.main}>
@@ -72,23 +96,23 @@ export default function Home({ navigation }) {
                         //        <Text>Loading...</Text>
                         //    </View>) : 
                         (jobs.map((job) =>
+                            <TouchableOpacity key={job.id} onPress={() => navigation.navigate('JobDetails', { jobData: job.data, jobCategory: job.category, jobId: job.id })}>
                                 <View key={job.id} style={[styles.jobCard, styles.borderStyle]}>
-                                    <View style={styles.jobNamePart}>
+                                    <View style={styles.jobOtherPart}>
                                         <Text style={[styles.jobTitles, styles.boldFont]}>{job.data.company}</Text>
+                                        <Text style={[styles.jobTitles, styles.lightFont]}>{job.category.name}</Text>
                                     </View>
                                     <View style={styles.jobOtherPart}>
                                         <Text style={[styles.jobTitles, styles.regularFont]}>{job.data.name}</Text>
                                         <Text style={[styles.jobTitles, styles.regularFont]}>{job.data.city}</Text>
                                     </View>
                                 </View>
+                            </TouchableOpacity>
                         ))
                     }
                 </View>
-                <View style={styles.jobs}>
-                    <Text style={[styles.boldFont, styles.title]}>Hírek</Text>
-                </View>
-            </ScrollView>
-        </View>
+            </ScrollView >
+        </View >
     );
 }
 
