@@ -44,7 +44,7 @@ export default function Settings({ navigation }) {
                     </View>
                     <View style={[styles.section, styles.borderStyle]}>
                         <Text style={[styles.header, styles.boldFont]}>Egyéb</Text>
-                        <Pressable>
+                        <Pressable onPress={() => navigation.navigate('AppliedJobs')}>
                             <Text style={[styles.text, styles.regularFont]}>Munkáim</Text>
                         </Pressable>
                         <Pressable>

@@ -8,11 +8,10 @@ import { auth, db } from "../config/firebase";
 export default function Home({ navigation }) {
     const [name, setName] = useState('');
     const [jobs, setJobs] = useState([]);
+    const [categories, setCategories] = useState([]);
 
     onAuthStateChanged(auth, async (user) => {
         if (user) {
-            // User is signed in, see docs for a list of available properties
-            // https://firebase.google.com/docs/reference/js/auth.user
             const userDocRef = doc(db, "users", user.uid);
             const userDocSnap = await getDoc(userDocRef);
 
@@ -23,7 +22,6 @@ export default function Home({ navigation }) {
             }
         } else {
             // User is signed out
-            // ...
         }
     });
 
@@ -31,7 +29,6 @@ export default function Home({ navigation }) {
     useEffect(() => {
         const fetchCategories = async () => {
             try {
-                // Fetch categories from Firestore
                 const q = query(collection(db, 'job_categories'));
                 const querySnapshot = await getDocs(q);
                 const categoriesData = querySnapshot.docs.map(doc => ({
@@ -39,7 +36,6 @@ export default function Home({ navigation }) {
                     data: doc.data(),
                 }));
 
-                // Update state with categories data
                 setCategories(categoriesData);
             } catch (error) {
                 console.log(error);
@@ -48,7 +44,6 @@ export default function Home({ navigation }) {
 
         const fetchJobData = async () => {
             try {
-                // Fetch jobs from Firestore
                 const q = query(collection(db, 'jobs'));
                 const querySnapshot = await getDocs(q);
                 const jobsData = querySnapshot.docs.map(doc => ({
@@ -56,11 +51,9 @@ export default function Home({ navigation }) {
                     data: doc.data(),
                 }));
 
-                // For each job, fetch its category and combine the data
                 const jobsWithCategoryData = await Promise.all(jobsData.map(async job => {
                     const categoryDoc = await getDoc(doc(db, 'job_categories', job.data.category_id));
                     const categoryData = categoryDoc.exists() ? categoryDoc.data() : null;
-                    //console.log(`Job ID: ${job.id}, Category Data: ${categoryData ? categoryData.name : 'No Category'}`);
                     return { ...job, category: categoryData };
                 }));
 
@@ -68,7 +61,6 @@ export default function Home({ navigation }) {
                     .sort((a, b) => b.data.created_at - a.data.created_at)
                     .slice(0, 2);
 
-                // Update state with combined data
                 setJobs(latestTwoJobs);
             } catch (error) {
                 console.log(error);
@@ -82,7 +74,7 @@ export default function Home({ navigation }) {
     return (
         <View style={styles.main}>
             <StatusBar backgroundColor="#373B2C" />
-            <ScrollView>
+            <ScrollView style={{width: '100%', flex: 1}}>
                 <View style={styles.header}>
                     <Text style={[styles.boldFont, styles.headerWelcome]}>Üdv,</Text>
                     <Text style={[styles.regularFont, styles.headerName]}>{name}</Text>
@@ -90,11 +82,6 @@ export default function Home({ navigation }) {
                 <View style={styles.jobs}>
                     <Text style={[styles.boldFont, styles.title]}>Friss munkáink</Text>
                     {
-                        //loading ? 
-                        //(
-                        //    <View>
-                        //        <Text>Loading...</Text>
-                        //    </View>) : 
                         (jobs.map((job) =>
                             <TouchableOpacity key={job.id} onPress={() => navigation.navigate('JobDetails', { jobData: job.data, jobCategory: job.category, jobId: job.id })}>
                                 <View key={job.id} style={[styles.jobCard, styles.borderStyle]}>

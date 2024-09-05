@@ -14,7 +14,6 @@ export default function Jobs({ navigation, route }) {
     useEffect(() => {
         const fetchCategories = async () => {
             try {
-                // Fetch categories from Firestore
                 const q = query(collection(db, 'job_categories'));
                 const querySnapshot = await getDocs(q);
                 const categoriesData = querySnapshot.docs.map(doc => ({
@@ -22,7 +21,6 @@ export default function Jobs({ navigation, route }) {
                     data: doc.data(),
                 }));
 
-                // Update state with categories data
                 setCategories(categoriesData);
             } catch (error) {
                 console.log(error);
@@ -31,7 +29,6 @@ export default function Jobs({ navigation, route }) {
 
         const fetchJobData = async () => {
             try {
-                // Fetch jobs from Firestore
                 const q = query(collection(db, 'jobs'));
                 const querySnapshot = await getDocs(q);
                 const jobsData = querySnapshot.docs.map(doc => ({
@@ -39,15 +36,12 @@ export default function Jobs({ navigation, route }) {
                     data: doc.data(),
                 }));
 
-                // For each job, fetch its category and combine the data
                 const jobsWithCategoryData = await Promise.all(jobsData.map(async job => {
                     const categoryDoc = await getDoc(doc(db, 'job_categories', job.data.category_id));
                     const categoryData = categoryDoc.exists() ? categoryDoc.data() : null;
-                    //console.log(`Job ID: ${job.id}, Category Data: ${categoryData ? categoryData.name : 'No Category'}`);
                     return { ...job, category: categoryData };
                 }));
 
-                // Update state with combined data
                 setJobs(jobsWithCategoryData);
                 setJobSum(jobsWithCategoryData.length);
             } catch (error) {
@@ -59,7 +53,6 @@ export default function Jobs({ navigation, route }) {
         fetchCategories();
     }, []);
 
-    // Filter jobs based on selected category
     const filteredJobs = selectedCategory
         ? jobs.filter(job => job.data.category_id === selectedCategory)
         : jobs;

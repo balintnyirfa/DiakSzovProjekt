@@ -70,7 +70,7 @@ export default function Login({navigation}) {
                     <Text style={[styles.loginBtnText, styles.boldFont]}>BEJELENTKEZEK</Text>
                 </Pressable>
                 <View style={styles.returnBox}>
-                    <Pressable style={[styles.returnButton, styles.returnButton]} onPress={() => navigation.navigate('Welcome')}>
+                    <Pressable style={[styles.returnButton, styles.returnButton]} onPress={() => navigation.goBack()}>
                         <Image source={{ uri: 'https://i.postimg.cc/zGPDCCrc/arrow-sm-left-svgrepo-com-1.png' }} style={styles.arrow} />
                         <Text style={[styles.returnBtnText, styles.boldFont]}>Vissza</Text>
                     </Pressable>

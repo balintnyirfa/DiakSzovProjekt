@@ -100,7 +100,7 @@ export default function UserUpdateView({ navigation }) {
         <View style={styles.main}>
             <ScrollView showsVerticalScrollIndicator={false}>
                 <View style={[styles.topView]}>
-                    <Pressable style={[styles.returnButton]} onPress={() => navigation.navigate('Settings')}>
+                    <Pressable style={[styles.returnButton]} onPress={() => navigation.goBack()}>
                         <Image source={{ uri: 'https://i.postimg.cc/mkjYJVQY/arrow-sm-left-svgrepo-com-1.png' }} style={styles.arrow} />
                         <Text>Vissza</Text>
                     </Pressable>
@@ -113,7 +113,7 @@ export default function UserUpdateView({ navigation }) {
                 </View>
                 <View style={[styles.boxes]}>
                     <View style={[styles.box, styles.greenBox, styles.borderStyle]}>
-                        <Pressable style={styles.button}>
+                        <Pressable style={styles.button} onPress={() => navigation.navigate('PasswordReset')}>
                             <Text style={[styles.boldFont, styles.mediumSize, styles.whiteText]}>Jelszó módosítás</Text>
                         </Pressable>
                     </View>
