@@ -12,8 +12,10 @@ export default function UserUpdateView({ navigation }) {
     const [userData, setUserData] = useState([]);
 
     const [email, setEmail] = useState('');
-    const [birthdate, setBirthdate] = useState('');
+    const [birthdate, setBirthdate] = useState();
     const [telephone, setTelephone] = useState('');
+    const [postalCode, setPostalCode] = useState(0);
+    const [city, setCity] = useState('');
     const [address, setAddress] = useState('');
 
     const [idCardNum, setIdCardNum] = useState('');
@@ -38,8 +40,10 @@ export default function UserUpdateView({ navigation }) {
                     const data = docSnap.data();
                     setUserData(data);
                     setEmail(data.email || '');
-                    setBirthdate(data.birthdate || '');
+                    setBirthdate(data.birthdate ? data.birthdate.toDate().toLocaleDateString('hu-HU') : '');
                     setTelephone(data.telephone || '');
+                    setPostalCode(data.postalCode || '');
+                    setCity(data.city || '');
                     setAddress(data.address || '');
 
                     setIdCardNum(data.idCardNum || '');
@@ -141,6 +145,18 @@ export default function UserUpdateView({ navigation }) {
                             value={telephone}
                             editable={isEditing} />
                         <Text style={[styles.regularFont, styles.regularSize]}>Lakcím</Text>
+                        <TextInput
+                            style={styles.inputField}
+                            keyboardType='number-pad'
+                            onChangeText={number => setPostalCode(number)}
+                            value={postalCode}
+                            editable={isEditing} />
+                        <TextInput
+                            style={styles.inputField}
+                            keyboardType='default'
+                            onChangeText={text => setCity(text)}
+                            value={city}
+                            editable={isEditing} />
                         <TextInput
                             style={styles.inputField}
                             keyboardType='default'

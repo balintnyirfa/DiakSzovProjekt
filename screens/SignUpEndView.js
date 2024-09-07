@@ -1,25 +1,87 @@
-import { fetchSignInMethodsForEmail, getAuth, sendPasswordResetEmail, updateProfile } from "firebase/auth";
-import { initializeApp } from "firebase/app";
-import { addDoc, collection, doc, getFirestore, setDoc } from "firebase/firestore";
-
 import React, { useState } from "react";
-import { StyleSheet, Text, View, StatusBar, TextInput, Pressable, Image, Alert, ScrollView } from "react-native";
+import { StyleSheet, Text, View, StatusBar, TextInput, Pressable, Alert, ScrollView, TouchableOpacity } from "react-native";
+import DateTimePicker from "@react-native-community/datetimepicker";
 import { db } from "../config/firebase";
+import { getAuth } from "firebase/auth";
+import { doc, setDoc } from "firebase/firestore";
+import RNDateTimePicker from "@react-native-community/datetimepicker";
 
-export default function UserNameSignUp({ navigation }) {
+export default function SignUpEnd({ navigation }) {
     const [name, setName] = useState('');
     const [telephone, setTelephone] = useState('');
-    const [birthday, setBirthday] = useState('');
+
+    const [birthday, setBirthday] = useState(new Date());
+
+    const [mode, setMode] = useState('date');
+    const [show, setShow] = useState(false);
+
+    const onChange = (event, selectedDate) => {
+        const currentDate = selectedDate;
+        setShow(false);
+        setBirthday(currentDate);
+    };
+
+    const showMode = (currentMode) => {
+        setShow(true);
+        setMode(currentMode);
+    };
+
+    const showDatepicker = () => {
+        showMode('date');
+    };
 
     const [idCardNum, setIdCardNum] = useState('');
     const [studentIdNum, setStudentIdNum] = useState('');
     const [taxIdNum, setTaxIdNum] = useState('');
     const [tajNum, setTajNum] = useState('');
+    const [postalCode, setPostalCode] = useState(0);
+    const [city, setCity] = useState('');
     const [address, setAddress] = useState('');
 
     const auth = getAuth();
 
-    const saveUsername = async () => {
+    const phoneRegex = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{2}[-\s\.]?[0-9]{4,6}$/;
+    const taxIdRegex = /^([0-9]{10})$/;
+    const tajRegex = /^(?!0{3})(?!6{3})[0-8]\d{2}-(?!0{3})\d{3}-(?!0{3})\d{3}$/;
+    const idCardRegex = /^([0-9]{6})([A-Z]{2})$/;
+    const studentIdRegex = /^([0-9]{11})$/;
+
+    const saveData = async () => {
+        if (!name || !telephone || !birthday || !idCardNum || !studentIdNum || !taxIdNum || !tajNum || !address) {
+            Alert.alert('Hiba!', 'Minden mezőt ki kell töltened!');
+            return;
+        }
+
+        if (!idCardRegex.test(idCardNum)) {
+            Alert.alert('Hiba!', 'Rossz személyi számot adtál meg!');
+            return;
+        }
+
+        if (!phoneRegex.test(telephone)) {
+            Alert.alert('Hiba!', 'Nem megfelelő telefonszámot adtál meg!');
+            return;
+        }
+
+        if (!taxIdRegex.test(taxIdNum)) {
+            Alert.alert('Hiba!', 'Az adószámnak 10 számjegyűnek kell lennie!');
+            return;
+        }
+
+        if (!studentIdRegex.test(studentIdNum)) {
+            Alert.alert('Hiba!', 'Nem megfelelő diák ig. számot adtál meg!');
+            return;
+        }
+
+        if (!tajRegex.test(tajNum)) {
+            Alert.alert('Hiba!', 'Nem megfelelő TAJ számot adtál meg! (pl. 111-222-333)');
+            return;
+        }
+
+        if (postalCode.length != 4) {
+            Alert.alert('Hiba!', 'Az irányítószámnak 4 számjegyűnek kell lennie!');
+            return;
+        }
+
         try {
             const newUser = {
                 id: auth.currentUser?.uid,
@@ -31,6 +93,8 @@ export default function UserNameSignUp({ navigation }) {
                 studentIdNum: studentIdNum,
                 taxIdNum: taxIdNum,
                 tajNum: tajNum,
+                postalCode: postalCode,
+                city: city,
                 address: address
             };
             const userId = auth.currentUser?.uid || '';
@@ -47,60 +111,99 @@ export default function UserNameSignUp({ navigation }) {
         <View style={styles.main}>
             <StatusBar backgroundColor="#B4FB01" />
             <View style={styles.whiteBox}>
-                <Text style={[styles.header, styles.boldFont]}>KÖVETKEZŐ</Text>
-                <ScrollView>
+                <Text style={[styles.header, styles.boldFont]}>BEFEJEZÉS</Text>
+                <ScrollView showsVerticalScrollIndicator={false}>
                     <View style={styles.insideBox}>
                         <Text style={[styles.importantText, styles.regularFont]}>Add meg a további adataid a regisztráció befejezéséhez!</Text>
+
                         <Text style={[styles.inputText, styles.regularFont]}>Név</Text>
                         <TextInput
                             style={styles.inputField}
+                            keyboardType='default'
+                            autoCapitalize='words'
                             onChangeText={text => setName(text)}
                             value={name} />
+
                         <Text style={[styles.inputText, styles.regularFont]}>Telefon</Text>
                         <TextInput
                             style={styles.inputField}
-                            keyboardType="phone-pad"
+                            keyboardType='phone-pad'
                             onChangeText={text => setTelephone(text)}
                             value={telephone} />
+
                         <Text style={[styles.inputText, styles.regularFont]}>Születésnap</Text>
-                        <TextInput
-                            style={styles.inputField}
-                            onChangeText={text => setBirthday(text)}
-                            value={birthday} />
+                        <Pressable style={{ width: '100%' }} onPress={showDatepicker}>
+                            <TextInput
+                                style={styles.inputField}
+                                editable={false}
+                                value={birthday.toLocaleDateString()}
+                                placeholder='Válassz dátumot!'
+                                onChangeText={text => setBirthday(text)} />
+                        </Pressable>
+                        {
+                            show && (
+                                <DateTimePicker
+                                    testID="dateTimePicker"
+                                    value={birthday}
+                                    mode={mode}
+                                    display='spinner'
+                                    minimumDate={new Date(1980, 1, 1)}
+                                    onChange={onChange} />
+                            )
+                        }
+
                         <Text style={[styles.inputText, styles.regularFont]}>Személyi igazolvány szám</Text>
                         <TextInput
                             style={styles.inputField}
+                            keyboardType='default'
                             onChangeText={text => setIdCardNum(text)}
                             value={idCardNum} />
+
                         <Text style={[styles.inputText, styles.regularFont]}>Diákigazolvány szám</Text>
                         <TextInput
                             style={styles.inputField}
+                            keyboardType='number-pad'
                             onChangeText={text => setStudentIdNum(text)}
                             value={studentIdNum} />
+
                         <Text style={[styles.inputText, styles.regularFont]}>Adószám</Text>
                         <TextInput
                             style={styles.inputField}
+                            keyboardType='number-pad'
                             onChangeText={text => setTaxIdNum(text)}
                             value={taxIdNum} />
+
                         <Text style={[styles.inputText, styles.regularFont]}>TAJ szám</Text>
                         <TextInput
                             style={styles.inputField}
+                            keyboardType='number-pad'
                             onChangeText={text => setTajNum(text)}
                             value={tajNum} />
+
                         <Text style={[styles.inputText, styles.regularFont]}>Lakcím</Text>
                         <TextInput
                             style={styles.inputField}
+                            keyboardType='number-pad'
+                            onChangeText={number => setPostalCode(number)}
+                            value={postalCode} />
+                        <TextInput
+                            style={styles.inputField}
+                            keyboardType='default'
+                            onChangeText={text => setCity(text)}
+                            value={city} />
+                        <TextInput
+                            style={styles.inputField}
+                            keyboardType='default'
                             onChangeText={text => setAddress(text)}
                             value={address} />
                     </View>
+                    <Pressable style={styles.loginBtn} onPress={() => saveData()}>
+                        <Text style={[styles.loginBtnText, styles.boldFont]}>KÖVETKEZŐ</Text>
+                    </Pressable>
                 </ScrollView>
-                <Pressable style={styles.loginBtn} onPress={() => saveUsername()}>
-                    <Text style={[styles.loginBtnText, styles.boldFont]}>KÖVETKEZŐ</Text>
-                </Pressable>
             </View>
         </View>
     );
-    // onPress={() => saveUsername(name, telephone, birthday)}
 };
 
 const styles = StyleSheet.create({

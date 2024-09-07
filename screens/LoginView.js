@@ -1,11 +1,11 @@
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import { signInWithEmailAndPassword } from "firebase/auth";
 import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, View, StatusBar, TextInput, Pressable, Image, Alert } from "react-native";
 import { auth, db } from "../config/firebase";
 import { doc, getDoc } from "firebase/firestore";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export default function Login({navigation}) {
+export default function Login({ navigation }) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
@@ -27,24 +27,24 @@ export default function Login({navigation}) {
 
     const handleLogin = async () => {
         if (!email || !password) {
-            Alert.alert('Nem adtál meg email-t vagy jelszót! ');
+            Alert.alert('Hiba!', 'Nem adtál meg email-t vagy jelszót! ');
             return;
         }
-    
+
         if (!regex.test(email)) {
-            Alert.alert('Kérlek adj meg egy érvényes email címet!');
+            Alert.alert('Hiba!', 'Kérlek adj meg egy érvényes email címet!');
             return;
         }
-    
+
         if (password.length < 8) {
-            Alert.alert('A jelszónak legalább 8 karakter hosszúnak kell lennie!');
+            Alert.alert('Hiba!', 'A jelszónak legalább 8 karakter hosszúnak kell lennie!');
             return;
         }
 
         if (email && password) {
             try {
                 const userCredential = await signInWithEmailAndPassword(auth, email, password);
-                const user = userCredential.user;                
+                const user = userCredential.user;
                 await AsyncStorage.setItem('user', JSON.stringify(user));
                 const userDoc = doc(db, 'users', user.uid);
                 const userDocSnapshot = await getDoc(userDoc);
@@ -52,11 +52,12 @@ export default function Login({navigation}) {
                 if (userDocSnapshot.exists()) {
                     navigation.navigate('HomePage');
                 } else {
-                    navigation.navigate('UserNameSignUp');
+                    navigation.navigate('SignUpEnd');
                 }
                 return user;
             } catch (error) {
-                console.log('Error: ', error);
+                Alert.alert('Hiba!', 'Rossz email vagy jelszó!');
+                console.log(error);
             }
         }
     }
@@ -71,6 +72,7 @@ export default function Login({navigation}) {
                     <TextInput
                         style={styles.inputField}
                         keyboardType="email-address"
+                        autoCapitalize='none'
                         onChangeText={text => setEmail(text)}
                         value={email} />
                     <Text style={[styles.inputText, styles.regularFont]}>Jelszó</Text>

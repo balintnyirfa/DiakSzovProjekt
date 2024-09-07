@@ -1,41 +1,39 @@
 import React, { useState } from 'react';
 import { StyleSheet, Text, View, StatusBar, TextInput, Pressable, Image, Alert } from "react-native";
-import firebase from 'firebase/compat/app';
-import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
-import { auth, db } from '../config/firebase';
-import { addDoc, collection, doc, getFirestore } from 'firebase/firestore';
-import { initializeApp } from "firebase/app";
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '../config/firebase';
 
 
-export default function SignUp({navigation}) {
+export default function SignUp({ navigation }) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
     const handleSignUp = async () => {
         if (!email || !password) {
-            Alert.alert('Nem adtál meg email-t vagy jelszót! ');
+            Alert.alert('Hiba!', 'Nem adtál meg email-t vagy jelszót! ');
             return;
         }
 
         if (!regex.test(email)) {
-            Alert.alert('Kérlek adj meg egy érvényes email címet!');
+            Alert.alert('Hiba!', 'Kérlek adj meg egy érvényes email címet!');
             return;
         }
 
         if (password.length < 8) {
-            Alert.alert('A jelszónak legalább 8 karakter hosszúnak kell lennie!');
+            Alert.alert('Hiba!', 'A jelszónak legalább 8 karakter hosszúnak kell lennie!');
             return;
         }
 
         if (email && password) {
             try {
                 const userCredentials = await createUserWithEmailAndPassword(auth, email, password);
-                
+
                 const user = userCredentials.user;
                 navigation.navigate('Login');
                 return user;
             } catch (error) {
+                Alert.alert('Hiba!', 'Ezzel az email címmel már regisztráltak!');
                 console.log(error);
             }
         }
@@ -51,6 +49,7 @@ export default function SignUp({navigation}) {
                     <TextInput
                         style={styles.inputField}
                         keyboardType='email-address'
+                        autoCapitalize='none'
                         onChangeText={text => setEmail(text)}
                         value={email} />
                     <Text style={[styles.inputText, styles.regularFont]}>Jelszó</Text>
@@ -162,7 +161,7 @@ const styles = StyleSheet.create({
         color: '#93B92E',
         fontSize: 16,
     },
-    borderStyle: { 
+    borderStyle: {
         borderColor: '#373B2C',
         borderWidth: 2,
     }

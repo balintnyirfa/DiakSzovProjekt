@@ -5,7 +5,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Welcome from './screens/WelcomeView';
 import Login from './screens/LoginView';
 import SignUp from './screens/SignUpView';
-import UserNameSignUp from './screens/UserNameSignUp';
+import SignUpEnd from './screens/SignUpEndView';
 //import OtherData from './screens/OtherDataView';
 import PasswordReset from './screens/PasswordResetView';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -102,8 +102,8 @@ export default function App() {
           component={PasswordReset}
           options={{ headerShown: false }} />
         <Stack.Screen
-          name='UserNameSignUp'
-          component={UserNameSignUp}
+          name='SignUpEnd'
+          component={SignUpEnd}
           options={{ headerShown: false }} />
         <Stack.Screen
           name='HomePage'

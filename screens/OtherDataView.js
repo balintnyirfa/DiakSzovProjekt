@@ -1,13 +1,12 @@
-import { fetchSignInMethodsForEmail, getAuth, sendPasswordResetEmail, updateProfile } from "firebase/auth";
-import { initializeApp } from "firebase/app";
-import { addDoc, collection, doc, getFirestore, setDoc } from "firebase/firestore";
+import { getAuth } from "firebase/auth";
+import { doc, setDoc } from "firebase/firestore";
 
 import React, { useState } from "react";
-import { StyleSheet, Text, View, StatusBar, TextInput, Pressable, Image, Alert } from "react-native";
+import { StyleSheet, Text, View, StatusBar, TextInput, Pressable, Alert, ScrollView } from "react-native";
 import { db } from "../config/firebase";
 
 export default function OtherDataView({ navigation, route }) {
-    const {name, telephone, birthday} = route.param;
+    const { name, telephone, birthday } = route.param;
 
     const [idCardNum, setIdCardNum] = useState('');
     const [studentIdNum, setStudentIdNum] = useState('');
@@ -26,19 +25,10 @@ export default function OtherDataView({ navigation, route }) {
                 telephone: telephone,
                 birthdate: birthday
             };
-            const newData = {
-                id: auth.currentUser?.uid,
-                idCardNum: idCardNum,
-                studentIdNum: studentIdNum,
-                taxIdNum: taxIdNum,
-                tajNum: tajNum,
-                address: address
-            };
             const userId = auth.currentUser?.uid || '';
-            setDoc(doc(db, 'users', userId), newUser);
-            setDoc(doc(db, 'student_data', userId), newData)
+            setDoc(doc(db, 'users', userId), newUser)
                 .then(() => {
-                    navigation.navigate('Homepage');
+                    navigation.navigate('SignUpEnd');
                 });
         } catch (error) {
             console.log(error)
@@ -49,38 +39,43 @@ export default function OtherDataView({ navigation, route }) {
         <View style={styles.main}>
             <StatusBar backgroundColor="#B4FB01" />
             <View style={styles.whiteBox}>
-                <Text style={[styles.header, styles.boldFont]}>BEFEJEZÉS</Text>
+                <ScrollView showsVerticalScrollIndicator={false}>
+                <Text style={[styles.header, styles.boldFont]}>KÖVETKEZŐ</Text>
                 <View style={styles.insideBox}>
-                    <Text style={[styles.importantText, styles.regularFont]}>És már csak egy lépés van hátra!</Text>
                     <Text style={[styles.inputText, styles.regularFont]}>Személyi igazolvány szám</Text>
                     <TextInput
                         style={styles.inputField}
                         onChangeText={text => setIdCardNum(text)}
                         value={idCardNum} />
+
                     <Text style={[styles.inputText, styles.regularFont]}>Diákigazolvány szám</Text>
                     <TextInput
                         style={styles.inputField}
                         onChangeText={text => setStudentIdNum(text)}
                         value={studentIdNum} />
+
                     <Text style={[styles.inputText, styles.regularFont]}>Adószám</Text>
                     <TextInput
                         style={styles.inputField}
                         onChangeText={text => setTaxIdNum(text)}
                         value={taxIdNum} />
+
                     <Text style={[styles.inputText, styles.regularFont]}>TAJ szám</Text>
                     <TextInput
                         style={styles.inputField}
                         onChangeText={text => setTajNum(text)}
                         value={tajNum} />
+
                     <Text style={[styles.inputText, styles.regularFont]}>Lakcím</Text>
                     <TextInput
                         style={styles.inputField}
                         onChangeText={text => setAddress(text)}
                         value={address} />
+                    <Pressable style={styles.loginBtn} onPress={() => saveOtherData()}>
+                        <Text style={[styles.loginBtnText, styles.boldFont]}>BEFEJEZÉS</Text>
+                    </Pressable>
                 </View>
-                <Pressable style={styles.loginBtn} onPress={() => saveOtherData()}>
-                    <Text style={[styles.loginBtnText, styles.boldFont]}>BEFEJEZÉS</Text>
-                </Pressable>
+                </ScrollView>                
             </View>
         </View>
     );
