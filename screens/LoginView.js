@@ -1,6 +1,6 @@
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import React, { useEffect, useState } from "react";
-import { StyleSheet, Text, View, StatusBar, TextInput, Pressable, Image } from "react-native";
+import { StyleSheet, Text, View, StatusBar, TextInput, Pressable, Image, Alert } from "react-native";
 import { auth, db } from "../config/firebase";
 import { doc, getDoc } from "firebase/firestore";
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -10,6 +10,8 @@ export default function Login({navigation}) {
     const [password, setPassword] = useState('');
 
     const [user, setUser] = useState(null);
+
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
     useEffect(() => {
         const checkUser = async () => {
@@ -24,6 +26,21 @@ export default function Login({navigation}) {
 
 
     const handleLogin = async () => {
+        if (!email || !password) {
+            Alert.alert('Nem adtál meg email-t vagy jelszót! ');
+            return;
+        }
+    
+        if (!regex.test(email)) {
+            Alert.alert('Kérlek adj meg egy érvényes email címet!');
+            return;
+        }
+    
+        if (password.length < 8) {
+            Alert.alert('A jelszónak legalább 8 karakter hosszúnak kell lennie!');
+            return;
+        }
+
         if (email && password) {
             try {
                 const userCredential = await signInWithEmailAndPassword(auth, email, password);

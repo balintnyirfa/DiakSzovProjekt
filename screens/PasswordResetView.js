@@ -3,26 +3,38 @@ import { StyleSheet, Text, View, StatusBar, TextInput, Pressable, Image, Alert }
 import { fetchSignInMethodsForEmail, getAuth, sendPasswordResetEmail } from "firebase/auth";
 import { auth, db } from "../config/firebase";
 
-export default function PasswordReset({navigation}) {
+export default function PasswordReset({ navigation }) {
     const [email, setEmail] = useState('');
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
     const createAlert = () =>
         Alert.alert('Siker!', 'Hamarosan érkezik az email!', [
-          {text: 'OK', onPress: () => console.log('OK Pressed')},
+            { text: 'OK', onPress: () => console.log('OK Pressed') },
         ]);
 
     const handlePwdReset = async () => {
-        /*fetchSignInMethodsForEmail(auth, email).then((result) => {
-            console.log(result);
-        });*/
-        sendPasswordResetEmail(auth, email)
-            .then(() => {
-                createAlert();
-                console.log('Reset email sent!');
-            })
-            .catch((error) => {
-                console.log('Error: ', error);
-            });
+        if (!email) {
+            Alert.alert('Nem adtál meg email-t vagy jelszót! ');
+            return;
+        }
+
+        if (!regex.test(email)) {
+            Alert.alert('Kérlek adj meg egy érvényes email címet!');
+            return;
+        }
+
+        try {
+            sendPasswordResetEmail(auth, email)
+                .then(() => {
+                    createAlert();
+                    console.log('Reset email sent!');
+                })
+                .catch((error) => {
+                    console.log('Error: ', error);
+                });
+        } catch (error) {
+
+        }
     }
 
     return (
@@ -35,6 +47,7 @@ export default function PasswordReset({navigation}) {
                     <Text style={[styles.inputText, styles.regularFont]}>Email</Text>
                     <TextInput
                         style={styles.inputField}
+                        keyboardType='email-address'
                         onChangeText={text => setEmail(text)}
                         value={email} />
                 </View>

@@ -10,25 +10,33 @@ import { initializeApp } from "firebase/app";
 export default function SignUp({navigation}) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
     const handleSignUp = async () => {
+        if (!email || !password) {
+            Alert.alert('Nem adtál meg email-t vagy jelszót! ');
+            return;
+        }
+
+        if (!regex.test(email)) {
+            Alert.alert('Kérlek adj meg egy érvényes email címet!');
+            return;
+        }
+
+        if (password.length < 8) {
+            Alert.alert('A jelszónak legalább 8 karakter hosszúnak kell lennie!');
+            return;
+        }
+
         if (email && password) {
             try {
                 const userCredentials = await createUserWithEmailAndPassword(auth, email, password);
-                //try {
-                //    const docref = await addDoc(collection(db, 'users'), {
-                //        id: auth.currentUser?.uid,
-                //        email: auth.currentUser?.email
-                //    });
-                //    console.log("Document written with ID: ", docref.id);
-                //} catch (error) {
-                //    console.error("Error adding document: ", error);
-                //}
+                
                 const user = userCredentials.user;
                 navigation.navigate('Login');
                 return user;
             } catch (error) {
-                console.log("User already exists in the database: ", error);
+                console.log(error);
             }
         }
     }

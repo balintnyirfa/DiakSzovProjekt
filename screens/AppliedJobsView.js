@@ -6,7 +6,7 @@ import { db } from "../config/firebase";
 
 export default function AppliedJobs({ navigation }) {
     const auth = getAuth();
-    //const user = auth.currentUser;
+    //const user = auth.currentUser; asdasd
     const userId = auth.currentUser ? auth.currentUser.uid : null;
 
     const [application, setApplication] = useState([]);

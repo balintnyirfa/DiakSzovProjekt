@@ -9,6 +9,8 @@ import 'react-native-get-random-values';
 export default function JobDetails({ navigation, route }) {
     const { jobData, jobCategory } = route.params;
     const auth = getAuth();
+    const userId = auth.currentUser ? auth.currentUser.uid : null;
+    const [hasApplied, setHasApplied] = useState(false);
 
     const createAlert = () => {
         Alert.alert('Siker!', 'Sikeres jelentkezés!', [
@@ -16,7 +18,31 @@ export default function JobDetails({ navigation, route }) {
         ]);
     };
 
+    useEffect(() => {
+        const fetchAppliedJobs = async () => {
+            try {
+                const q = query(collection(db, 'applicants'));
+                const querySnapshot = await getDocs(q);
+                const data = querySnapshot.docs.map(doc => ({
+                    id: doc.id,
+                    data: doc.data(),
+                }));
+
+                const filteredData = data.filter(item => item.data.userId === userId);
+                //setHasApplied(filteredData.length > 0);
+            } catch (error) {
+                console.log(error);
+            }
+        };
+
+        fetchAppliedJobs();
+    }, [userId, jobData.id]);
+
     const applyForJob = async () => {
+        if (hasApplied) {
+            createAlert('Hiba!', 'Már jelentkeztél erre a munkára!');
+            return;
+        }
         try {
             const userId = auth.currentUser?.uid || '';
             const applicationId = uuid.v4();
@@ -26,14 +52,14 @@ export default function JobDetails({ navigation, route }) {
                 companyName: jobData.company,
                 accepted: false,
                 appliedAt: new Date(),
-                userId: userId,
-                //jobId: jobData?.id,
+                userId: userId
             };
             setDoc(doc(db, 'applicants', applicationId), newApply)
                 .then(() => {
                     createAlert();
                     navigation.navigate('Jobs');
                 });
+            setHasApplied(true);
         } catch (error) {
             console.log(error)
         }
