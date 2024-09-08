@@ -85,7 +85,7 @@ export default function Jobs({ navigation, route }) {
 
     return (
         <View style={styles.main}>
-            <StatusBar backgroundColor="#373B2C" />
+            <StatusBar backgroundColor='#373B2C' barStyle={'light-content'}/>
             <View style={[styles.header, styles.borderStyle]}>
                 <Text style={[styles.boldFont, styles.headerWelcome]}>Aktuális munkáink</Text>
                 <Text style={[styles.regularFont, styles.headerName]}>Aktív: {jobSum} db</Text>

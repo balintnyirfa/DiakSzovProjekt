@@ -1,9 +1,9 @@
-import { collection, doc, getDoc, getDocs, query, updateDoc } from "firebase/firestore";
-import React, { useEffect, useState } from "react";
-import { Image, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
-import { Header } from "react-native/Libraries/NewAppScreen";
-import { db } from "../config/firebase";
-import { getAuth, updateEmail } from "firebase/auth";
+import { collection, doc, getDoc, getDocs, query, updateDoc } from 'firebase/firestore';
+import React, { useEffect, useState } from 'react';
+import { Alert, Image, Pressable, ScrollView, StatusBar, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Header } from 'react-native/Libraries/NewAppScreen';
+import { db } from '../config/firebase';
+import { getAuth, updateEmail } from 'firebase/auth';
 
 export default function UserUpdateView({ navigation }) {
     const auth = getAuth();
@@ -15,7 +15,7 @@ export default function UserUpdateView({ navigation }) {
     const [email, setEmail] = useState('');
     const [birthdate, setBirthdate] = useState();
     const [telephone, setTelephone] = useState('');
-    const [postalCode, setPostalCode] = useState(0);
+    const [postalCode, setPostalCode] = useState('');
     const [city, setCity] = useState('');
     const [address, setAddress] = useState('');
 
@@ -23,8 +23,9 @@ export default function UserUpdateView({ navigation }) {
     const [tajNum, setTajNum] = useState('');
     const [studentIdNum, setStudentIdNum] = useState('');
     const [taxIdNum, setTaxIdNum] = useState('');
-    
+
     const [isEditing, setIsEditing] = useState(false);
+    const [isOtherEditing, setIsOtherEditing] = useState(false);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -41,7 +42,7 @@ export default function UserUpdateView({ navigation }) {
                     const data = docSnap.data();
                     setUserData(data);
                     setEmail(data.email || '');
-                    setBirthdate(data.birthdate ? data.birthdate.toDate().toLocaleDateString('hu-HU') : '');
+                    setBirthdate(data.birthdate || '');
                     setTelephone(data.telephone || '');
                     setPostalCode(data.postal_code || '');
                     setCity(data.city || '');
@@ -96,9 +97,10 @@ export default function UserUpdateView({ navigation }) {
                     city,
                     address
                 });
-                console.log("Document successfully updated!");
+                Alert.alert('Siker!', 'Frissítetted az adataid!');
+                console.log('Document successfully updated!');
             } catch (error) {
-                console.log("Error updating document: ", error);
+                console.log('Error updating document: ', error);
             }
             setIsEditing(!isEditing);
         }
@@ -106,7 +108,7 @@ export default function UserUpdateView({ navigation }) {
     };
 
     const otherData = async () => {
-        if (isEditing) {
+        if (isOtherEditing) {
             console.log('Szerkeszthető!')
             try {
                 const userDoc = doc(db, 'user_data', userId);
@@ -116,17 +118,19 @@ export default function UserUpdateView({ navigation }) {
                     studentIdNum,
                     taxIdNum
                 });
-                console.log("Document successfully updated!");
+                Alert.alert('Siker!', 'Frissítetted az adataid!');
+                console.log('Document successfully updated!');
             } catch (error) {
-                console.log("Error updating document: ", error);
+                console.log('Error updating document: ', error);
             }
-            setIsEditing(!isEditing);
+            setIsOtherEditing(!isOtherEditing);
         }
-        setIsEditing(!isEditing);
+        setIsOtherEditing(!isOtherEditing);
     };
 
     return (
         <View style={styles.main}>
+            <StatusBar backgroundColor='#B4FB01' barStyle={'dark-content'} />
             <ScrollView showsVerticalScrollIndicator={false}>
                 <View style={[styles.topView]}>
                     <Pressable style={[styles.returnButton]} onPress={() => navigation.goBack()}>
@@ -170,28 +174,33 @@ export default function UserUpdateView({ navigation }) {
                             value={telephone}
                             editable={isEditing} />
                         <Text style={[styles.regularFont, styles.regularSize]}>Lakcím</Text>
+                        <View style={[styles.postalCity]}>
+                            <TextInput
+                                style={[styles.inputField, { flex: 1 }]}
+                                keyboardType='number-pad'
+                                onChangeText={text => setPostalCode(text)}
+                                value={postalCode.toString()}
+                                editable={isEditing} />
+                            <TextInput
+                                style={[styles.inputField, { marginLeft: 10, flex: 4 }]}
+                                keyboardType='default'
+                                onChangeText={text => setCity(text)}
+                                value={city}
+                                editable={isEditing} />
+                        </View>
                         <TextInput
-                            style={styles.inputField}
-                            keyboardType='number-pad'
-                            onChangeText={number => setPostalCode(number)}
-                            value={postalCode}
-                            editable={isEditing} />
-                        <TextInput
-                            style={styles.inputField}
-                            keyboardType='default'
-                            onChangeText={text => setCity(text)}
-                            value={city}
-                            editable={isEditing} />
-                        <TextInput
-                            style={styles.inputField}
+                            style={[styles.inputField, { marginTop: 0 }]}
                             keyboardType='default'
                             onChangeText={text => setAddress(text)}
                             value={address}
                             editable={isEditing} />
-                        <Pressable style={[styles.button, styles.modifyButtons]} onPress={updatePersonalData}>
-                            <Text style={[styles.boldFont, styles.mediumSize, styles.whiteText]}>MÓDOSÍTÁS</Text>
-                        </Pressable>
+                        <View style={{ width: '100%', alignItems: 'center' }}>
+                            <Pressable style={[styles.button, styles.modifyButtons]} onPress={updatePersonalData}>
+                                <Text style={[styles.boldFont, styles.mediumSize, styles.whiteText]}>MÓDOSÍTÁS</Text>
+                            </Pressable>
+                        </View>
                     </View>
+
                     <View style={[styles.box, styles.borderStyle, styles.greenBox]}>
                         <Text style={[styles.boldFont, styles.mediumSize, styles.header, styles.whiteText]}>Egyéb adatok</Text>
                         <Text style={[styles.regularFont, styles.regularSize, styles.whiteText]}>Személyi szám</Text>
@@ -200,31 +209,33 @@ export default function UserUpdateView({ navigation }) {
                             keyboardType='default'
                             onChangeText={text => setIdCardNum(text)}
                             value={idCardNum}
-                            editable={isEditing} />
+                            editable={isOtherEditing} />
                         <Text style={[styles.regularFont, styles.regularSize, styles.whiteText]}>TAJ szám</Text>
                         <TextInput
                             style={styles.inputField}
                             keyboardType='number-pad'
                             onChangeText={text => setTajNum(text)}
                             value={tajNum}
-                            editable={isEditing} />
+                            editable={isOtherEditing} />
                         <Text style={[styles.regularFont, styles.regularSize, styles.whiteText]}>Diák igazolvány szám</Text>
                         <TextInput
                             style={styles.inputField}
                             keyboardType='number-pad'
                             onChangeText={text => setStudentIdNum(text)}
                             value={studentIdNum}
-                            editable={isEditing} />
+                            editable={isOtherEditing} />
                         <Text style={[styles.regularFont, styles.regularSize, styles.whiteText]}>Adószám</Text>
                         <TextInput
-                            style={styles.inputField}
+                            style={[styles.inputField]}
                             keyboardType='number-pad'
                             onChangeText={text => setTaxIdNum(text)}
                             value={taxIdNum}
-                            editable={isEditing} />
-                        <Pressable style={[styles.button, styles.modifyButtons, { backgroundColor: '#B4FB01' }]} onPress={otherData}>
-                            <Text style={[styles.boldFont, styles.mediumSize, { color: '#373B2C' }]}>MÓDOSÍTÁS</Text>
-                        </Pressable>
+                            editable={isOtherEditing} />
+                        <View style={{ width: '100%', alignItems: 'center' }}>
+                            <Pressable style={[styles.button, styles.modifyButtons, { backgroundColor: '#B4FB01' }]} onPress={otherData}>
+                                <Text style={[styles.boldFont, styles.mediumSize, { color: '#373B2C' }]}>MÓDOSÍTÁS</Text>
+                            </Pressable>
+                        </View>
                     </View>
                 </View>
             </ScrollView>
@@ -264,9 +275,12 @@ const styles = StyleSheet.create({
         justifyContent: 'center'
     },
     inputField: {
-        marginVertical: 8,
+        borderRadius: 10,
+        width: '100%',
+        paddingHorizontal: 10,
         backgroundColor: '#E0E0E0',
-        borderRadius: 15
+        marginTop: 8,
+        marginBottom: 12,
     },
 
     borderStyle: {
@@ -329,5 +343,8 @@ const styles = StyleSheet.create({
         paddingHorizontal: 15,
         borderRadius: 15,
         backgroundColor: '#687A3C',
-    }
+    },
+    postalCity: {
+        flexDirection: 'row'
+    },
 })

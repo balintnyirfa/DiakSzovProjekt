@@ -1,8 +1,8 @@
-import { signInWithEmailAndPassword } from "firebase/auth";
-import React, { useEffect, useState } from "react";
-import { StyleSheet, Text, View, StatusBar, TextInput, Pressable, Image, Alert } from "react-native";
-import { auth, db } from "../config/firebase";
-import { doc, getDoc } from "firebase/firestore";
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import React, { useEffect, useState } from 'react';
+import { StyleSheet, Text, View, StatusBar, TextInput, Pressable, Image, Alert } from 'react-native';
+import { auth, db } from '../config/firebase';
+import { doc, getDoc } from 'firebase/firestore';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function Login({ navigation }) {
@@ -71,14 +71,14 @@ export default function Login({ navigation }) {
 
     return (
         <View style={styles.main}>
-            <StatusBar backgroundColor="#B4FB01" />
+            <StatusBar backgroundColor='#B4FB01' barStyle={'dark-content'} />
             <View style={[styles.whiteBox, styles.borderStyle]}>
                 <Text style={[styles.header, styles.boldFont]}>BEJELENTKEZÉS</Text>
                 <View style={styles.insideBox}>
                     <Text style={[styles.inputText, styles.regularFont]}>Email cím</Text>
                     <TextInput
                         style={styles.inputField}
-                        keyboardType="email-address"
+                        keyboardType='email-address'
                         autoCapitalize='none'
                         onChangeText={text => setEmail(text)}
                         value={email} />
@@ -152,8 +152,9 @@ const styles = StyleSheet.create({
         marginBottom: 8,
     },
     inputField: {
-        borderRadius: 6,
+        borderRadius: 10,
         width: '100%',
+        paddingHorizontal: 10,
         backgroundColor: '#E0E0E0',
         marginBottom: 12,
     },
@@ -165,7 +166,7 @@ const styles = StyleSheet.create({
         fontSize: 12
     },
     loginBtn: {
-        backgroundColor: '#373B2C',
+        backgroundColor: '#687A3C',
         borderRadius: 20,
         marginBottom: 70,
         paddingHorizontal: 30,
@@ -176,7 +177,6 @@ const styles = StyleSheet.create({
         fontSize: 20
     },
     returnBox: {
-        //backgroundColor: '#242431',
         width: '100%',
     },
     arrow: {
@@ -184,7 +184,6 @@ const styles = StyleSheet.create({
         width: 30,
     },
     returnButton: {
-        //backgroundColor: '#fff',
         flexDirection: 'row',
         justifyContent: 'flex-start',
         alignItems: 'center',

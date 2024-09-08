@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Image, Pressable, Text, TextInput, View, StyleSheet, ScrollView } from 'react-native';
+import { Image, Pressable, Text, TextInput, View, StyleSheet, ScrollView, StatusBar } from 'react-native';
 import { getAuth, signOut } from "firebase/auth";
 
 export default function Settings({ navigation }) {
@@ -20,6 +20,7 @@ export default function Settings({ navigation }) {
 
     return (
         <View style={styles.main}>
+            <StatusBar backgroundColor='#373B2C' barStyle={'light-content'}/>
             <View style={[styles.topView, styles.borderStyle]}>
                 <Image
                     source={{

@@ -1,7 +1,7 @@
-import React, { useState } from "react";
-import { StyleSheet, Text, View, StatusBar, TextInput, Pressable, Image, Alert } from "react-native";
-import { fetchSignInMethodsForEmail, getAuth, sendPasswordResetEmail } from "firebase/auth";
-import { auth, db } from "../config/firebase";
+import React, { useState } from 'react';
+import { StyleSheet, Text, View, StatusBar, TextInput, Pressable, Image, Alert } from 'react-native';
+import { fetchSignInMethodsForEmail, getAuth, sendPasswordResetEmail } from 'firebase/auth';
+import { auth, db } from '../config/firebase';
 
 export default function PasswordReset({ navigation }) {
     const [email, setEmail] = useState('');
@@ -39,7 +39,7 @@ export default function PasswordReset({ navigation }) {
 
     return (
         <View style={styles.main}>
-            <StatusBar backgroundColor="#B4FB01" />
+            <StatusBar backgroundColor='#B4FB01' />
             <View style={[styles.whiteBox, styles.borderStyle]}>
                 <Text style={[styles.header, styles.boldFont]}>ÁLLÍTSD VISSZA A JELSZAVAD</Text>
                 <View style={styles.insideBox}>
@@ -118,8 +118,9 @@ const styles = StyleSheet.create({
         marginBottom: 8,
     },
     inputField: {
-        borderRadius: 6,
+        borderRadius: 10,
         width: '100%',
+        paddingHorizontal: 10,
         backgroundColor: '#E0E0E0',
     },
     passwordText: {
@@ -127,7 +128,7 @@ const styles = StyleSheet.create({
         fontSize: 12
     },
     loginBtn: {
-        backgroundColor: '#373B2C',
+        backgroundColor: '#687A3C',
         borderRadius: 20,
         marginBottom: 70,
         paddingHorizontal: 30,

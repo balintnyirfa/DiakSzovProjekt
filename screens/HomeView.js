@@ -1,8 +1,8 @@
-import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
-import { doc, getDoc, collection, limit, onSnapshot, query, getDocs } from "firebase/firestore";
-import React, { useState, useEffect } from "react";
-import { Image, Pressable, ScrollView, StatusBar, StyleSheet, Text, TextInput, TouchableNativeFeedbackComponent, TouchableOpacity, View } from "react-native";
-import { auth, db } from "../config/firebase";
+import { getAuth, onAuthStateChanged, signOut } from 'firebase/auth';
+import { doc, getDoc, collection, limit, onSnapshot, query, getDocs } from 'firebase/firestore';
+import React, { useState, useEffect } from 'react';
+import { Image, Pressable, ScrollView, StatusBar, StyleSheet, Text, TextInput, TouchableNativeFeedbackComponent, TouchableOpacity, View } from 'react-native';
+import { auth, db } from '../config/firebase';
 
 
 export default function Home({ navigation }) {
@@ -12,13 +12,13 @@ export default function Home({ navigation }) {
 
     onAuthStateChanged(auth, async (user) => {
         if (user) {
-            const userDocRef = doc(db, "users", user.uid);
+            const userDocRef = doc(db, 'users', user.uid);
             const userDocSnap = await getDoc(userDocRef);
 
             if (userDocSnap.exists()) {
                 setName(userDocSnap.data().name);
             } else {
-                console.log("No such document!");
+                console.log('No such document!');
             }
         } else {
             // User is signed out
@@ -73,7 +73,7 @@ export default function Home({ navigation }) {
 
     return (
         <View style={styles.main}>
-            <StatusBar backgroundColor="#373B2C" />
+            <StatusBar backgroundColor='#373B2C' barStyle={'light-content'}/>
             <ScrollView style={{width: '100%', flex: 1}}>
                 <View style={styles.header}>
                     <Text style={[styles.boldFont, styles.headerWelcome]}>Üdv,</Text>

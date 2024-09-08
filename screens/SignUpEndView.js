@@ -1,8 +1,8 @@
-import React, { useState } from "react";
-import { StyleSheet, Text, View, StatusBar, TextInput, Pressable, Alert, ScrollView } from "react-native";
-import { db } from "../config/firebase";
-import { getAuth } from "firebase/auth";
-import { doc, setDoc } from "firebase/firestore";
+import React, { useState } from 'react';
+import { StyleSheet, Text, View, StatusBar, TextInput, Pressable, Alert, ScrollView } from 'react-native';
+import { db } from '../config/firebase';
+import { getAuth } from 'firebase/auth';
+import { doc, setDoc } from 'firebase/firestore';
 
 export default function SignUpEnd({ navigation }) {
 
@@ -58,20 +58,18 @@ export default function SignUpEnd({ navigation }) {
                     navigation.navigate('HomePage');
                 });
         } catch (error) {
-            console.error("Error adding document: ", error);
+            console.error('Error adding document: ', error);
         }
     }
 
     return (
         <View style={styles.main}>
-            <StatusBar backgroundColor="#B4FB01" />
-            <View style={styles.whiteBox}>
-                <Text style={[styles.header, styles.boldFont]}>BEFEJEZÉS</Text>
+            <StatusBar backgroundColor='#B4FB01' barStyle={'light-content'} />
+            <View style={[styles.whiteBox, styles.borderStyle]}>
                 <ScrollView showsVerticalScrollIndicator={false}>
+                    <Text style={[styles.header, styles.boldFont]}>BEFEJEZÉS</Text>
+                    <Text style={[styles.importantText, styles.regularFont]}>Add meg az alábbi adatokat a regisztráció befejezéséhez!</Text>
                     <View style={styles.insideBox}>
-                        <Text style={[styles.importantText, styles.regularFont]}>Add meg a további adataid a regisztráció befejezéséhez!</Text>
-
-                        
                         <Text style={[styles.inputText, styles.regularFont]}>Személyi igazolvány szám</Text>
                         <TextInput
                             style={styles.inputField}
@@ -98,11 +96,13 @@ export default function SignUpEnd({ navigation }) {
                             style={styles.inputField}
                             keyboardType='number-pad'
                             onChangeText={text => setTajNum(text)}
-                            value={tajNum} />                        
+                            value={tajNum} />
                     </View>
-                    <Pressable style={styles.loginBtn} onPress={() => saveData()}>
-                        <Text style={[styles.loginBtnText, styles.boldFont]}>KÖVETKEZŐ</Text>
-                    </Pressable>
+                    <View style={{ width: '100%', alignItems: 'center' }}>
+                        <Pressable style={styles.loginBtn} onPress={() => saveData()}>
+                            <Text style={[styles.loginBtnText, styles.boldFont]}>KÖVETKEZŐ</Text>
+                        </Pressable>
+                    </View>
                 </ScrollView>
             </View>
         </View>
@@ -141,8 +141,8 @@ const styles = StyleSheet.create({
     },
     insideBox: {
         width: '100%',
-        paddingTop: 40,
-        paddingBottom: 50,
+        paddingTop: 20,
+        paddingBottom: 30,
         textAlign: 'left',
         alignItems: 'flex-start',
         justifyContent: 'flex-end',
@@ -155,7 +155,7 @@ const styles = StyleSheet.create({
     importantText: {
         fontSize: 15,
         textAlign: 'left',
-        marginBottom: 25
+        marginTop: 25
     },
     inputText: {
         fontSize: 18,
@@ -163,17 +163,14 @@ const styles = StyleSheet.create({
         marginBottom: 8,
     },
     inputField: {
-        borderRadius: 6,
+        borderRadius: 10,
         width: '100%',
+        paddingHorizontal: 10,
         backgroundColor: '#E0E0E0',
-        //marginBottom: 12,
-    },
-    passwordText: {
-        color: '#D34F73',
-        fontSize: 12
+        marginBottom: 12,
     },
     loginBtn: {
-        backgroundColor: '#373B2C',
+        backgroundColor: '#687A3C',
         borderRadius: 20,
         marginBottom: 70,
         paddingHorizontal: 30,
@@ -182,25 +179,6 @@ const styles = StyleSheet.create({
     loginBtnText: {
         color: '#FFF',
         fontSize: 20
-    },
-    returnBox: {
-        //backgroundColor: '#242431',
-        width: '100%',
-    },
-    arrow: {
-        height: 30,
-        width: 30,
-    },
-    returnButton: {
-        //backgroundColor: '#fff',
-        flexDirection: 'row',
-        justifyContent: 'flex-start',
-        alignItems: 'center',
-        width: '27%'
-    },
-    returnBtnText: {
-        color: '#93B92E',
-        fontSize: 16,
     },
     borderStyle: {
         borderColor: '#373B2C',

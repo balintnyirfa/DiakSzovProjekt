@@ -1,9 +1,9 @@
-import { getAuth } from "firebase/auth";
-import { doc, setDoc } from "firebase/firestore";
-import DateTimePicker from "@react-native-community/datetimepicker";
-import React, { useState } from "react";
-import { StyleSheet, Text, View, StatusBar, TextInput, Pressable, Alert, ScrollView } from "react-native";
-import { db } from "../config/firebase";
+import { getAuth } from 'firebase/auth';
+import { doc, setDoc } from 'firebase/firestore';
+import DateTimePicker from '@react-native-community/datetimepicker';
+import React, { useState } from 'react';
+import { StyleSheet, Text, View, StatusBar, TextInput, Pressable, Alert, ScrollView } from 'react-native';
+import { db } from '../config/firebase';
 
 export default function OtherDataView({ navigation, route }) {
     const [name, setName] = useState('');
@@ -82,17 +82,19 @@ export default function OtherDataView({ navigation, route }) {
 
     return (
         <View style={styles.main}>
-            <StatusBar backgroundColor="#B4FB01" />
-            <View style={styles.whiteBox}>
+            <StatusBar backgroundColor='#B4FB01' />
+            <View style={[styles.whiteBox, styles.borderStyle]}>
                 <ScrollView showsVerticalScrollIndicator={false}>
                     <Text style={[styles.header, styles.boldFont]}>KÖVETKEZŐ</Text>
-                    <View style={styles.insideBox}>
+                    <Text style={[styles.importantText, styles.regularFont]}>Add meg a személyes adataid a regisztrációd folytatásához!</Text>
+                    <View style={[styles.insideBox]}>
                         <Text style={[styles.inputText, styles.regularFont]}>Név</Text>
                         <TextInput
                             style={styles.inputField}
                             keyboardType='default'
                             autoCapitalize='words'
                             onChangeText={text => setName(text)}
+                            placeholder='Teljes neved'
                             value={name} />
 
                         <Text style={[styles.inputText, styles.regularFont]}>Telefon</Text>
@@ -100,6 +102,7 @@ export default function OtherDataView({ navigation, route }) {
                             style={styles.inputField}
                             keyboardType='phone-pad'
                             onChangeText={text => setTelephone(text)}
+                            placeholder='pl. 06112223333'
                             value={telephone} />
 
                         <Text style={[styles.inputText, styles.regularFont]}>Születésnap</Text>
@@ -114,7 +117,7 @@ export default function OtherDataView({ navigation, route }) {
                         {
                             show && (
                                 <DateTimePicker
-                                    testID="dateTimePicker"
+                                    testID='dateTimePicker'
                                     value={birthday}
                                     mode={mode}
                                     display='spinner'
@@ -124,22 +127,29 @@ export default function OtherDataView({ navigation, route }) {
                         }
 
                         <Text style={[styles.inputText, styles.regularFont]}>Lakcím</Text>
+                        <View style={[styles.postalCity]}>
+                            <TextInput
+                                style={[styles.inputField, { flex: 1 }]}
+                                keyboardType='number-pad'
+                                onChangeText={text => setPostalCode(text)}
+                                placeholder='Irsz.'
+                                value={postalCode.toString()} />
+                            <TextInput
+                                style={[styles.inputField, { marginLeft: 10, flex: 4 }]}
+                                keyboardType='default'
+                                onChangeText={text => setCity(text)}
+                                placeholder='Település'
+                                value={city} />
+                        </View>
                         <TextInput
-                            style={styles.inputField}
-                            keyboardType='number-pad'
-                            onChangeText={text => setPostalCode(text)}
-                            value={postalCode.toString()} />
-                        <TextInput
-                            style={styles.inputField}
-                            keyboardType='default'
-                            onChangeText={text => setCity(text)}
-                            value={city} />
-                        <TextInput
-                            style={styles.inputField}
+                            style={[styles.inputField]}
                             keyboardType='default'
                             onChangeText={text => setAddress(text)}
+                            placeholder='Közterület'
                             value={address} />
 
+                    </View>
+                    <View style={{width: '100%', alignItems: 'center'}}>
                         <Pressable style={styles.loginBtn} onPress={() => saveData()}>
                             <Text style={[styles.loginBtnText, styles.boldFont]}>BEFEJEZÉS</Text>
                         </Pressable>
@@ -163,15 +173,18 @@ const styles = StyleSheet.create({
     boldFont: {
         fontFamily: 'Quicksand-Bold',
     },
+    borderStyle: {
+        borderColor: '#373B2C',
+        borderWidth: 2,
+    },
+
     main: {
         flex: 1,
         justifyContent: 'flex-end',
-        alignItems: 'center',
         backgroundColor: '#B4FB01',
     },
     whiteBox: {
         width: '100%',
-        paddingHorizontal: 30,
         paddingVertical: 30,
         borderTopLeftRadius: 25,
         borderTopRightRadius: 25,
@@ -181,12 +194,13 @@ const styles = StyleSheet.create({
     },
     insideBox: {
         width: '100%',
-        paddingTop: 40,
-        paddingBottom: 50,
+        paddingTop: 20,
+        paddingBottom: 30,
         textAlign: 'left',
         alignItems: 'flex-start',
         justifyContent: 'flex-end',
     },
+
     header: {
         fontSize: 24,
         color: '#373B2C',
@@ -195,25 +209,25 @@ const styles = StyleSheet.create({
     importantText: {
         fontSize: 15,
         textAlign: 'left',
-        marginBottom: 25
+        marginTop: 25
+    },
+    inputField: {
+        borderRadius: 10,
+        width: '100%',
+        paddingHorizontal: 10,
+        backgroundColor: '#E0E0E0',
+        marginBottom: 12,
     },
     inputText: {
         fontSize: 18,
         color: '#000',
         marginBottom: 8,
     },
-    inputField: {
-        borderRadius: 6,
-        width: '100%',
-        backgroundColor: '#E0E0E0',
-        //marginBottom: 12,
-    },
-    passwordText: {
-        color: '#D34F73',
-        fontSize: 12
+    postalCity: {
+        flexDirection: 'row'
     },
     loginBtn: {
-        backgroundColor: '#373B2C',
+        backgroundColor: '#687A3C',
         borderRadius: 20,
         marginBottom: 70,
         paddingHorizontal: 30,
@@ -223,27 +237,4 @@ const styles = StyleSheet.create({
         color: '#FFF',
         fontSize: 20
     },
-    returnBox: {
-        //backgroundColor: '#242431',
-        width: '100%',
-    },
-    arrow: {
-        height: 30,
-        width: 30,
-    },
-    returnButton: {
-        //backgroundColor: '#fff',
-        flexDirection: 'row',
-        justifyContent: 'flex-start',
-        alignItems: 'center',
-        width: '27%'
-    },
-    returnBtnText: {
-        color: '#93B92E',
-        fontSize: 16,
-    },
-    borderStyle: {
-        borderColor: '#373B2C',
-        borderWidth: 2,
-    }
 });

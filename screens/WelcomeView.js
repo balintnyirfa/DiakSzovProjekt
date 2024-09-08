@@ -4,15 +4,15 @@ import { Pressable, StatusBar, StyleSheet, Text, View } from 'react-native';
 export default function Welcome({navigation}) {
   return (
     <View style={styles.main}>
-      <StatusBar backgroundColor="#B4FB01" />
-      <View style={styles.redBox}>
+      <StatusBar backgroundColor='#B4FB01' barStyle={'dark-content'} />
+      <View style={[styles.greenBox, styles.borderStyle]}>
         <Text style={[styles.appNameText, styles.boldFont]}>DIÁKMESTEREK</Text>
         <Text style={[styles.welcomeText, styles.boldFont]}>ÜDVÖZÖLLEK</Text>
       </View>
       <View style={styles.buttonBox}>
         <Pressable
           style={[styles.button, styles.signUpBtn]}
-          onPress={() => navigation.navigate("SignUp")}>
+          onPress={() => navigation.navigate('SignUp')}>
           <Text style={[styles.buttonText, styles.signUpbuttonText, styles.boldFont]}>Regisztrálok</Text>
         </Pressable>
         <Pressable
@@ -38,17 +38,27 @@ const styles = StyleSheet.create({
   boldFont: {
     fontFamily: 'Quicksand-Bold',
   },
+  mediumText: {
+    fontSize: 20,
+  },  
+  bigText: {
+
+  },  
+  borderStyle: {    
+    borderBottomLeftRadius: 500,
+    borderBottomRightRadius: 500,
+    borderLeftWidth: 2,
+    borderRightWidth: 2,
+    borderBottomWidth: 2,
+    borderColor: '#373B2C'
+  },
+
   main: {
     flex: 1,
-    justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#FFFFFF',
   },
-  redBox: {
-    //borderColor: '#373B2C',
-    //borderWidth: 2,
-    borderBottomLeftRadius: 500,
-    borderBottomRightRadius: 500,
+  greenBox: {
     paddingBottom: 90,
     flex: 2,
     height: 500,
@@ -63,11 +73,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   welcomeText: {
-    color: '#FFF',
+    color: '#687A3C',
     fontSize: 36,
   },
   appNameText: {
-    color: '#687A3C',
+    color: '#FFF',
     fontSize: 42,
   },
   button: {

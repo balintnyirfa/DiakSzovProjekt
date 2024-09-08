@@ -67,7 +67,7 @@ export default function JobDetails({ navigation, route }) {
 
     return (
         <View style={styles.main}>
-            <StatusBar backgroundColor="#373B2C" />
+            <StatusBar backgroundColor='#373B2C' barStyle={'light-content'}/>
             <View style={[styles.header, styles.borderStyle]}>
                 <Text style={[styles.boldFont, styles.headerText]}>{jobData.company}</Text>
                 <Text style={[styles.regularFont, styles.headerName]}>{jobData.city}</Text>

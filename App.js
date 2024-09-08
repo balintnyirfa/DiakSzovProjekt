@@ -27,14 +27,15 @@ function Tabs() {
         tabBarActiveTintColor: '#93BA2F',
         tabBarInactiveTintColor: '#000000',
         tabBarStyle: {
-          //height: 160,
+          height: 50,
           //position: 'absolute',
           backgroundColor: '#FFFFFF',
           //borderTopLeftRadius: 25,
           //borderTopRightRadius: 25,
           borderColor: '#373B2C',
           borderTopWidth: 2,
-          borderWidth: 2,
+          borderLeftWidth: 2,
+          borderRightWidth: 2,
         },
         tabBarIcon: ({ focused, color, size }) => {
           let iconName;

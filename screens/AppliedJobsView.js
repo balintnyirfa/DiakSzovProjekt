@@ -1,7 +1,7 @@
 import { getAuth } from "firebase/auth";
 import { collection, getDocs, query } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
-import { FlatList, Image, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { FlatList, Image, Pressable, ScrollView, StatusBar, StyleSheet, Text, View } from "react-native";
 import { db } from "../config/firebase";
 
 export default function AppliedJobs({ navigation }) {
@@ -60,13 +60,15 @@ export default function AppliedJobs({ navigation }) {
 
     return (
         <View style={styles.main}>
-            <View style={[styles.topView, styles.borderStyle]}>
-                <Text style={[styles.boldFont, styles.bigSize]}>Jelentkezéseim</Text>
-                <View style={styles.jobOtherPart}>
+            <StatusBar backgroundColor='#B4FB01' barStyle={'dark-content'} />
+            <View style={[styles.topView]}>
+                <Pressable style={[styles.returnButton]} onPress={() => navigation.goBack()}>
+                    <Image source={{ uri: 'https://i.postimg.cc/mkjYJVQY/arrow-sm-left-svgrepo-com-1.png' }} style={styles.arrow} />
+                    <Text>Vissza</Text>
+                </Pressable>
+                <View style={{ width: '100%', alignItems: 'center', paddingVertical: 10 }}>
+                    <Text style={[styles.boldFont, styles.bigSize]}>Jelentkezéseim</Text>
                     <Text style={[styles.regularFont, styles.mediumSize]}>Munkák száma: {applicationSum} db</Text>
-                    <Pressable style={[styles.returnButton]} onPress={() => navigation.goBack()}>
-                        <Text>Vissza</Text>
-                    </Pressable>
                 </View>
             </View>
             <View style={styles.jobs}>
@@ -124,13 +126,11 @@ const styles = StyleSheet.create({
         paddingVertical: 10
     },
     topView: {
-        width: '100%',        
+        width: '100%',
         paddingHorizontal: 20,
-        paddingVertical: 30,
+        paddingVertical: 10,
         flexDirection: 'column',
         alignItems: 'flex-start',
-        justifyContent: 'space-around',
-        backgroundColor: '#FFFFFF',
         borderBottomLeftRadius: 25,
         borderBottomRightRadius: 25,
         color: '#373B2C',

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, StatusBar, TextInput, Pressable, Image, Alert } from "react-native";
+import { StyleSheet, Text, View, StatusBar, TextInput, Pressable, Image, Alert } from 'react-native';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../config/firebase';
 
@@ -41,7 +41,7 @@ export default function SignUp({ navigation }) {
 
     return (
         <View style={styles.main}>
-            <StatusBar backgroundColor="#B4FB01" />
+            <StatusBar backgroundColor='#B4FB01' barStyle={'dark-content'} />
             <View style={[styles.whiteBox, styles.borderStyle]}>
                 <Text style={[styles.header, styles.boldFont]}>REGISZTRÁCIÓ</Text>
                 <View style={styles.insideBox}>
@@ -119,8 +119,9 @@ const styles = StyleSheet.create({
         marginBottom: 8,
     },
     inputField: {
-        borderRadius: 6,
+        borderRadius: 10,
         width: '100%',
+        paddingHorizontal: 10,
         backgroundColor: '#E0E0E0',
         marginBottom: 12,
     },
@@ -132,7 +133,7 @@ const styles = StyleSheet.create({
         fontSize: 12
     },
     loginBtn: {
-        backgroundColor: '#373B2C',
+        backgroundColor: '#687A3C',
         borderRadius: 20,
         marginBottom: 70,
         paddingHorizontal: 30,
