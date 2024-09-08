@@ -6,7 +6,7 @@ import Welcome from './screens/WelcomeView';
 import Login from './screens/LoginView';
 import SignUp from './screens/SignUpView';
 import SignUpEnd from './screens/SignUpEndView';
-//import OtherData from './screens/OtherDataView';
+import OtherData from './screens/OtherDataView';
 import PasswordReset from './screens/PasswordResetView';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Image, StyleSheet } from 'react-native';
@@ -100,6 +100,10 @@ export default function App() {
         <Stack.Screen
           name='PasswordReset'
           component={PasswordReset}
+          options={{ headerShown: false }} />
+        <Stack.Screen
+          name='OtherData'
+          component={OtherData}
           options={{ headerShown: false }} />
         <Stack.Screen
           name='SignUpEnd'

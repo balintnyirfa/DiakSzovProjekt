@@ -10,6 +10,7 @@ export default function UserUpdateView({ navigation }) {
     const userId = auth.currentUser ? auth.currentUser.uid : null;
     const user = auth.currentUser;
     const [userData, setUserData] = useState([]);
+    const [userOtherData, setUserOtherData] = useState([]);
 
     const [email, setEmail] = useState('');
     const [birthdate, setBirthdate] = useState();
@@ -42,14 +43,35 @@ export default function UserUpdateView({ navigation }) {
                     setEmail(data.email || '');
                     setBirthdate(data.birthdate ? data.birthdate.toDate().toLocaleDateString('hu-HU') : '');
                     setTelephone(data.telephone || '');
-                    setPostalCode(data.postalCode || '');
+                    setPostalCode(data.postal_code || '');
                     setCity(data.city || '');
                     setAddress(data.address || '');
+                } else {
+                    console.log('No such document!');
+                }
+            } catch (error) {
+                console.log(error);
+            }
+        };
 
-                    setIdCardNum(data.idCardNum || '');
-                    setTajNum(data.tajNum || '');
-                    setStudentIdNum(data.studentIdNum || '');
-                    setTaxIdNum(data.taxIdNum || '');
+        const fetchOtherData = async () => {
+            if (!userId) {
+                console.log('User is not authenticated');
+                return;
+            }
+
+            try {
+                const userOtherDoc = doc(db, 'user_data', userId);
+                const docOtherSnap = await getDoc(userOtherDoc);
+
+                if (docOtherSnap.exists()) {
+                    const data = docOtherSnap.data();
+                    setUserOtherData(data);
+
+                    setIdCardNum(data.id_card_num || '');
+                    setTajNum(data.taj_num || '');
+                    setStudentIdNum(data.student_id_num || '');
+                    setTaxIdNum(data.tax_id_num || '');
                 } else {
                     console.log('No such document!');
                 }
@@ -58,6 +80,7 @@ export default function UserUpdateView({ navigation }) {
             }
         };
         fetchData();
+        fetchOtherData();
     }, [userId]);
 
     const updatePersonalData = async () => {
@@ -69,6 +92,8 @@ export default function UserUpdateView({ navigation }) {
                     email,
                     birthdate,
                     telephone,
+                    postalCode,
+                    city,
                     address
                 });
                 console.log("Document successfully updated!");
@@ -84,7 +109,7 @@ export default function UserUpdateView({ navigation }) {
         if (isEditing) {
             console.log('Szerkeszthető!')
             try {
-                const userDoc = doc(db, 'users', userId);
+                const userDoc = doc(db, 'user_data', userId);
                 await updateDoc(userDoc, {
                     idCardNum,
                     tajNum,

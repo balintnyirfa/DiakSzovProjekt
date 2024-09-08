@@ -46,14 +46,21 @@ export default function Login({ navigation }) {
                 const userCredential = await signInWithEmailAndPassword(auth, email, password);
                 const user = userCredential.user;
                 await AsyncStorage.setItem('user', JSON.stringify(user));
+
                 const userDoc = doc(db, 'users', user.uid);
                 const userDocSnapshot = await getDoc(userDoc);
 
-                if (userDocSnapshot.exists()) {
-                    navigation.navigate('HomePage');
-                } else {
+                const userOtherDoc = doc(db, 'user_data', user.uid);
+                const userOtherDocSnapshot = await getDoc(userOtherDoc);
+
+                if (!userDocSnapshot.exists()) {
+                    navigation.navigate('OtherData');
+                } else if (!userOtherDocSnapshot.exists()) {
                     navigation.navigate('SignUpEnd');
+                } else {
+                    navigation.navigate('HomePage');
                 }
+
                 return user;
             } catch (error) {
                 Alert.alert('Hiba!', 'Rossz email vagy jelszó!');
