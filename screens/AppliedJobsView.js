@@ -22,7 +22,7 @@ export default function AppliedJobs({ navigation }) {
                     data: doc.data(),
                 }));
 
-                const filteredData = data.filter(item => item.data.userId === userId);
+                const filteredData = data.filter(item => item.data.user_id === userId);
 
                 setApplication(filteredData);
                 setApplicationSum(filteredData.length);
@@ -35,7 +35,7 @@ export default function AppliedJobs({ navigation }) {
     }, [userId]);
 
     const renderAppliedJobs = ({ item }) => {
-        const appliedAtDate = item.data.appliedAt.toDate();
+        const appliedAtDate = item.data.applied_at.toDate();
         const formattedDate = appliedAtDate.toLocaleDateString('hu-HU', {
             year: 'numeric',
             month: 'long',
@@ -47,11 +47,11 @@ export default function AppliedJobs({ navigation }) {
         return (
             <View style={[styles.jobCard, styles.borderStyle]}>
                 <View style={styles.jobOtherPart}>
-                    <Text style={[styles.jobTitles, styles.boldFont]}>{item.data.jobName}</Text>
+                    <Text style={[styles.jobTitles, styles.boldFont]}>{item.data.job_name}</Text>
                     <Text style={[styles.jobTitles, styles.regularFont]}>{acceptedText}</Text>
                 </View>
                 <View style={styles.jobOtherPart}>
-                    <Text style={[styles.jobTitles, styles.regularFont]}>{item.data.companyName}</Text>
+                    <Text style={[styles.jobTitles, styles.regularFont]}>{item.data.company_name}</Text>
                     <Text style={[styles.jobTitles, styles.lightFont]}>{formattedDate}</Text>
                 </View>
             </View>

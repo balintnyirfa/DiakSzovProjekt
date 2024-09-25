@@ -1,5 +1,5 @@
 import { getAuth } from "firebase/auth";
-import { setDoc, query, collection, getDocs, setCategories, doc } from "firebase/firestore";
+import { setDoc, query, collection, getDocs, setCategories, doc, getDoc, where } from "firebase/firestore";
 import { auth, db } from "../config/firebase";
 import React, { useEffect, useState } from 'react';
 import { View, Text, ScrollView, Pressable, Image, StyleSheet, StatusBar, Alert } from 'react-native';
@@ -7,10 +7,9 @@ import uuid from 'react-native-uuid';
 import 'react-native-get-random-values';
 
 export default function JobDetails({ navigation, route }) {
-    const { jobData, jobCategory } = route.params;
+    const { jobData, jobCategory, jobId } = route.params;
     const auth = getAuth();
     const userId = auth.currentUser ? auth.currentUser.uid : null;
-    const [hasApplied, setHasApplied] = useState(false);
 
     const createAlert = () => {
         Alert.alert('Siker!', 'Sikeres jelentkezés!', [
@@ -18,60 +17,45 @@ export default function JobDetails({ navigation, route }) {
         ]);
     };
 
-    useEffect(() => {
-        const fetchAppliedJobs = async () => {
-            try {
-                const q = query(collection(db, 'applicants'));
-                const querySnapshot = await getDocs(q);
-                const data = querySnapshot.docs.map(doc => ({
-                    id: doc.id,
-                    data: doc.data(),
-                }));
-
-                const filteredData = data.filter(item => item.data.userId === userId);
-                //setHasApplied(filteredData.length > 0);
-            } catch (error) {
-                console.log(error);
-            }
-        };
-
-        fetchAppliedJobs();
-    }, [userId, jobData.id]);
+    const checkIfApplied = async () => {
+        const q = query(
+            (db, 'applicants'),
+            where('user_id', '==', userId),
+            where('job_id', '==', jobId));
+        const querySnapshot = await getDocs(q);
+        console.log(querySnapshot.size());
+    }
 
     const applyForJob = async () => {
-        if (hasApplied) {
-            createAlert('Hiba!', 'Már jelentkeztél erre a munkára!');
-            return;
-        }
         try {
             const userId = auth.currentUser?.uid || '';
             const applicationId = uuid.v4();
             const newApply = {
                 email: auth.currentUser?.email,
-                jobName: jobData.name,
-                companyName: jobData.company,
+                job_id: jobId,
+                job_name: jobData.name,
+                company_name: jobData.company,
                 accepted: false,
-                appliedAt: new Date(),
-                userId: userId
+                applied_at: new Date(),
+                user_id: userId
             };
             setDoc(doc(db, 'applicants', applicationId), newApply)
                 .then(() => {
                     createAlert();
                     navigation.navigate('Jobs');
                 });
-            setHasApplied(true);
         } catch (error) {
-            console.log(error)
+            console.log(error);
         }
     }
 
     return (
         <View style={styles.main}>
-            <StatusBar backgroundColor='#373B2C' barStyle={'light-content'}/>
+            <StatusBar backgroundColor='#373B2C' barStyle={'light-content'} />
             <View style={[styles.header, styles.borderStyle]}>
                 <Text style={[styles.boldFont, styles.headerText]}>{jobData.company}</Text>
                 <Text style={[styles.regularFont, styles.headerName]}>{jobData.city}</Text>
-                <Pressable style={[styles.applyButton]} onPress={applyForJob}>
+                <Pressable style={[styles.applyButton]} onPress={checkIfApplied}>
                     <Text style={[styles.applyButtonText, styles.boldFont]}>JELENTKEZEK</Text>
                 </Pressable>
             </View>
