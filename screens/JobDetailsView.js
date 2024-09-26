@@ -22,7 +22,7 @@ export default function JobDetails({ navigation, route }) {
             (db, 'applicants'),
             where('user_id', '==', userId),
             where('job_id', '==', jobId));
-        const querySnapshot = await getDocs(q);
+        const querySnapshot = await getDoc(q);
         console.log(querySnapshot.size());
     }
 
@@ -55,7 +55,7 @@ export default function JobDetails({ navigation, route }) {
             <View style={[styles.header, styles.borderStyle]}>
                 <Text style={[styles.boldFont, styles.headerText]}>{jobData.company}</Text>
                 <Text style={[styles.regularFont, styles.headerName]}>{jobData.city}</Text>
-                <Pressable style={[styles.applyButton]} onPress={checkIfApplied}>
+                <Pressable style={[styles.applyButton]} onPress={applyForJob}>
                     <Text style={[styles.applyButtonText, styles.boldFont]}>JELENTKEZEK</Text>
                 </Pressable>
             </View>

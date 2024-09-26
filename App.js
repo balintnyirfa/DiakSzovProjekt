@@ -16,6 +16,9 @@ import Jobs from './screens/JobsView';
 import JobDetails from './screens/JobDetailsView';
 import UserUpdate from './screens/UserUpdateView';
 import AppliedJobs from './screens/AppliedJobsView';
+import AttendanceSheetFirst from './screens/AttendanceSheetFirstView';
+import AttendanceSheetSecond from './screens/AttendanceSheetSecondView';
+import PaymentCalculator from './screens/PaymentCalculator';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -125,6 +128,18 @@ export default function App() {
         <Stack.Screen
           name='AppliedJobs'
           component={AppliedJobs}
+          options={{ headerShown: false }} />
+        <Stack.Screen
+          name='AttendanceSheetFirst'
+          component={AttendanceSheetFirst}
+          options={{ headerShown: false }} />
+        <Stack.Screen
+          name='AttendanceSheetSecond'
+          component={AttendanceSheetSecond}
+          options={{ headerShown: false }} />
+        <Stack.Screen
+          name='PaymentCalculator'
+          component={PaymentCalculator}
           options={{ headerShown: false }} />
       </Stack.Navigator>
     </NavigationContainer>

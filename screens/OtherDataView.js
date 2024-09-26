@@ -54,7 +54,7 @@ export default function OtherDataView({ navigation, route }) {
             return;
         }
 
-        if (postalCode.length != 4) {
+        if (postalCode.length !== 4) {
             Alert.alert('Hiba!', 'Az irányítószámnak 4 számjegyűnek kell lennie!');
             return;
         }

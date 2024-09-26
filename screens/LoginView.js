@@ -1,6 +1,6 @@
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, View, StatusBar, TextInput, Pressable, Image, Alert } from 'react-native';
+import { StyleSheet, Text, View, StatusBar, TextInput, Pressable, Image, Alert, TouchableOpacity } from 'react-native';
 import { auth, db } from '../config/firebase';
 import { doc, getDoc } from 'firebase/firestore';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -88,18 +88,18 @@ export default function Login({ navigation }) {
                         secureTextEntry
                         onChangeText={text => setPassword(text)}
                         value={password} />
-                    <Pressable onPress={() => navigation.navigate('PasswordReset')}>
+                    <TouchableOpacity onPress={() => navigation.navigate('PasswordReset')}>
                         <Text style={[styles.passwordText, styles.regularFont]}>Elfelejtettem a jelszavam</Text>
-                    </Pressable>
+                    </TouchableOpacity>
                 </View>
-                <Pressable style={styles.loginBtn} onPress={handleLogin}>
+                <TouchableOpacity style={styles.loginBtn} onPress={handleLogin}>
                     <Text style={[styles.loginBtnText, styles.boldFont]}>BEJELENTKEZEK</Text>
-                </Pressable>
+                </TouchableOpacity>
                 <View style={styles.returnBox}>
-                    <Pressable style={[styles.returnButton, styles.returnButton]} onPress={() => navigation.goBack()}>
+                    <TouchableOpacity style={[styles.returnButton, styles.returnButton]} onPress={() => navigation.goBack()}>
                         <Image source={{ uri: 'https://i.postimg.cc/zGPDCCrc/arrow-sm-left-svgrepo-com-1.png' }} style={styles.arrow} />
                         <Text style={[styles.returnBtnText, styles.boldFont]}>Vissza</Text>
-                    </Pressable>
+                    </TouchableOpacity>
                 </View>
             </View>
         </View>

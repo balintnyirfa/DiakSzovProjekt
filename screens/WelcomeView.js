@@ -1,7 +1,7 @@
 import React from 'react';
-import { Pressable, StatusBar, StyleSheet, Text, View } from 'react-native';
+import { StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
-export default function Welcome({navigation}) {
+export default function Welcome({ navigation }) {
   return (
     <View style={styles.main}>
       <StatusBar backgroundColor='#B4FB01' barStyle={'dark-content'} />
@@ -10,16 +10,14 @@ export default function Welcome({navigation}) {
         <Text style={[styles.welcomeText, styles.boldFont]}>ÜDVÖZÖLLEK</Text>
       </View>
       <View style={styles.buttonBox}>
-        <Pressable
-          style={[styles.button, styles.signUpBtn]}
-          onPress={() => navigation.navigate('SignUp')}>
-          <Text style={[styles.buttonText, styles.signUpbuttonText, styles.boldFont]}>Regisztrálok</Text>
-        </Pressable>
-        <Pressable
-          style={[styles.button]}
-          onPress={() => navigation.navigate('Login')}>
+        <TouchableOpacity onPress={() => navigation.navigate('SignUp')}>
+          <View style={[styles.button, styles.signUpBtn]} onPress={() => navigation.navigate('SignUp')}>
+            <Text style={[styles.buttonText, styles.signUpbuttonText, styles.boldFont]}>Regisztrálok</Text>
+          </View>
+        </TouchableOpacity>
+        <TouchableOpacity style={[styles.button]} onPress={() => navigation.navigate('Login')}>
           <Text style={[styles.buttonText, styles.boldFont]}>Már van fiókom</Text>
-        </Pressable>
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -40,11 +38,11 @@ const styles = StyleSheet.create({
   },
   mediumText: {
     fontSize: 20,
-  },  
+  },
   bigText: {
 
-  },  
-  borderStyle: {    
+  },
+  borderStyle: {
     borderBottomLeftRadius: 500,
     borderBottomRightRadius: 500,
     borderLeftWidth: 2,

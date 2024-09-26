@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, StatusBar, TextInput, Pressable, Image, Alert } from 'react-native';
+import { StyleSheet, Text, View, StatusBar, TextInput, Pressable, Image, Alert, TouchableOpacity } from 'react-native';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../config/firebase';
 
@@ -59,14 +59,14 @@ export default function SignUp({ navigation }) {
                         onChangeText={text => setPassword(text)}
                         value={password} />
                 </View>
-                <Pressable style={styles.loginBtn} onPress={handleSignUp}>
+                <TouchableOpacity style={styles.loginBtn} onPress={handleSignUp}>
                     <Text style={[styles.loginBtnText, styles.boldFont]}>REGISZTRÁLOK</Text>
-                </Pressable>
+                </TouchableOpacity>
                 <View style={styles.returnBox}>
-                    <Pressable style={[styles.returnButton, styles.returnButton]} onPress={() => navigation.goBack()}>
+                    <TouchableOpacity style={[styles.returnButton, styles.returnButton]} onPress={() => navigation.goBack()}>
                         <Image source={{ uri: 'https://i.postimg.cc/zGPDCCrc/arrow-sm-left-svgrepo-com-1.png' }} style={styles.arrow} />
                         <Text style={[styles.returnBtnText, styles.boldFont]}>Vissza</Text>
-                    </Pressable>
+                    </TouchableOpacity>
                 </View>
             </View>
         </View>

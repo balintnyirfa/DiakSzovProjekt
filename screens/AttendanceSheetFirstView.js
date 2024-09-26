@@ -1,10 +1,10 @@
 import { getAuth } from "firebase/auth";
 import { collection, getDocs, query } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
-import { FlatList, Image, Pressable, ScrollView, StatusBar, StyleSheet, Text, View } from "react-native";
+import { FlatList, Image, Pressable, StatusBar, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { db } from "../config/firebase";
 
-export default function AppliedJobs({ navigation }) {
+export default function AttendanceSheetFirst({ navigation }) {
     const auth = getAuth();
     //const user = auth.currentUser; asdasd
     const userId = auth.currentUser ? auth.currentUser.uid : null;
@@ -22,7 +22,7 @@ export default function AppliedJobs({ navigation }) {
                     data: doc.data(),
                 }));
 
-                const filteredData = data.filter(item => item.data.user_id === userId);
+                const filteredData = data.filter(item => item.data.user_id === userId && item.data.accepted === true);
 
                 setApplication(filteredData);
                 setApplicationSum(filteredData.length);
@@ -45,7 +45,7 @@ export default function AppliedJobs({ navigation }) {
         const acceptedText = item.data.accepted ? 'Elfogadva' : 'Nincs elfogadva';
 
         return (
-            <View style={[styles.jobCard, styles.borderStyle]}>
+            <TouchableOpacity style={[styles.jobCard, styles.borderStyle]} onPress={() => navigation.navigate('AttendanceSheetSecond', {jobData: item.data})}>
                 <View style={styles.jobOtherPart}>
                     <Text style={[styles.jobTitles, styles.boldFont]}>{item.data.job_name}</Text>
                     <Text style={[styles.jobTitles, styles.regularFont]}>{acceptedText}</Text>
@@ -54,9 +54,10 @@ export default function AppliedJobs({ navigation }) {
                     <Text style={[styles.jobTitles, styles.regularFont]}>{item.data.company_name}</Text>
                     <Text style={[styles.jobTitles, styles.lightFont]}>{formattedDate}</Text>
                 </View>
-            </View>
+            </TouchableOpacity>
         );
     };
+
 
     return (
         <View style={styles.main}>
@@ -67,7 +68,7 @@ export default function AppliedJobs({ navigation }) {
                     <Text>Vissza</Text>
                 </Pressable>
                 <View style={{ width: '100%', alignItems: 'center', paddingVertical: 10 }}>
-                    <Text style={[styles.boldFont, styles.bigSize]}>Jelentkezéseim</Text>
+                    <Text style={[styles.boldFont, styles.bigSize]}>Jelenlétim</Text>
                     <Text style={[styles.regularFont, styles.mediumSize]}>Munkák száma: {applicationSum} db</Text>
                 </View>
             </View>
@@ -79,8 +80,8 @@ export default function AppliedJobs({ navigation }) {
                     keyExtractor={item => item.id} />
             </View>
         </View>
-    );
-};
+    )
+}
 
 const styles = StyleSheet.create({
     lightFont: {

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, StatusBar, TextInput, Pressable, Image, Alert } from 'react-native';
+import { StyleSheet, Text, View, StatusBar, TextInput, Pressable, Image, Alert, TouchableOpacity } from 'react-native';
 import { fetchSignInMethodsForEmail, getAuth, sendPasswordResetEmail } from 'firebase/auth';
 import { auth, db } from '../config/firebase';
 
@@ -14,12 +14,12 @@ export default function PasswordReset({ navigation }) {
 
     const handlePwdReset = async () => {
         if (!email) {
-            Alert.alert('Nem adtál meg email-t vagy jelszót! ');
+            Alert.alert('Hiba!', 'Nem adtál meg email-t vagy jelszót! ');
             return;
         }
 
         if (!regex.test(email)) {
-            Alert.alert('Kérlek adj meg egy érvényes email címet!');
+            Alert.alert('Hiba!', 'Kérlek adj meg egy érvényes email címet!');
             return;
         }
 
@@ -51,14 +51,14 @@ export default function PasswordReset({ navigation }) {
                         onChangeText={text => setEmail(text)}
                         value={email} />
                 </View>
-                <Pressable style={styles.loginBtn} onPress={handlePwdReset}>
+                <TouchableOpacity style={styles.loginBtn} onPress={handlePwdReset}>
                     <Text style={[styles.loginBtnText, styles.boldFont]}>KÜLDÉS</Text>
-                </Pressable>
+                </TouchableOpacity>
                 <View style={styles.returnBox}>
-                    <Pressable style={[styles.returnButton, styles.returnButton]} onPress={() => navigation.goBack()}>
+                    <TouchableOpacity style={[styles.returnButton, styles.returnButton]} onPress={() => navigation.goBack()}>
                         <Image source={{ uri: 'https://i.postimg.cc/zGPDCCrc/arrow-sm-left-svgrepo-com-1.png' }} style={styles.arrow} />
                         <Text style={[styles.returnBtnText, styles.boldFont]}>Vissza</Text>
-                    </Pressable>
+                    </TouchableOpacity>
                 </View>
             </View>
         </View>

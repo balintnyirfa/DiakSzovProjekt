@@ -1,14 +1,15 @@
-import React, { useEffect, useState } from 'react';
-import { Image, Pressable, Text, TextInput, View, StyleSheet, ScrollView, StatusBar } from 'react-native';
-import { getAuth, signOut } from "firebase/auth";
+/* eslint-disable no-dupe-keys */
+import React from 'react';
+import { Image, Pressable, Text, View, StyleSheet, ScrollView, StatusBar, TouchableOpacity } from 'react-native';
+import { getAuth, signOut } from 'firebase/auth';
 
 export default function Settings({ navigation }) {
     //const user = auth.currentUser;
     const auth = getAuth();
 
-    const handlePicChange = () => {
-        //Profilkép csere
-    };
+    //const handlePicChange = () => {
+    //    //Profilkép csere
+    //};
 
     const handleLogout = () => {
         signOut(auth).then(() => {
@@ -20,7 +21,7 @@ export default function Settings({ navigation }) {
 
     return (
         <View style={styles.main}>
-            <StatusBar backgroundColor='#373B2C' barStyle={'light-content'}/>
+            <StatusBar backgroundColor="#373B2C" barStyle={'light-content'} />
             <View style={[styles.topView, styles.borderStyle]}>
                 <Image
                     source={{
@@ -33,30 +34,30 @@ export default function Settings({ navigation }) {
                 <ScrollView showsVerticalScrollIndicator={false}>
                     <View style={[styles.topSection, styles.borderStyle]}>
                         <Text style={[styles.header, styles.boldFont]}>Adataim</Text>
-                        <Pressable onPress={() => navigation.navigate('UserUpdate')}>
+                        <TouchableOpacity onPress={() => navigation.navigate('UserUpdate')}>
                             <Text style={[styles.text, styles.regularFont]}>Fiók adatok</Text>
-                        </Pressable>
-                        <Pressable>
+                        </TouchableOpacity>
+                        <TouchableOpacity>
                             <Text style={[styles.text, styles.regularFont]}>Értesítések</Text>
-                        </Pressable>
-                        <Pressable onPress={handleLogout}>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={handleLogout}>
                             <Text style={[styles.text, styles.regularFont]}>Kijelentkezés</Text>
-                        </Pressable>
+                        </TouchableOpacity>
                     </View>
                     <View style={[styles.section, styles.borderStyle]}>
                         <Text style={[styles.header, styles.boldFont]}>Egyéb</Text>
-                        <Pressable onPress={() => navigation.navigate('AppliedJobs')}>
+                        <TouchableOpacity onPress={() => navigation.navigate('AppliedJobs')}>
                             <Text style={[styles.text, styles.regularFont]}>Munkáim</Text>
-                        </Pressable>
-                        <Pressable>
-                            <Text style={[styles.text, styles.regularFont]}>Érdeklődési köreim</Text>
-                        </Pressable>
-                        <Pressable>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={() => navigation.navigate('AttendanceSheetFirst')}>
                             <Text style={[styles.text, styles.regularFont]}>Jelenlétim</Text>
-                        </Pressable>
-                        <Pressable>
+                        </TouchableOpacity>
+                        <TouchableOpacity>
+                            <Text style={[styles.text, styles.regularFont]}>Érdeklődési köreim</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={() => navigation.navigate('PaymentCalculator')}>
                             <Text style={[styles.text, styles.regularFont]}>Bérkalkulátor</Text>
-                        </Pressable>
+                        </TouchableOpacity>
                     </View>
                 </ScrollView>
             </View>
@@ -91,11 +92,11 @@ const styles = StyleSheet.create({
         width: 120,
         height: 120,
         borderRadius: 100,
-        backgroundColor: '#E1E1E1'
+        backgroundColor: '#E1E1E1',
     },
     nameText: {
         fontSize: 32,
-        color: '#373B2C'
+        color: '#373B2C',
     },
     topView: {
         width: '100%',
@@ -121,7 +122,7 @@ const styles = StyleSheet.create({
     //},
     header: {
         fontSize: 32,
-        color: '#373B2C'
+        color: '#373B2C',
     },
     text: {
         fontSize: 18,
@@ -150,5 +151,5 @@ const styles = StyleSheet.create({
     borderStyle: {
         borderColor: '#373B2C',
         borderWidth: 2,
-    }
-})
+    },
+});
