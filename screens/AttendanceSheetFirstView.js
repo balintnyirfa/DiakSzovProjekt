@@ -45,7 +45,7 @@ export default function AttendanceSheetFirst({ navigation }) {
         const acceptedText = item.data.accepted ? 'Elfogadva' : 'Nincs elfogadva';
 
         return (
-            <TouchableOpacity style={[styles.jobCard, styles.borderStyle]} onPress={() => navigation.navigate('AttendanceSheetSecond', {jobData: item.data})}>
+            <TouchableOpacity style={[styles.jobCard, styles.borderStyle]} onPress={() => navigation.navigate('AttendanceSheetSecond', { jobData: item.data })}>
                 <View style={styles.jobOtherPart}>
                     <Text style={[styles.jobTitles, styles.boldFont]}>{item.data.job_name}</Text>
                     <Text style={[styles.jobTitles, styles.regularFont]}>{acceptedText}</Text>
@@ -69,10 +69,10 @@ export default function AttendanceSheetFirst({ navigation }) {
                 </Pressable>
                 <View style={{ width: '100%', alignItems: 'center', paddingVertical: 10 }}>
                     <Text style={[styles.boldFont, styles.bigSize]}>Jelenlétim</Text>
-                    <Text style={[styles.regularFont, styles.mediumSize]}>Munkák száma: {applicationSum} db</Text>
                 </View>
             </View>
             <View style={styles.jobs}>
+                <Text style={[styles.regularFont, styles.regularSize, styles.longText]}>Kattints arra a munkára, ahol dolgoztál és rögzítsd az óráid!</Text>
                 <FlatList
                     data={application}
                     renderItem={renderAppliedJobs}
@@ -166,5 +166,9 @@ const styles = StyleSheet.create({
     borderStyle: {
         borderColor: '#373B2C',
         borderWidth: 2,
+    },
+    longText: {
+        textAlign: "left",
+        marginBottom: 10
     }
 });

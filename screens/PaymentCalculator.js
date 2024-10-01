@@ -41,16 +41,19 @@ export default function PaymentCalculator({ navigation }) {
             </View>
             <View style={[styles.jobs]}>
                 <Text style={[styles.regularFont, styles.regularSize, styles.longText]}>Számold ki, hogy mennyi lesz a várható béred!</Text>
+                <Text style={[styles.boldFont, styles.regularSize, { paddingBottom: 5 }]}>Ledolgozott órák</Text>
                 <TextInput
                     style={[styles.inputField, styles.borderStyle]}
                     keyboardType="number-pad"
                     onChangeText={text => setWorkHours(text)}
                     value={String(workHours)} />
+                <Text style={[styles.boldFont, styles.regularSize, { paddingBottom: 5 }]}>Bruttó bér</Text>
                 <TextInput
                     style={[styles.inputField, styles.borderStyle]}
                     keyboardType="number-pad"
                     onChangeText={text => setGross(text)}
                     value={String(gross)} />
+                <Text style={[styles.boldFont, styles.regularSize, { paddingBottom: 5 }]}>Várható fizetés</Text>
                 <TextInput
                     style={[styles.inputField, styles.borderStyle]}
                     editable={false}
