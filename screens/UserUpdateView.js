@@ -1,9 +1,11 @@
-import { collection, doc, getDoc, getDocs, query, updateDoc } from 'firebase/firestore';
+import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import React, { useEffect, useState } from 'react';
-import { Alert, Image, Pressable, ScrollView, StatusBar, StyleSheet, Text, TextInput, View } from 'react-native';
-import { Header } from 'react-native/Libraries/NewAppScreen';
+import { Alert, Image, PermissionsAndroid, Pressable, ScrollView, StatusBar, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { db } from '../config/firebase';
 import { getAuth, updateEmail } from 'firebase/auth';
+import { launchImageLibrary } from 'react-native-image-picker';
+import { getDownloadURL, getStorage, uploadBytes } from 'firebase/storage';
+import { ref } from 'firebase/storage';
 
 export default function UserUpdateView({ navigation }) {
     const auth = getAuth();
@@ -23,6 +25,8 @@ export default function UserUpdateView({ navigation }) {
     const [tajNum, setTajNum] = useState('');
     const [studentIdNum, setStudentIdNum] = useState('');
     const [taxIdNum, setTaxIdNum] = useState('');
+
+    const [profileImage, setProfileImage] = useState('');
 
     const [isEditing, setIsEditing] = useState(false);
     const [isOtherEditing, setIsOtherEditing] = useState(false);
@@ -47,13 +51,14 @@ export default function UserUpdateView({ navigation }) {
                     setPostalCode(data.postal_code || '');
                     setCity(data.city || '');
                     setAddress(data.address || '');
+                    //setProfileImage(data.profileImage || '');
                 } else {
                     console.log('No such document!');
                 }
             } catch (error) {
                 console.log(error);
             }
-        };
+        }
 
         const fetchOtherData = async () => {
             if (!userId) {
@@ -79,9 +84,26 @@ export default function UserUpdateView({ navigation }) {
             } catch (error) {
                 console.log(error);
             }
-        };
+        }
+
+        const fetchProfileImage = async () => {
+            try {
+                const storage = getStorage();
+                console.log("1");
+                const reference = ref(storage, `profileImages/${userId}/profile.jpg`);
+                console.log("2");
+                getDownloadURL(reference).then((url) => {
+                    setProfileImage(url);
+                    console.log(profileImage);
+                })
+            } catch (error) {
+                console.log(error);
+            }
+        }
+
         fetchData();
         fetchOtherData();
+        fetchProfileImage();
     }, [userId]);
 
     const updatePersonalData = async () => {
@@ -128,6 +150,37 @@ export default function UserUpdateView({ navigation }) {
         setIsOtherEditing(!isOtherEditing);
     };
 
+    const uploadImage = async () => {
+        try {
+            const result = await launchImageLibrary({ mediaType: 'photo' });
+            if (result.didCancel) {
+                console.log('User cancelled image picker');
+            } else if (result.error) {
+                console.log('ImagePicker Error: ', response.error);
+            } else {
+                const uploadUrl = result.assets[0].uri;
+                const storage = getStorage();
+                //let filename = `${userId}/${result.assets[0].fileName}`;
+                let filename = `${userId}/profile.jpg`;
+                const uploadRef = ref(storage, `profileImages/${filename}`);
+
+                try {
+                    const response = await fetch(uploadUrl);
+                    const blob = await response.blob();
+                    await uploadBytes(uploadRef, blob);
+                    const url = await getDownloadURL(uploadRef);
+                    setProfileImage(url);
+                } catch (error) {
+                    console.log("Error 2: ", error)
+                    return;
+                }
+            }
+        } catch (error) {
+            console.log('Error 1:', error);
+            return;
+        };
+    };
+
     return (
         <View style={styles.main}>
             <StatusBar backgroundColor='#B4FB01' barStyle={'dark-content'} />
@@ -135,14 +188,16 @@ export default function UserUpdateView({ navigation }) {
                 <View style={[styles.topView]}>
                     <Pressable style={[styles.returnButton]} onPress={() => navigation.goBack()}>
                         <Image source={{ uri: 'https://i.postimg.cc/mkjYJVQY/arrow-sm-left-svgrepo-com-1.png' }} style={styles.arrow} />
-                        <Text>Vissza</Text>
+                        <Text style={styles.fontColor}>Vissza</Text>
                     </Pressable>
                 </View>
                 <View style={styles.pictureBox}>
-                    <Image source={{ uri: 'https://i.postimg.cc/xTCvWQqh/profile.png', }} style={[styles.profileImage, styles.borderStyle]} />
-                    <Pressable>
+                    <Image
+                        source={profileImage ? { uri: profileImage } : require("../assets/images/profile.png")}
+                        style={[styles.profileImage, styles.borderStyle]} />
+                    <TouchableOpacity onPress={uploadImage}>
                         <Text style={[styles.regularFont, styles.regularSize]}>Kép módosítás</Text>
-                    </Pressable>
+                    </TouchableOpacity>
                 </View>
                 <View style={[styles.boxes]}>
                     <View style={[styles.box, styles.greenBox, styles.borderStyle]}>
@@ -242,7 +297,7 @@ export default function UserUpdateView({ navigation }) {
 
         </View>
     )
-}
+};
 
 const styles = StyleSheet.create({
     lightFont: {
@@ -279,6 +334,7 @@ const styles = StyleSheet.create({
         width: '100%',
         paddingHorizontal: 10,
         backgroundColor: '#E0E0E0',
+        color: "#000",
         marginTop: 8,
         marginBottom: 12,
     },
