@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Alert, Image, Pressable, StatusBar, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Alert, FlatList, Image, Pressable, RefreshControl, StatusBar, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { auth, db } from "../config/firebase";
 import uuid from 'react-native-uuid';
@@ -8,10 +8,10 @@ import { collection, doc, getDocs, query, setDoc } from "firebase/firestore";
 export default function AttendanceSheetSecond({ navigation, route }) {
     const { jobData } = route.params;
 
+    const [attendance, setAttendance] = useState([]);
+
     const userId = auth.currentUser ? auth.currentUser.uid : null;
 
-    //const [attendanceId, setAttendanceId] = useState('');
-    const [employeeId, setEmployeeId] = useState('');
     const [workDate, setWorkDate] = useState(new Date());
     const [checkIn, setCheckIn] = useState(new Date());
     const [checkOut, setCheckOut] = useState(new Date());
@@ -67,7 +67,18 @@ export default function AttendanceSheetSecond({ navigation, route }) {
         ]);
     };
 
+    const timeValidationAlert = () => {
+        Alert.alert('Hiba!', 'A kijelentkezési időnek későbbinek kell lennie, mint a bejelentkezési idő!', [
+            { text: 'OK', onPress: () => console.log('OK Pressed') },
+        ]);
+    };
+
     const uploadAttendance = async () => {
+        if (checkOut <= checkIn) {
+            timeValidationAlert();
+            return; s
+        }
+
         try {
             const attendanceId = uuid.v4();
             const newAttendance = {
@@ -77,9 +88,9 @@ export default function AttendanceSheetSecond({ navigation, route }) {
                 check_out: checkOut
             }
             setDoc(doc(db, "attendance", attendanceId), newAttendance)
-            .then(() => {
-                uploadAlert();
-            });
+                .then(() => {
+                    uploadAlert();
+                });
         } catch (error) {
             console.log('Failed upload: ', error)
         }
@@ -98,15 +109,35 @@ export default function AttendanceSheetSecond({ navigation, route }) {
                 const filteredData = data.filter(item => item.data.employee_id === userId);
 
                 console.log(filteredData.length)
-                //setApplication(filteredData);
+                setAttendance(filteredData);
                 //setApplicationSum(filteredData.length);
             } catch (error) {
-                console.log("Error while fetching attendance sheet: ",error)
+                console.log("Error while fetching attendance sheet: ", error)
             }
         }
-        
+
         fetchAttendance();
     }, [])
+
+    const renderAttendance = ({ item }) => {
+        const checkIn = item.data.check_in.toDate();
+        const checkOut = item.data.check_out.toDate();
+
+        const formattedCheckIn = checkIn.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+        const formattedCheckOut = checkOut.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+
+        return (
+            <View style={[styles.borderStyle]}>
+                <View>
+                    <Text style={[styles.boldFont]}>{item.data.work_date}</Text>
+                </View>
+                <View>
+                    <Text style={[styles.regularFont]}>{formattedCheckIn}</Text>
+                    <Text style={[styles.regularFont]}>{formattedCheckOut}</Text>
+                </View>
+            </View>
+        );
+    };
 
     return (
         <View style={styles.main}>
@@ -180,6 +211,13 @@ export default function AttendanceSheetSecond({ navigation, route }) {
                 <TouchableOpacity style={styles.loginBtn} onPress={uploadAttendance}>
                     <Text style={[styles.loginBtnText, styles.boldFont]}>MENTÉS</Text>
                 </TouchableOpacity>
+            </View>
+            <View style={styles.jobs}>
+                <FlatList
+                    data={attendance}
+                    renderItem={renderAttendance}
+                    showsVerticalScrollIndicator={false}
+                    keyExtractor={item => item.id} />
             </View>
         </View>
     )
