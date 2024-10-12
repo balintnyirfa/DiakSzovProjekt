@@ -89,12 +89,9 @@ export default function UserUpdateView({ navigation }) {
         const fetchProfileImage = async () => {
             try {
                 const storage = getStorage();
-                console.log("1");
                 const reference = ref(storage, `profileImages/${userId}/profile.jpg`);
-                console.log("2");
                 getDownloadURL(reference).then((url) => {
                     setProfileImage(url);
-                    console.log(profileImage);
                 })
             } catch (error) {
                 console.log(error);

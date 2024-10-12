@@ -1,8 +1,113 @@
-import React from "react";
-import { Image, StatusBar, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import React, { useEffect, useState } from "react";
+import { Alert, Image, Pressable, StatusBar, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import DateTimePicker from "@react-native-community/datetimepicker";
+import { auth, db } from "../config/firebase";
+import uuid from 'react-native-uuid';
+import { collection, doc, getDocs, query, setDoc } from "firebase/firestore";
 
 export default function AttendanceSheetSecond({ navigation, route }) {
     const { jobData } = route.params;
+
+    const userId = auth.currentUser ? auth.currentUser.uid : null;
+
+    //const [attendanceId, setAttendanceId] = useState('');
+    const [employeeId, setEmployeeId] = useState('');
+    const [workDate, setWorkDate] = useState(new Date());
+    const [checkIn, setCheckIn] = useState(new Date());
+    const [checkOut, setCheckOut] = useState(new Date());
+    const [totalHours, setTotalHours] = useState(0);
+
+    const [showWorkDate, setShowWorkDate] = useState(false);
+    const [showCheckInPicker, setShowCheckInPicker] = useState(false);
+    const [showCheckOutPicker, setShowCheckOutPicker] = useState(false);
+
+    const onChangeDate = (event, selectedDate) => {
+        const currentDate = selectedDate || workDate;
+        setShowWorkDate(false);
+        setWorkDate(currentDate);
+    };
+
+    const onChangeCheckInTime = (event, selectedDate) => {
+        const currentDate = selectedDate || checkIn;
+        setShowCheckInPicker(false);
+        setCheckIn(currentDate);
+    };
+
+    const onChangeCheckOutTime = (event, selectedDate) => {
+        const currentDate = selectedDate || checkOut;
+        setShowCheckOutPicker(false);
+        setCheckOut(currentDate);
+    };
+
+    const showDatePicker = () => {
+        setShowWorkDate(true);
+    };
+
+    const showCheckInTimePicker = () => {
+        setShowCheckInPicker(true);
+        setShowCheckOutPicker(false);
+    };
+
+    const showCheckOutTimePicker = () => {
+        setShowCheckOutPicker(true);
+        setShowCheckInPicker(false);
+    };
+
+    const formattedWorkDate = workDate.toLocaleDateString('hu-HU', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+    });
+    const formattedCheckIn = checkIn.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+    const formattedCheckOut = checkOut.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+
+    const uploadAlert = () => {
+        Alert.alert('Siker!', 'Sikeres rögzítés!', [
+            { text: 'OK', onPress: () => console.log('OK Pressed') },
+        ]);
+    };
+
+    const uploadAttendance = async () => {
+        try {
+            const attendanceId = uuid.v4();
+            const newAttendance = {
+                employee_id: userId,
+                work_date: formattedWorkDate,
+                check_in: checkIn,
+                check_out: checkOut
+            }
+            setDoc(doc(db, "attendance", attendanceId), newAttendance)
+            .then(() => {
+                uploadAlert();
+            });
+        } catch (error) {
+            console.log('Failed upload: ', error)
+        }
+    }
+
+    useEffect(() => {
+        const fetchAttendance = async () => {
+            try {
+                const q = query(collection(db, 'attendance'));
+                const querySnapshot = await getDocs(q);
+                const data = querySnapshot.docs.map(doc => ({
+                    id: doc.id,
+                    data: doc.data(),
+                }));
+
+                const filteredData = data.filter(item => item.data.employee_id === userId);
+
+                console.log(filteredData.length)
+                //setApplication(filteredData);
+                //setApplicationSum(filteredData.length);
+            } catch (error) {
+                console.log("Error while fetching attendance sheet: ",error)
+            }
+        }
+        
+        fetchAttendance();
+    }, [])
+
     return (
         <View style={styles.main}>
             <StatusBar backgroundColor='#B4FB01' barStyle={'dark-content'} />
@@ -16,11 +121,63 @@ export default function AttendanceSheetSecond({ navigation, route }) {
                 </View>
             </View>
             <View style={[styles.jobs]}>
-                <TextInput
-                    style={[styles.inputField, styles.borderStyle]}/>
-                <TextInput
-                    style={[styles.inputField, styles.borderStyle]}/>
-                <TouchableOpacity style={styles.loginBtn}>
+                <Text>Dátum</Text>
+                <Pressable onPress={showDatePicker}>
+                    <TextInput
+                        style={[styles.inputField, styles.borderStyle]}
+                        editable={false}
+                        value={formattedWorkDate}
+                        placeholder="Válassz napot!" />
+                </Pressable>
+                {
+                    showWorkDate && (
+                        <DateTimePicker
+                            testID='dateTimePicker'
+                            value={workDate}
+                            mode="date"
+                            display="spinner"
+                            minimumDate={new Date(2000, 1, 1)}
+                            onChange={onChangeDate} />
+                    )
+                }
+                <Text>Mettől</Text>
+                <Pressable onPress={showCheckInTimePicker}>
+                    <TextInput
+                        style={[styles.inputField, styles.borderStyle]}
+                        editable={false}
+                        value={formattedCheckIn}
+                    />
+                </Pressable>
+                {showCheckInPicker && (
+                    <DateTimePicker
+                        testID="checkInTimePicker"
+                        value={checkIn}
+                        mode="time"
+                        display="spinner"
+                        onChange={onChangeCheckInTime}
+                    />
+                )}
+
+
+                <Text>Meddig</Text>
+                <Pressable onPress={showCheckOutTimePicker}>
+                    <TextInput
+                        style={[styles.inputField, styles.borderStyle]}
+                        editable={false}
+                        value={formattedCheckOut}
+                    />
+                </Pressable>
+                {showCheckOutPicker && (
+                    <DateTimePicker
+                        testID="checkOutTimePicker"
+                        value={checkOut}
+                        mode="time"
+                        display="spinner"
+                        onChange={onChangeCheckOutTime}
+                    />
+                )}
+
+                <TouchableOpacity style={styles.loginBtn} onPress={uploadAttendance}>
                     <Text style={[styles.loginBtnText, styles.boldFont]}>MENTÉS</Text>
                 </TouchableOpacity>
             </View>
@@ -107,6 +264,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 10,
         backgroundColor: '#E0E0E0',
         marginBottom: 12,
+        color: "#373B2C"
     },
     inputFieldB: {
         marginBottom: 3,
