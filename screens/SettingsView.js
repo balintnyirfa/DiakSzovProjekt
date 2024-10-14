@@ -1,15 +1,31 @@
-/* eslint-disable no-dupe-keys */
-import React from 'react';
-import { Image, Pressable, Text, View, StyleSheet, ScrollView, StatusBar, TouchableOpacity } from 'react-native';
-import { getAuth, signOut } from 'firebase/auth';
+import React, { useEffect, useState } from 'react';
+import { Image, Text, View, StyleSheet, ScrollView, StatusBar, TouchableOpacity } from 'react-native';
+import { signOut, getAuth } from 'firebase/auth';
+import { getDownloadURL, getStorage, ref } from 'firebase/storage';
+
+import common from '../styles/common';
 
 export default function Settings({ navigation }) {
-    //const user = auth.currentUser;
     const auth = getAuth();
+    const userId = auth.currentUser ? auth.currentUser.uid : null;
 
-    //const handlePicChange = () => {
-    //    //Profilkép csere
-    //};
+    const [profileImage, setProfileImage] = useState('');
+
+    useEffect(() => {
+        const fetchProfileImage = async () => {
+            try {
+                const storage = getStorage();
+                const reference = ref(storage, `profileImages/${userId}/profile.jpg`);
+                getDownloadURL(reference).then((url) => {
+                    setProfileImage(url);
+                })
+            } catch (error) {
+                console.log(error);
+            }
+        }
+
+        fetchProfileImage();
+    }, [userId]) 
 
     const handleLogout = () => {
         signOut(auth).then(() => {
@@ -20,43 +36,43 @@ export default function Settings({ navigation }) {
     };
 
     return (
-        <View style={styles.main}>
+        <View style={common.main}>
             <StatusBar backgroundColor="#373B2C" barStyle={'light-content'} />
-            <View style={[styles.topView, styles.borderStyle]}>
+            <View style={[styles.topView, common.borderStyle]}>
                 <Image
-                    source={{
-                        uri: 'https://i.postimg.cc/xTCvWQqh/profile.png',
-                    }}
-                    style={[styles.profileImage, styles.borderStyle]} />
-                <Text style={[styles.boldFont, styles.nameText]}>Bálint</Text>
+                    source={
+                        profileImage ? { uri: profileImage } : require("../assets/images/profile.png")
+                    }
+                    style={[styles.profileImage, common.borderStyle]} />
+                <Text style={[common.boldFont, styles.nameText]}>Bálint</Text>
             </View>
             <View style={[styles.bottomView]}>
                 <ScrollView showsVerticalScrollIndicator={false}>
-                    <View style={[styles.topSection, styles.borderStyle]}>
-                        <Text style={[styles.header, styles.boldFont]}>Adataim</Text>
+                    <View style={[styles.topSection, common.borderStyle]}>
+                        <Text style={[styles.header, common.boldFont]}>Adataim</Text>
                         <TouchableOpacity onPress={() => navigation.navigate('UserUpdate')}>
-                            <Text style={[styles.text, styles.regularFont]}>Fiók adatok</Text>
+                            <Text style={[styles.text, common.regularFont]}>Fiók adatok</Text>
                         </TouchableOpacity>
                         <TouchableOpacity>
-                            <Text style={[styles.text, styles.regularFont]}>Értesítések</Text>
+                            <Text style={[styles.text, common.regularFont]}>Értesítések</Text>
                         </TouchableOpacity>
                         <TouchableOpacity onPress={handleLogout}>
-                            <Text style={[styles.text, styles.regularFont]}>Kijelentkezés</Text>
+                            <Text style={[styles.text, common.regularFont]}>Kijelentkezés</Text>
                         </TouchableOpacity>
                     </View>
-                    <View style={[styles.section, styles.borderStyle]}>
-                        <Text style={[styles.header, styles.boldFont]}>Egyéb</Text>
+                    <View style={[styles.section, common.borderStyle]}>
+                        <Text style={[styles.header, common.boldFont]}>Egyéb</Text>
                         <TouchableOpacity onPress={() => navigation.navigate('AppliedJobs')}>
-                            <Text style={[styles.text, styles.regularFont]}>Munkáim</Text>
+                            <Text style={[styles.text, common.regularFont]}>Munkáim</Text>
                         </TouchableOpacity>
                         <TouchableOpacity onPress={() => navigation.navigate('AttendanceSheetFirst')}>
-                            <Text style={[styles.text, styles.regularFont]}>Jelenlétim</Text>
+                            <Text style={[styles.text, common.regularFont]}>Jelenlétim</Text>
                         </TouchableOpacity>
                         <TouchableOpacity>
-                            <Text style={[styles.text, styles.regularFont]}>Érdeklődési köreim</Text>
+                            <Text style={[styles.text, common.regularFont]}>Érdeklődési köreim</Text>
                         </TouchableOpacity>
                         <TouchableOpacity onPress={() => navigation.navigate('PaymentCalculator')}>
-                            <Text style={[styles.text, styles.regularFont]}>Bérkalkulátor</Text>
+                            <Text style={[styles.text, common.regularFont]}>Bérkalkulátor</Text>
                         </TouchableOpacity>
                     </View>
                 </ScrollView>
@@ -66,28 +82,6 @@ export default function Settings({ navigation }) {
 }
 
 const styles = StyleSheet.create({
-    lightFont: {
-        fontFamily: 'Quicksand-Light',
-    },
-    regularFont: {
-        fontFamily: 'Quicksand-Regular',
-    },
-    semiBoldFont: {
-        fontFamily: 'Quicksand-SemiBold',
-    },
-    boldFont: {
-        fontFamily: 'Quicksand-Bold',
-    },
-    borderStyle: {
-        borderColor: '#373B2C',
-        borderWidth: 2,
-    },
-    main: {
-        flex: 1,
-        alignItems: 'center',
-        fontSize: 200,
-        backgroundColor: '#B4FB01',
-    },
     profileImage: {
         width: 120,
         height: 120,
@@ -116,10 +110,6 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         paddingHorizontal: 30,
     },
-    //picSwapButtonView: {
-    //    width: '100%',
-    //    alignItems: 'flex-end',
-    //},
     header: {
         fontSize: 32,
         color: '#373B2C',

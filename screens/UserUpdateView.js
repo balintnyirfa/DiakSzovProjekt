@@ -1,16 +1,17 @@
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import React, { useEffect, useState } from 'react';
-import { Alert, Image, PermissionsAndroid, Pressable, ScrollView, StatusBar, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Alert, Image, Pressable, ScrollView, StatusBar, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { db } from '../config/firebase';
-import { getAuth, updateEmail } from 'firebase/auth';
+import { getAuth } from 'firebase/auth';
 import { launchImageLibrary } from 'react-native-image-picker';
 import { getDownloadURL, getStorage, uploadBytes } from 'firebase/storage';
 import { ref } from 'firebase/storage';
 
+import common from '../styles/common';
+
 export default function UserUpdateView({ navigation }) {
     const auth = getAuth();
     const userId = auth.currentUser ? auth.currentUser.uid : null;
-    const user = auth.currentUser;
     const [userData, setUserData] = useState([]);
     const [userOtherData, setUserOtherData] = useState([]);
 
@@ -51,7 +52,6 @@ export default function UserUpdateView({ navigation }) {
                     setPostalCode(data.postal_code || '');
                     setCity(data.city || '');
                     setAddress(data.address || '');
-                    //setProfileImage(data.profileImage || '');
                 } else {
                     console.log('No such document!');
                 }
@@ -157,7 +157,6 @@ export default function UserUpdateView({ navigation }) {
             } else {
                 const uploadUrl = result.assets[0].uri;
                 const storage = getStorage();
-                //let filename = `${userId}/${result.assets[0].fileName}`;
                 let filename = `${userId}/profile.jpg`;
                 const uploadRef = ref(storage, `profileImages/${filename}`);
 
@@ -185,107 +184,107 @@ export default function UserUpdateView({ navigation }) {
                 <View style={[styles.topView]}>
                     <Pressable style={[styles.returnButton]} onPress={() => navigation.goBack()}>
                         <Image source={{ uri: 'https://i.postimg.cc/mkjYJVQY/arrow-sm-left-svgrepo-com-1.png' }} style={styles.arrow} />
-                        <Text style={styles.fontColor}>Vissza</Text>
+                        <Text style={[common.boldFont, common.darkBrownColor]}>Vissza</Text>
                     </Pressable>
                 </View>
                 <View style={styles.pictureBox}>
                     <Image
                         source={profileImage ? { uri: profileImage } : require("../assets/images/profile.png")}
-                        style={[styles.profileImage, styles.borderStyle]} />
+                        style={[styles.profileImage, common.borderStyle]} />
                     <TouchableOpacity onPress={uploadImage}>
-                        <Text style={[styles.regularFont, styles.regularSize]}>Kép módosítás</Text>
+                        <Text style={[common.regularFont, common.regularSize, common.darkBrownColor]}>Kép módosítás</Text>
                     </TouchableOpacity>
                 </View>
                 <View style={[styles.boxes]}>
-                    <View style={[styles.box, styles.greenBox, styles.borderStyle]}>
+                    <View style={[styles.box, styles.greenBox, common.borderStyle]}>
                         <Pressable style={styles.button} onPress={() => navigation.navigate('PasswordReset')}>
-                            <Text style={[styles.boldFont, styles.mediumSize, styles.whiteText]}>Jelszó módosítás</Text>
+                            <Text style={[styles.boldFont, styles.mediumSize, common.whiteText]}>Jelszó módosítás</Text>
                         </Pressable>
                     </View>
-                    <View style={[styles.box, styles.borderStyle]}>
-                        <Text style={[styles.boldFont, styles.mediumSize, styles.header]}>Személyes adatok</Text>
-                        <Text style={[styles.regularFont, styles.regularSize]}>Email cím</Text>
+                    <View style={[styles.box, common.borderStyle]}>
+                        <Text style={[common.boldFont, common.mediumSize, styles.header, common.darkBrownColor]}>Személyes adatok</Text>
+                        <Text style={[common.regularFont, common.regularSize, common.darkBrownColor]}>Email cím</Text>
                         <TextInput
-                            style={styles.inputField}
+                            style={[styles.inputField, common.darkBrownColor]}
                             keyboardType='email-address'
                             onChangeText={text => setEmail(text)}
                             value={email}
                             editable={isEditing} />
-                        <Text style={[styles.regularFont, styles.regularSize]}>Születési dátum</Text>
+                        <Text style={[styles.regularFont, styles.regularSize, common.darkBrownColor]}>Születési dátum</Text>
                         <TextInput
-                            style={styles.inputField}
+                            style={[styles.inputField, common.darkBrownColor]}
                             keyboardType='default'
                             onChangeText={text => setBirthdate(text)}
                             value={birthdate}
                             editable={isEditing} />
-                        <Text style={[styles.regularFont, styles.regularSize]}>Telefonszám</Text>
+                        <Text style={[styles.regularFont, styles.regularSize, common.darkBrownColor]}>Telefonszám</Text>
                         <TextInput
-                            style={styles.inputField}
+                            style={[styles.inputField, common.darkBrownColor]}
                             keyboardType='phone-pad'
                             onChangeText={text => setTelephone(text)}
                             value={telephone}
                             editable={isEditing} />
-                        <Text style={[styles.regularFont, styles.regularSize]}>Lakcím</Text>
+                        <Text style={[styles.regularFont, styles.regularSize, common.darkBrownColor]}>Lakcím</Text>
                         <View style={[styles.postalCity]}>
                             <TextInput
-                                style={[styles.inputField, { flex: 1 }]}
+                                style={[styles.inputField, common.darkBrownColor, { flex: 1 }]}
                                 keyboardType='number-pad'
                                 onChangeText={text => setPostalCode(text)}
                                 value={postalCode.toString()}
                                 editable={isEditing} />
                             <TextInput
-                                style={[styles.inputField, { marginLeft: 10, flex: 4 }]}
+                                style={[styles.inputField, common.darkBrownColor, { marginLeft: 10, flex: 4 }]}
                                 keyboardType='default'
                                 onChangeText={text => setCity(text)}
                                 value={city}
                                 editable={isEditing} />
                         </View>
                         <TextInput
-                            style={[styles.inputField, { marginTop: 0 }]}
+                            style={[styles.inputField, common.darkBrownColor, { marginTop: 0 }]}
                             keyboardType='default'
                             onChangeText={text => setAddress(text)}
                             value={address}
                             editable={isEditing} />
                         <View style={{ width: '100%', alignItems: 'center' }}>
                             <Pressable style={[styles.button, styles.modifyButtons]} onPress={updatePersonalData}>
-                                <Text style={[styles.boldFont, styles.mediumSize, styles.whiteText]}>MÓDOSÍTÁS</Text>
+                                <Text style={[common.boldFont, common.mediumSize, common.whiteText]}>MÓDOSÍTÁS</Text>
                             </Pressable>
                         </View>
                     </View>
 
-                    <View style={[styles.box, styles.borderStyle, styles.greenBox]}>
-                        <Text style={[styles.boldFont, styles.mediumSize, styles.header, styles.whiteText]}>Egyéb adatok</Text>
-                        <Text style={[styles.regularFont, styles.regularSize, styles.whiteText]}>Személyi szám</Text>
+                    <View style={[styles.box, common.borderStyle, styles.greenBox]}>
+                        <Text style={[common.boldFont, common.mediumSize, styles.header, common.whiteText]}>Egyéb adatok</Text>
+                        <Text style={[common.regularFont, common.regularSize, common.whiteText]}>Személyi szám</Text>
                         <TextInput
-                            style={styles.inputField}
+                            style={[styles.inputField, common.darkBrownColor]}
                             keyboardType='default'
                             onChangeText={text => setIdCardNum(text)}
                             value={idCardNum}
                             editable={isOtherEditing} />
-                        <Text style={[styles.regularFont, styles.regularSize, styles.whiteText]}>TAJ szám</Text>
+                        <Text style={[common.regularFont, common.regularSize, common.whiteText]}>TAJ szám</Text>
                         <TextInput
-                            style={styles.inputField}
+                            style={[styles.inputField, common.darkBrownColor]}
                             keyboardType='number-pad'
                             onChangeText={text => setTajNum(text)}
                             value={tajNum}
                             editable={isOtherEditing} />
-                        <Text style={[styles.regularFont, styles.regularSize, styles.whiteText]}>Diák igazolvány szám</Text>
+                        <Text style={[common.regularFont, common.regularSize, common.whiteText]}>Diák igazolvány szám</Text>
                         <TextInput
-                            style={styles.inputField}
+                            style={[styles.inputField, common.darkBrownColor]}
                             keyboardType='number-pad'
                             onChangeText={text => setStudentIdNum(text)}
                             value={studentIdNum}
                             editable={isOtherEditing} />
-                        <Text style={[styles.regularFont, styles.regularSize, styles.whiteText]}>Adószám</Text>
+                        <Text style={[common.regularFont, common.regularSize, common.whiteText]}>Adószám</Text>
                         <TextInput
-                            style={[styles.inputField]}
+                            style={[styles.inputField, common.darkBrownColor]}
                             keyboardType='number-pad'
                             onChangeText={text => setTaxIdNum(text)}
                             value={taxIdNum}
                             editable={isOtherEditing} />
                         <View style={{ width: '100%', alignItems: 'center' }}>
                             <Pressable style={[styles.button, styles.modifyButtons, { backgroundColor: '#B4FB01' }]} onPress={otherData}>
-                                <Text style={[styles.boldFont, styles.mediumSize, { color: '#373B2C' }]}>MÓDOSÍTÁS</Text>
+                                <Text style={[common.boldFont, common.mediumSize,, common.darkBrownColor]}>MÓDOSÍTÁS</Text>
                             </Pressable>
                         </View>
                     </View>
@@ -297,31 +296,6 @@ export default function UserUpdateView({ navigation }) {
 };
 
 const styles = StyleSheet.create({
-    lightFont: {
-        fontFamily: 'Quicksand-Light',
-    },
-    regularFont: {
-        fontFamily: 'Quicksand-Regular',
-    },
-    semiBoldFont: {
-        fontFamily: 'Quicksand-SemiBold',
-    },
-    boldFont: {
-        fontFamily: 'Quicksand-Bold',
-        color: '#373B2C'
-    },
-    header: {
-        marginBottom: 13
-    },
-    regularSize: {
-        fontSize: 17
-    },
-    mediumSize: {
-        fontSize: 22,
-    },
-    whiteText: {
-        color: '#FFFFFF',
-    },
     button: {
         alignItems: 'center',
         justifyContent: 'center'
@@ -335,16 +309,9 @@ const styles = StyleSheet.create({
         marginTop: 8,
         marginBottom: 12,
     },
-
-    borderStyle: {
-        borderColor: '#373B2C',
-        borderWidth: 2,
-    },
     main: {
         flex: 1,
         width: '100%',
-        //alignItems: 'center',
-        //fontSize: 200,
         backgroundColor: '#B4FB01',
     },
     topView: {
@@ -390,7 +357,7 @@ const styles = StyleSheet.create({
         borderRadius: 30
     },
     modifyButtons: {
-        width: '80%',
+        width: '100%',
         marginVertical: 10,
         paddingVertical: 10,
         paddingHorizontal: 15,

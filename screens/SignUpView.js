@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, StatusBar, TextInput, Pressable, Image, Alert, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, StatusBar, TextInput, Image, Alert, TouchableOpacity } from 'react-native';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../config/firebase';
+
+import common from '../styles/common';
 
 
 export default function SignUp({ navigation }) {
@@ -40,32 +42,32 @@ export default function SignUp({ navigation }) {
     }
 
     return (
-        <View style={styles.main}>
+        <View style={common.main}>
             <StatusBar backgroundColor='#B4FB01' barStyle={'dark-content'} />
-            <View style={[styles.whiteBox, styles.borderStyle]}>
-                <Text style={[styles.header, styles.boldFont]}>REGISZTRÁCIÓ</Text>
+            <View style={[styles.whiteBox, common.borderStyle]}>
+                <Text style={[styles.header, common.boldFont, common.darkBrownColor]}>REGISZTRÁCIÓ</Text>
                 <View style={styles.insideBox}>
-                    <Text style={[styles.inputText, styles.regularFont]}>Email cím</Text>
+                    <Text style={[styles.inputText, common.regularFont, common.darkBrownColor]}>Email cím</Text>
                     <TextInput
-                        style={styles.inputField}
+                        style={[common.inputField, common.darkBrownColor]}
                         keyboardType='email-address'
                         autoCapitalize='none'
                         onChangeText={text => setEmail(text)}
                         value={email} />
-                    <Text style={[styles.inputText, styles.regularFont]}>Jelszó</Text>
+                    <Text style={[styles.inputText, common.regularFont, common.darkBrownColor]}>Jelszó</Text>
                     <TextInput
-                        style={[styles.inputField, styles.inputFieldB]}
+                        style={[common.inputField, styles.inputFieldB, common.darkBrownColor]}
                         secureTextEntry
                         onChangeText={text => setPassword(text)}
                         value={password} />
                 </View>
                 <TouchableOpacity style={styles.loginBtn} onPress={handleSignUp}>
-                    <Text style={[styles.loginBtnText, styles.boldFont]}>REGISZTRÁLOK</Text>
+                    <Text style={[styles.loginBtnText, common.boldFont]}>REGISZTRÁLOK</Text>
                 </TouchableOpacity>
                 <View style={styles.returnBox}>
                     <TouchableOpacity style={[styles.returnButton, styles.returnButton]} onPress={() => navigation.goBack()}>
                         <Image source={{ uri: 'https://i.postimg.cc/zGPDCCrc/arrow-sm-left-svgrepo-com-1.png' }} style={styles.arrow} />
-                        <Text style={[styles.returnBtnText, styles.boldFont]}>Vissza</Text>
+                        <Text style={[styles.returnBtnText, common.boldFont]}>Vissza</Text>
                     </TouchableOpacity>
                 </View>
             </View>
@@ -73,25 +75,7 @@ export default function SignUp({ navigation }) {
     );
 }
 
-const styles = StyleSheet.create({
-    lightFont: {
-        fontFamily: 'Quicksand-Light',
-    },
-    regularFont: {
-        fontFamily: 'Quicksand-Regular',
-    },
-    semiBoldFont: {
-        fontFamily: 'Quicksand-SemiBold',
-    },
-    boldFont: {
-        fontFamily: 'Quicksand-Bold',
-    },
-    main: {
-        flex: 1,
-        justifyContent: 'flex-end',
-        alignItems: 'center',
-        backgroundColor: '#B4FB01',
-    },
+const styles = StyleSheet.create({    
     whiteBox: {
         width: '100%',
         paddingHorizontal: 30,
@@ -111,20 +95,12 @@ const styles = StyleSheet.create({
     },
     header: {
         fontSize: 24,
-        color: '#373B2C',
     },
     inputText: {
         fontSize: 20,
-        color: '#000',
         marginBottom: 8,
     },
-    inputField: {
-        borderRadius: 10,
-        width: '100%',
-        paddingHorizontal: 10,
-        backgroundColor: '#E0E0E0',
-        marginBottom: 12,
-    },
+    
     inputFieldB: {
         marginBottom: 3,
     },
@@ -144,7 +120,6 @@ const styles = StyleSheet.create({
         fontSize: 20
     },
     returnBox: {
-        //backgroundColor: '#242431',
         width: '100%',
     },
     arrow: {
@@ -152,7 +127,6 @@ const styles = StyleSheet.create({
         width: 30,
     },
     returnButton: {
-        //backgroundColor: '#fff',
         flexDirection: 'row',
         justifyContent: 'flex-start',
         alignItems: 'center',
@@ -162,8 +136,4 @@ const styles = StyleSheet.create({
         color: '#93B92E',
         fontSize: 16,
     },
-    borderStyle: {
-        borderColor: '#373B2C',
-        borderWidth: 2,
-    }
 });
