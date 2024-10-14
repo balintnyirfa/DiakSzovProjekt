@@ -1,12 +1,16 @@
 import React, { useEffect, useState } from "react";
-import { Alert, FlatList, Image, Pressable, RefreshControl, StatusBar, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Alert, FlatList, Image, Pressable, RefreshControl, ScrollView, StatusBar, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { auth, db } from "../config/firebase";
 import uuid from 'react-native-uuid';
-import { collection, doc, getDocs, query, setDoc } from "firebase/firestore";
+import { collection, deleteDoc, doc, getDocs, query, setDoc } from "firebase/firestore";
+
+import common from "../styles/common";
 
 export default function AttendanceSheetSecond({ navigation, route }) {
     const { jobData } = route.params;
+
+    const [actualMonth, setActualMonth] = useState(new Date().getMonth().toLocaleString('default', { month: 'long' }));
 
     const [attendance, setAttendance] = useState([]);
 
@@ -96,6 +100,15 @@ export default function AttendanceSheetSecond({ navigation, route }) {
         }
     }
 
+    const deleteAttendance = async (attendanceId) => {
+        try {
+            await deleteDoc(doc(db, 'attendance', attendanceId));
+            Alert.alert('Siker!', 'A törlés megtörtént!')
+        } catch (error) {
+            console.log('Error',error);
+        }
+    }
+
     useEffect(() => {
         const fetchAttendance = async () => {
             try {
@@ -110,7 +123,6 @@ export default function AttendanceSheetSecond({ navigation, route }) {
 
                 console.log(filteredData.length)
                 setAttendance(filteredData);
-                //setApplicationSum(filteredData.length);
             } catch (error) {
                 console.log("Error while fetching attendance sheet: ", error)
             }
@@ -127,13 +139,21 @@ export default function AttendanceSheetSecond({ navigation, route }) {
         const formattedCheckOut = checkOut.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
 
         return (
-            <View style={[styles.borderStyle]}>
-                <View>
-                    <Text style={[styles.boldFont]}>{item.data.work_date}</Text>
+            <View style={[styles.jobCard, common.borderStyle]}>
+                <View style={styles.lefty}>
+                    <View style={styles.jobOtherPart}>
+                        <Text style={[common.boldFont, common.regularSize, common.darkBrownColor]}>{item.data.work_date}</Text>
+                    </View>
+                    <View style={styles.jobOtherPart}>
+                        <Text style={[common.regularFont, common.regularSize, common.darkBrownColor]}>{formattedCheckIn}-tól</Text>
+                        <Text style={[common.regularFont, common.regularSize, common.darkBrownColor]}>{formattedCheckOut}-ig</Text>
+                    </View>
                 </View>
-                <View>
-                    <Text style={[styles.regularFont]}>{formattedCheckIn}</Text>
-                    <Text style={[styles.regularFont]}>{formattedCheckOut}</Text>
+                <View style={styles.divider} />
+                <View style={styles.righty}>
+                    <TouchableOpacity onPress={() => deleteAttendance(item.id)}>
+                        <Text style={[common.boldFont, common.regularSize, styles.deleteBtn]}>TÖRLÉS</Text>
+                    </TouchableOpacity>
                 </View>
             </View>
         );
@@ -142,75 +162,85 @@ export default function AttendanceSheetSecond({ navigation, route }) {
     return (
         <View style={styles.main}>
             <StatusBar backgroundColor='#B4FB01' barStyle={'dark-content'} />
-            <View style={[styles.topView]}>
-                <TouchableOpacity style={[styles.returnButton]} onPress={() => navigation.goBack()}>
-                    <Image source={{ uri: 'https://i.postimg.cc/mkjYJVQY/arrow-sm-left-svgrepo-com-1.png' }} style={styles.arrow} />
-                    <Text>Vissza</Text>
-                </TouchableOpacity>
-                <View style={{ width: '100%', alignItems: 'center', paddingVertical: 10 }}>
-                    <Text style={[styles.boldFont, styles.bigSize]}>Rögzítés</Text>
+            <View showsVerticalScrollIndicator={false} style={styles.halfWhen}>
+                <View style={[styles.topView]}>
+                    <TouchableOpacity style={[styles.returnButton]} onPress={() => navigation.goBack()}>
+                        <Image source={{ uri: 'https://i.postimg.cc/mkjYJVQY/arrow-sm-left-svgrepo-com-1.png' }} style={styles.arrow} />
+                        <Text style={[common.boldFont, common.darkBrownColor]}>Vissza</Text>
+                    </TouchableOpacity>
+                    <View style={{ width: '100%', alignItems: 'center', paddingVertical: 10 }}>
+                        <Text style={[common.boldFont, common.bigSize, common.darkBrownColor]}>Rögzítés</Text>
+                    </View>
+                    <View style={styles.actualMonth}>
+                        <Text style={[common.regularFont, common.regularSize, common.darkBrownColor]}>Aktuális hónap: {actualMonth}</Text>
+                    </View>
                 </View>
-            </View>
-            <View style={[styles.jobs]}>
-                <Text>Dátum</Text>
-                <Pressable onPress={showDatePicker}>
-                    <TextInput
-                        style={[styles.inputField, styles.borderStyle]}
-                        editable={false}
-                        value={formattedWorkDate}
-                        placeholder="Válassz napot!" />
-                </Pressable>
-                {
-                    showWorkDate && (
-                        <DateTimePicker
-                            testID='dateTimePicker'
-                            value={workDate}
-                            mode="date"
-                            display="spinner"
-                            minimumDate={new Date(2000, 1, 1)}
-                            onChange={onChangeDate} />
-                    )
-                }
-                <Text>Mettől</Text>
-                <Pressable onPress={showCheckInTimePicker}>
-                    <TextInput
-                        style={[styles.inputField, styles.borderStyle]}
-                        editable={false}
-                        value={formattedCheckIn}
-                    />
-                </Pressable>
-                {showCheckInPicker && (
-                    <DateTimePicker
-                        testID="checkInTimePicker"
-                        value={checkIn}
-                        mode="time"
-                        display="spinner"
-                        onChange={onChangeCheckInTime}
-                    />
-                )}
-
-
-                <Text>Meddig</Text>
-                <Pressable onPress={showCheckOutTimePicker}>
-                    <TextInput
-                        style={[styles.inputField, styles.borderStyle]}
-                        editable={false}
-                        value={formattedCheckOut}
-                    />
-                </Pressable>
-                {showCheckOutPicker && (
-                    <DateTimePicker
-                        testID="checkOutTimePicker"
-                        value={checkOut}
-                        mode="time"
-                        display="spinner"
-                        onChange={onChangeCheckOutTime}
-                    />
-                )}
-
-                <TouchableOpacity style={styles.loginBtn} onPress={uploadAttendance}>
-                    <Text style={[styles.loginBtnText, styles.boldFont]}>MENTÉS</Text>
-                </TouchableOpacity>
+                <View style={[styles.boxes]}>
+                    <View style={[styles.box, common.borderStyle, styles.greenBox]}>
+                        <Text style={[common.regularFont, common.regularSize, common.whiteText]}>Dátum</Text>
+                        <Pressable onPress={showDatePicker}>
+                            <TextInput
+                                style={[styles.inputField, common.borderStyle, common.darkBrownColor]}
+                                editable={false}
+                                value={formattedWorkDate}
+                                placeholder="Válassz napot!" />
+                        </Pressable>
+                        {
+                            showWorkDate && (
+                                <DateTimePicker
+                                    testID='dateTimePicker'
+                                    value={workDate}
+                                    mode="date"
+                                    display="spinner"
+                                    minimumDate={new Date(2000, 1, 1)}
+                                    onChange={onChangeDate} />
+                            )
+                        }
+                        <View style={styles.when}>
+                            <View style={[styles.halfWhen]}>
+                                <Text style={[common.regularFont, common.regularSize, common.whiteText]}>Mettől?</Text>
+                                <Pressable onPress={showCheckInTimePicker}>
+                                    <TextInput
+                                        style={[styles.inputField, common.borderStyle, common.darkBrownColor]}
+                                        editable={false}
+                                        value={formattedCheckIn}
+                                    />
+                                </Pressable>
+                                {showCheckInPicker && (
+                                    <DateTimePicker
+                                        testID="checkInTimePicker"
+                                        value={checkIn}
+                                        mode="time"
+                                        display="spinner"
+                                        onChange={onChangeCheckInTime}
+                                    />
+                                )}
+                            </View>
+                            <View style={[styles.halfWhen, { marginLeft: 10 }]}>
+                                <Text style={[common.regularFont, common.regularSize, common.whiteText]}>Meddig?</Text>
+                                <Pressable onPress={showCheckOutTimePicker}>
+                                    <TextInput
+                                        style={[styles.inputField, common.borderStyle, common.darkBrownColor]}
+                                        editable={false}
+                                        value={formattedCheckOut}
+                                    />
+                                </Pressable>
+                                {showCheckOutPicker && (
+                                    <DateTimePicker
+                                        testID="checkOutTimePicker"
+                                        value={checkOut}
+                                        mode="time"
+                                        display="spinner"
+                                        onChange={onChangeCheckOutTime}
+                                    />
+                                )}
+                            </View>
+                        </View>
+                        <TouchableOpacity style={styles.button} onPress={uploadAttendance}>
+                            <Text style={[styles.buttonText, common.boldFont]}>MENTÉS</Text>
+                        </TouchableOpacity>
+                    </View>
+                </View>
             </View>
             <View style={styles.jobs}>
                 <FlatList
@@ -224,6 +254,41 @@ export default function AttendanceSheetSecond({ navigation, route }) {
 }
 
 const styles = StyleSheet.create({
+    divider: {
+        width: 1,
+        backgroundColor: '#373B2C',
+        marginHorizontal: 20,
+    },
+    deleteBtn: {
+        color: '#F5443F'
+    },
+    lefty: {
+        flex: 3
+    },
+    righty: {
+        flex: 1,
+        alignItems: "center",
+        justifyContent: "center",
+    },
+    actualMonth: {
+        width: "100%",
+        alignItems: "center",
+    },
+    when: {
+        flexDirection: 'row'
+    },
+    halfWhen: {
+        flex: 1
+    },
+    inputField: {
+        borderRadius: 10,
+        width: '100%',
+        paddingHorizontal: 10,
+        backgroundColor: '#E0E0E0',
+        color: "#000",
+        marginTop: 8,
+        marginBottom: 12,
+    },
     switchContainer: {
         flexDirection: 'row',
         alignItems: 'center',
@@ -234,42 +299,9 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
     },
-    lightFont: {
-        fontFamily: 'Quicksand-Light',
-    },
-    regularFont: {
-        fontFamily: 'Quicksand-Regular',
-    },
-    semiBoldFont: {
-        fontFamily: 'Quicksand-SemiBold',
-    },
-    boldFont: {
-        fontFamily: 'Quicksand-Bold',
-    },
-    regularSize: {
-        fontSize: 17
-    },
-    mediumSize: {
-        fontSize: 22
-    },
-    bigSize: {
-        fontSize: 30
-    },
-    whiteText: {
-        color: '#FFFFFF',
-    },
-    borderStyle: {
-        borderColor: '#373B2C',
-        borderWidth: 2,
-    },
-    longText: {
-        textAlign: "left",
-        marginBottom: 10
-    },
     main: {
         flex: 1,
-        alignItems: 'center',
-        fontSize: 200,
+        width: '100%',
         backgroundColor: '#B4FB01',
     },
     topView: {
@@ -291,31 +323,55 @@ const styles = StyleSheet.create({
         width: 30,
     },
     jobs: {
+        flex: 1,
         width: '100%',
         flexDirection: 'Column',
         paddingHorizontal: 20,
         paddingTop: 10
     },
-    inputField: {
-        borderRadius: 10,
+    boxes: {
         width: '100%',
-        paddingHorizontal: 10,
-        backgroundColor: '#E0E0E0',
-        marginBottom: 12,
-        color: "#373B2C"
+        paddingHorizontal: 20,
+        paddingVertical: 10
+    },
+    box: {
+        width: '100%',
+        marginVertical: 5,
+        paddingVertical: 10,
+        paddingHorizontal: 18,
+        backgroundColor: '#FFFFFF',
+        borderRadius: 30
+    },
+    greenBox: {
+        backgroundColor: '#373B2C'
+    },
+    jobCard: {
+        width: '100%',
+        flexDirection: 'row',
+        backgroundColor: '#FFFFFF',
+        marginVertical: 7,
+        paddingHorizontal: 20,
+        paddingVertical: 20,
+        borderRadius: 25,
+    },
+    jobOtherPart: {
+        flexDirection: 'row',
+        alignItems: 'baseline',
+        justifyContent: 'space-between',
+        width: '100%'
     },
     inputFieldB: {
         marginBottom: 3,
     },
-    loginBtn: {
+    button: {
         backgroundColor: '#687A3C',
         alignItems: "center",
-        borderRadius: 20,
-        marginBottom: 70,
-        paddingHorizontal: 30,
+        marginVertical: 10,
         paddingVertical: 10,
+        paddingHorizontal: 15,
+        borderRadius: 15,
     },
-    loginBtnText: {
+    buttonText: {
         color: '#FFF',
         fontSize: 20
     },
