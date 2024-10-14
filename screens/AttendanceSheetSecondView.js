@@ -249,13 +249,6 @@ export default function AttendanceSheetSecond({ navigation, route }) {
                     showsVerticalScrollIndicator={false}
                     keyExtractor={item => item.id} />
             </View>
-            <View style={styles.jobs}>
-                <FlatList
-                    data={attendance}
-                    renderItem={renderAttendance}
-                    showsVerticalScrollIndicator={false}
-                    keyExtractor={item => item.id} />
-            </View>
         </View>
     )
 }
