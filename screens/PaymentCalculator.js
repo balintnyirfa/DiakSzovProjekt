@@ -1,6 +1,7 @@
-import Checkbox from "expo-checkbox";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Image, Pressable, StatusBar, StyleSheet, Switch, Text, TextInput, TouchableOpacity, View } from "react-native";
+
+import common from "../styles/common";
 
 export default function PaymentCalculator({ navigation }) {
     const [is25Selected, set25IsSelected] = useState(false);
@@ -20,12 +21,6 @@ export default function PaymentCalculator({ navigation }) {
         finalPayment -= (payment * tax);
         setNet(finalPayment);
     };
-    //useEffect(() => {
-    //
-    //    calculatePayment();
-    //}, [workHours, gross, is25Selected]);
-
-
 
     return (
         <View style={styles.main}>
@@ -33,43 +28,43 @@ export default function PaymentCalculator({ navigation }) {
             <View style={[styles.topView]}>
                 <TouchableOpacity style={[styles.returnButton]} onPress={() => navigation.goBack()}>
                     <Image source={{ uri: 'https://i.postimg.cc/mkjYJVQY/arrow-sm-left-svgrepo-com-1.png' }} style={styles.arrow} />
-                    <Text>Vissza</Text>
+                    <Text style={[common.boldFont, common.darkBrownColor]}>Vissza</Text>
                 </TouchableOpacity>
                 <View style={{ width: '100%', alignItems: 'center', paddingVertical: 10 }}>
-                    <Text style={[styles.boldFont, styles.bigSize]}>Bérkalkulátor</Text>
+                    <Text style={[common.boldFont, common.bigSize, common.darkBrownColor]}>Bérkalkulátor</Text>
                 </View>
             </View>
             <View style={[styles.jobs]}>
-                <Text style={[styles.regularFont, styles.regularSize, styles.longText]}>Számold ki, hogy mennyi lesz a várható béred!</Text>
-                <Text style={[styles.boldFont, styles.regularSize, { paddingBottom: 5 }]}>Ledolgozott órák</Text>
+                <Text style={[common.regularFont, common.regularSize, styles.longText, common.darkBrownColor]}>Számold ki, hogy mennyi lesz a várható béred!</Text>
+                <Text style={[common.boldFont, common.regularSize, common.darkBrownColor, { paddingBottom: 5 }]}>Ledolgozott órák</Text>
                 <TextInput
-                    style={[styles.inputField, styles.borderStyle]}
+                    style={[common.inputField, common.borderStyle, common.darkBrownColor]}
                     keyboardType="number-pad"
                     onChangeText={text => setWorkHours(text)}
                     value={String(workHours)} />
-                <Text style={[styles.boldFont, styles.regularSize, { paddingBottom: 5 }]}>Bruttó bér</Text>
+                <Text style={[common.boldFont, common.regularSize, common.darkBrownColor, { paddingBottom: 5 }]}>Bruttó bér</Text>
                 <TextInput
-                    style={[styles.inputField, styles.borderStyle]}
+                    style={[common.inputField, common.borderStyle, common.darkBrownColor]}
                     keyboardType="number-pad"
                     onChangeText={text => setGross(text)}
                     value={String(gross)} />
-                <Text style={[styles.boldFont, styles.regularSize, { paddingBottom: 5 }]}>Várható fizetés</Text>
+                <Text style={[common.boldFont, common.regularSize, common.darkBrownColor, { paddingBottom: 5 }]}>Várható fizetés</Text>
                 <TextInput
-                    style={[styles.inputField, styles.borderStyle]}
+                    style={[common.inputField, common.borderStyle, common.darkBrownColor]}
                     editable={false}
                     onChangeText={text => setNet(text)}
                     value={String(net)} />
             </View>
             <View style={styles.switchContainer}>
                 <View style={styles.switchContainerInside}>
-                    <Text style={[styles.regularFont]}>25 év feletti vagyok (15%)</Text>
+                    <Text style={[common.regularFont, common.darkBrownColor]}>25 év feletti vagyok (15%)</Text>
                     <Switch
                         value={is25Selected}
                         onValueChange={set25IsSelected} />
                 </View>
                 <TouchableOpacity>
                     <Pressable onPress={calculatePayment}>
-                        <Text style={[styles.regularFont, styles.boldFont]}>SZÁMOL</Text>
+                        <Text style={[common.regularFont, common.boldFont, common.darkBrownColor]}>SZÁMOL</Text>
                     </Pressable>
                 </TouchableOpacity>
             </View>
@@ -87,34 +82,6 @@ const styles = StyleSheet.create({
     switchContainerInside: {
         flexDirection: 'row',
         alignItems: 'center',
-    },
-    lightFont: {
-        fontFamily: 'Quicksand-Light',
-    },
-    regularFont: {
-        fontFamily: 'Quicksand-Regular',
-    },
-    semiBoldFont: {
-        fontFamily: 'Quicksand-SemiBold',
-    },
-    boldFont: {
-        fontFamily: 'Quicksand-Bold',
-    },
-    regularSize: {
-        fontSize: 17
-    },
-    mediumSize: {
-        fontSize: 22
-    },
-    bigSize: {
-        fontSize: 30
-    },
-    whiteText: {
-        color: '#FFFFFF',
-    },
-    borderStyle: {
-        borderColor: '#373B2C',
-        borderWidth: 2,
     },
     longText: {
         textAlign: "left",
@@ -149,13 +116,6 @@ const styles = StyleSheet.create({
         flexDirection: 'Column',
         paddingHorizontal: 20,
         paddingTop: 10
-    },
-    inputField: {
-        borderRadius: 10,
-        width: '100%',
-        paddingHorizontal: 10,
-        backgroundColor: '#E0E0E0',
-        marginBottom: 12,
     },
     inputFieldB: {
         marginBottom: 3,

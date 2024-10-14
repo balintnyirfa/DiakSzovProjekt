@@ -4,9 +4,10 @@ import React, { useEffect, useState } from "react";
 import { FlatList, Image, Pressable, StatusBar, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { db } from "../config/firebase";
 
+import common from "../styles/common";
+
 export default function AttendanceSheetFirst({ navigation }) {
     const auth = getAuth();
-    //const user = auth.currentUser; asdasd
     const userId = auth.currentUser ? auth.currentUser.uid : null;
 
     const [application, setApplication] = useState([]);
@@ -45,14 +46,14 @@ export default function AttendanceSheetFirst({ navigation }) {
         const acceptedText = item.data.accepted ? 'Elfogadva' : 'Nincs elfogadva';
 
         return (
-            <TouchableOpacity style={[styles.jobCard, styles.borderStyle]} onPress={() => navigation.navigate('AttendanceSheetSecond', { jobData: item.data })}>
+            <TouchableOpacity style={[styles.jobCard, common.borderStyle]} onPress={() => navigation.navigate('AttendanceSheetSecond', { jobData: item.data })}>
                 <View style={styles.jobOtherPart}>
-                    <Text style={[styles.jobTitles, styles.boldFont]}>{item.data.job_name}</Text>
-                    <Text style={[styles.jobTitles, styles.regularFont]}>{acceptedText}</Text>
+                    <Text style={[styles.jobTitles, common.boldFont, common.darkBrownColor]}>{item.data.job_name}</Text>
+                    <Text style={[styles.jobTitles, common.regularFont, common.darkBrownColor]}>{acceptedText}</Text>
                 </View>
                 <View style={styles.jobOtherPart}>
-                    <Text style={[styles.jobTitles, styles.regularFont]}>{item.data.company_name}</Text>
-                    <Text style={[styles.jobTitles, styles.lightFont]}>{formattedDate}</Text>
+                    <Text style={[styles.jobTitles, common.regularFont, common.darkBrownColor]}>{item.data.company_name}</Text>
+                    <Text style={[styles.jobTitles, common.lightFont, common.darkBrownColor]}>{formattedDate}</Text>
                 </View>
             </TouchableOpacity>
         );
@@ -60,19 +61,19 @@ export default function AttendanceSheetFirst({ navigation }) {
 
 
     return (
-        <View style={styles.main}>
+        <View style={common.main}>
             <StatusBar backgroundColor='#B4FB01' barStyle={'dark-content'} />
             <View style={[styles.topView]}>
                 <Pressable style={[styles.returnButton]} onPress={() => navigation.goBack()}>
                     <Image source={{ uri: 'https://i.postimg.cc/mkjYJVQY/arrow-sm-left-svgrepo-com-1.png' }} style={styles.arrow} />
-                    <Text>Vissza</Text>
+                    <Text style={[common.boldFont, common.darkBrownColor]}>Vissza</Text>
                 </Pressable>
                 <View style={{ width: '100%', alignItems: 'center', paddingVertical: 10 }}>
-                    <Text style={[styles.boldFont, styles.bigSize]}>Jelenlétim</Text>
+                    <Text style={[common.boldFont, common.bigSize, common.darkBrownColor]}>Jelenlétim</Text>
                 </View>
             </View>
             <View style={styles.jobs}>
-                <Text style={[styles.regularFont, styles.regularSize, styles.longText]}>Kattints arra a munkára, ahol dolgoztál és rögzítsd az óráid!</Text>
+                <Text style={[common.regularFont, common.regularSize, styles.longText, common.darkBrownColor]}>Kattints arra a munkára, ahol dolgoztál és rögzítsd az óráid!</Text>
                 <FlatList
                     data={application}
                     renderItem={renderAppliedJobs}
@@ -84,41 +85,6 @@ export default function AttendanceSheetFirst({ navigation }) {
 }
 
 const styles = StyleSheet.create({
-    lightFont: {
-        fontFamily: 'Quicksand-Light',
-    },
-    regularFont: {
-        fontFamily: 'Quicksand-Regular',
-    },
-    semiBoldFont: {
-        fontFamily: 'Quicksand-SemiBold',
-    },
-    boldFont: {
-        fontFamily: 'Quicksand-Bold',
-    },
-    regularSize: {
-        fontSize: 17
-    },
-    mediumSize: {
-        fontSize: 22
-    },
-    bigSize: {
-        fontSize: 30
-    },
-    whiteText: {
-        color: '#FFFFFF',
-    },
-    borderStyle: {
-        borderColor: '#373B2C',
-        borderWidth: 2,
-    },
-
-    main: {
-        flex: 1,
-        alignItems: 'center',
-        fontSize: 200,
-        backgroundColor: '#B4FB01',
-    },
     jobs: {
         flex: 1,
         width: '100%',
@@ -162,10 +128,6 @@ const styles = StyleSheet.create({
     jobTitles: {
         fontSize: 18,
         color: '#373B2C'
-    },
-    borderStyle: {
-        borderColor: '#373B2C',
-        borderWidth: 2,
     },
     longText: {
         textAlign: "left",

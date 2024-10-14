@@ -1,9 +1,9 @@
-import { getAuth, onAuthStateChanged, signOut } from 'firebase/auth';
-import { doc, getDoc, collection, limit, onSnapshot, query, getDocs } from 'firebase/firestore';
+import { onAuthStateChanged } from 'firebase/auth';
+import { doc, getDoc, collection, query, getDocs } from 'firebase/firestore';
 import React, { useState, useEffect } from 'react';
-import { BackHandler, Image, Pressable, ScrollView, StatusBar, StyleSheet, Text, TextInput, TouchableNativeFeedbackComponent, TouchableOpacity, View } from 'react-native';
+import { BackHandler, ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { auth, db } from '../config/firebase';
-
+import common from '../styles/common';
 
 export default function Home({ navigation }) {
     const [name, setName] = useState('');
@@ -35,7 +35,7 @@ export default function Home({ navigation }) {
                 console.log('No such document!');
             }
         } else {
-            // User is signed out
+            console.log('User is logged out!');
         }
     });
 
@@ -86,26 +86,26 @@ export default function Home({ navigation }) {
     }, []);
 
     return (
-        <View style={styles.main}>
+        <View style={common.main}>
             <StatusBar backgroundColor='#373B2C' barStyle={'light-content'}/>
             <ScrollView style={{width: '100%', flex: 1}}>
                 <View style={styles.header}>
-                    <Text style={[styles.boldFont, styles.headerWelcome]}>Üdv,</Text>
-                    <Text style={[styles.regularFont, styles.headerName]}>{name}</Text>
+                    <Text style={[common.boldFont, styles.headerWelcome, common.darkBrownColor]}>Üdv,</Text>
+                    <Text style={[common.regularFont, styles.headerName, common.darkBrownColor]}>{name}</Text>
                 </View>
                 <View style={styles.jobs}>
-                    <Text style={[styles.boldFont, styles.title]}>Friss munkáink</Text>
+                    <Text style={[common.boldFont, styles.title, common.darkBrownColor]}>Friss munkáink</Text>
                     {
                         (jobs.map((job) =>
                             <TouchableOpacity key={job.id} onPress={() => navigation.navigate('JobDetails', { jobData: job.data, jobCategory: job.category, jobId: job.id })}>
-                                <View key={job.id} style={[styles.jobCard, styles.borderStyle]}>
+                                <View key={job.id} style={[styles.jobCard, common.borderStyle]}>
                                     <View style={styles.jobOtherPart}>
-                                        <Text style={[styles.jobTitles, styles.boldFont]}>{job.data.company}</Text>
-                                        <Text style={[styles.jobTitles, styles.lightFont]}>{job.category.name}</Text>
+                                        <Text style={[styles.jobTitles, common.boldFont, common.darkBrownColor]}>{job.data.company}</Text>
+                                        <Text style={[styles.jobTitles, common.lightFont, common.darkBrownColor]}>{job.category.name}</Text>
                                     </View>
                                     <View style={styles.jobOtherPart}>
-                                        <Text style={[styles.jobTitles, styles.regularFont]}>{job.data.name}</Text>
-                                        <Text style={[styles.jobTitles, styles.regularFont]}>{job.data.city}</Text>
+                                        <Text style={[styles.jobTitles, common.regularFont, common.darkBrownColor]}>{job.data.name}</Text>
+                                        <Text style={[styles.jobTitles, common.regularFont, common.darkBrownColor]}>{job.data.city}</Text>
                                     </View>
                                 </View>
                             </TouchableOpacity>
@@ -118,24 +118,6 @@ export default function Home({ navigation }) {
 }
 
 const styles = StyleSheet.create({
-    lightFont: {
-        fontFamily: 'Quicksand-Light',
-    },
-    regularFont: {
-        fontFamily: 'Quicksand-Regular',
-    },
-    semiBoldFont: {
-        fontFamily: 'Quicksand-SemiBold',
-    },
-    boldFont: {
-        fontFamily: 'Quicksand-Bold',
-    },
-    main: {
-        flex: 1,
-        justifyContent: 'flex-start',
-        alignItems: 'center',
-        backgroundColor: '#B4FB01',
-    },
     header: {
         paddingHorizontal: 20,
         paddingVertical: 30,
@@ -187,8 +169,4 @@ const styles = StyleSheet.create({
         fontSize: 22,
         color: '#373B2C'
     },
-    borderStyle: {
-        borderColor: '#373B2C',
-        borderWidth: 2,
-    }
 })

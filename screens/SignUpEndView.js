@@ -4,6 +4,8 @@ import { db } from '../config/firebase';
 import { getAuth } from 'firebase/auth';
 import { doc, setDoc } from 'firebase/firestore';
 
+import common from '../styles/common';
+
 export default function SignUpEnd({ navigation }) {
 
     const [idCardNum, setIdCardNum] = useState('');
@@ -63,44 +65,44 @@ export default function SignUpEnd({ navigation }) {
     }
 
     return (
-        <View style={styles.main}>
+        <View style={common.main}>
             <StatusBar backgroundColor='#B4FB01' barStyle={'light-content'} />
-            <View style={[styles.whiteBox, styles.borderStyle]}>
+            <View style={[styles.whiteBox, common.borderStyle]}>
                 <ScrollView showsVerticalScrollIndicator={false}>
-                    <Text style={[styles.header, styles.boldFont]}>BEFEJEZÉS</Text>
-                    <Text style={[styles.importantText, styles.regularFont]}>Add meg az alábbi adatokat a regisztráció befejezéséhez!</Text>
+                    <Text style={[styles.header, common.boldFont]}>BEFEJEZÉS</Text>
+                    <Text style={[styles.importantText, common.regularFont]}>Add meg az alábbi adatokat a regisztráció befejezéséhez!</Text>
                     <View style={styles.insideBox}>
-                        <Text style={[styles.inputText, styles.regularFont]}>Személyi igazolvány szám</Text>
+                        <Text style={[styles.inputText, common.regularFont]}>Személyi igazolvány szám</Text>
                         <TextInput
-                            style={styles.inputField}
+                            style={[common.inputField, common.darkBrownColor, common.regularFont]}
                             keyboardType='default'
                             onChangeText={text => setIdCardNum(text)}
                             value={idCardNum} />
 
-                        <Text style={[styles.inputText, styles.regularFont]}>Diákigazolvány szám</Text>
+                        <Text style={[styles.inputText, common.regularFont]}>Diákigazolvány szám</Text>
                         <TextInput
-                            style={styles.inputField}
+                            style={[common.inputField, common.darkBrownColor, common.regularFont]}
                             keyboardType='number-pad'
                             onChangeText={text => setStudentIdNum(text)}
                             value={studentIdNum} />
 
-                        <Text style={[styles.inputText, styles.regularFont]}>Adószám</Text>
+                        <Text style={[styles.inputText, common.regularFont]}>Adószám</Text>
                         <TextInput
-                            style={styles.inputField}
+                            style={[common.inputField, common.darkBrownColor, common.regularFont]}
                             keyboardType='number-pad'
                             onChangeText={text => setTaxIdNum(text)}
                             value={taxIdNum} />
 
-                        <Text style={[styles.inputText, styles.regularFont]}>TAJ szám</Text>
+                        <Text style={[styles.inputText, common.regularFont]}>TAJ szám</Text>
                         <TextInput
-                            style={styles.inputField}
+                            style={[common.inputField, common.darkBrownColor, common.regularFont]}
                             keyboardType='number-pad'
                             onChangeText={text => setTajNum(text)}
                             value={tajNum} />
                     </View>
                     <View style={{ width: '100%', alignItems: 'center' }}>
                         <Pressable style={styles.loginBtn} onPress={() => saveData()}>
-                            <Text style={[styles.loginBtnText, styles.boldFont]}>KÖVETKEZŐ</Text>
+                            <Text style={[styles.loginBtnText, common.boldFont]}>KÖVETKEZŐ</Text>
                         </Pressable>
                     </View>
                 </ScrollView>
@@ -110,24 +112,6 @@ export default function SignUpEnd({ navigation }) {
 };
 
 const styles = StyleSheet.create({
-    lightFont: {
-        fontFamily: 'Quicksand-Light',
-    },
-    regularFont: {
-        fontFamily: 'Quicksand-Regular',
-    },
-    semiBoldFont: {
-        fontFamily: 'Quicksand-SemiBold',
-    },
-    boldFont: {
-        fontFamily: 'Quicksand-Bold',
-    },
-    main: {
-        flex: 1,
-        justifyContent: 'flex-end',
-        alignItems: 'center',
-        backgroundColor: '#B4FB01',
-    },
     whiteBox: {
         width: '100%',
         flex: 3,
@@ -159,15 +143,7 @@ const styles = StyleSheet.create({
     },
     inputText: {
         fontSize: 18,
-        color: '#000',
         marginBottom: 8,
-    },
-    inputField: {
-        borderRadius: 10,
-        width: '100%',
-        paddingHorizontal: 10,
-        backgroundColor: '#E0E0E0',
-        marginBottom: 12,
     },
     loginBtn: {
         backgroundColor: '#687A3C',
@@ -180,8 +156,4 @@ const styles = StyleSheet.create({
         color: '#FFF',
         fontSize: 20
     },
-    borderStyle: {
-        borderColor: '#373B2C',
-        borderWidth: 2,
-    }
 });

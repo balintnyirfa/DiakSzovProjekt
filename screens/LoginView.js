@@ -1,9 +1,10 @@
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, View, StatusBar, TextInput, Pressable, Image, Alert, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, StatusBar, TextInput, Pressable, Image, Alert, TouchableOpacity, KeyboardAvoidingView } from 'react-native';
 import { auth, db } from '../config/firebase';
 import { doc, getDoc } from 'firebase/firestore';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import common from '../styles/common';
 
 export default function Login({ navigation }) {
     const [email, setEmail] = useState('');
@@ -70,61 +71,43 @@ export default function Login({ navigation }) {
     }
 
     return (
-        <View style={styles.main}>
+        <KeyboardAvoidingView style={common.main}>
             <StatusBar backgroundColor='#B4FB01' barStyle={'dark-content'} />
-            <View style={[styles.whiteBox, styles.borderStyle]}>
-                <Text style={[styles.header, styles.boldFont]}>BEJELENTKEZÉS</Text>
+            <View style={[styles.whiteBox, common.borderStyle]}>
+                <Text style={[styles.header, common.boldFont, common.darkBrownColor]}>BEJELENTKEZÉS</Text>
                 <View style={styles.insideBox}>
-                    <Text style={[styles.inputText, styles.regularFont]}>Email cím</Text>
+                    <Text style={[styles.inputText, common.regularFont, common.darkBrownColor]}>Email cím</Text>
                     <TextInput
-                        style={styles.inputField}
+                        style={[common.inputField, common.darkBrownColor]}
                         keyboardType='email-address'
                         autoCapitalize='none'
                         onChangeText={text => setEmail(text)}
                         value={email} />
-                    <Text style={[styles.inputText, styles.regularFont]}>Jelszó</Text>
+                    <Text style={[styles.inputText, styles.regularFont, common.darkBrownColor]}>Jelszó</Text>
                     <TextInput
-                        style={[styles.inputField, styles.inputFieldB]}
+                        style={[common.inputField, styles.inputFieldB, common.darkBrownColor]}
                         secureTextEntry
                         onChangeText={text => setPassword(text)}
                         value={password} />
                     <TouchableOpacity onPress={() => navigation.navigate('PasswordReset')}>
-                        <Text style={[styles.passwordText, styles.regularFont]}>Elfelejtettem a jelszavam</Text>
+                        <Text style={[styles.passwordText, common.regularFont, common.darkBrownColor]}>Elfelejtettem a jelszavam</Text>
                     </TouchableOpacity>
                 </View>
                 <TouchableOpacity style={styles.loginBtn} onPress={handleLogin}>
-                    <Text style={[styles.loginBtnText, styles.boldFont]}>BEJELENTKEZEK</Text>
+                    <Text style={[styles.loginBtnText, common.boldFont]}>BEJELENTKEZEK</Text>
                 </TouchableOpacity>
                 <View style={styles.returnBox}>
                     <TouchableOpacity style={[styles.returnButton, styles.returnButton]} onPress={() => navigation.goBack()}>
                         <Image source={{ uri: 'https://i.postimg.cc/zGPDCCrc/arrow-sm-left-svgrepo-com-1.png' }} style={styles.arrow} />
-                        <Text style={[styles.returnBtnText, styles.boldFont]}>Vissza</Text>
+                        <Text style={[styles.returnBtnText, common.boldFont]}>Vissza</Text>
                     </TouchableOpacity>
                 </View>
             </View>
-        </View>
+        </KeyboardAvoidingView>
     );
 };
 
 const styles = StyleSheet.create({
-    lightFont: {
-        fontFamily: 'Quicksand-Light',
-    },
-    regularFont: {
-        fontFamily: 'Quicksand-Regular',
-    },
-    semiBoldFont: {
-        fontFamily: 'Quicksand-SemiBold',
-    },
-    boldFont: {
-        fontFamily: 'Quicksand-Bold',
-    },
-    main: {
-        flex: 1,
-        justifyContent: 'flex-end',
-        alignItems: 'center',
-        backgroundColor: '#B4FB01',
-    },
     whiteBox: {
         width: '100%',
         paddingHorizontal: 30,
@@ -148,15 +131,7 @@ const styles = StyleSheet.create({
     },
     inputText: {
         fontSize: 20,
-        color: '#000',
         marginBottom: 8,
-    },
-    inputField: {
-        borderRadius: 10,
-        width: '100%',
-        paddingHorizontal: 10,
-        backgroundColor: '#E0E0E0',
-        marginBottom: 12,
     },
     inputFieldB: {
         marginBottom: 3,
@@ -193,8 +168,4 @@ const styles = StyleSheet.create({
         color: '#93B92E',
         fontSize: 16,
     },
-    borderStyle: {
-        borderColor: '#373B2C',
-        borderWidth: 2,
-    }
 });

@@ -1,7 +1,8 @@
-import { collection, doc, getDoc, getDocs, onSnapshot, query } from 'firebase/firestore';
+import { collection, doc, getDoc, getDocs, query } from 'firebase/firestore';
 import React, { useEffect, useState } from 'react';
-import { FlatList, Pressable, ScrollView, StatusBar, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { FlatList, ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { db } from '../config/firebase';
+import common from '../styles/common';
 
 export default function Jobs({ navigation, route }) {
     //const [loading, setLoading] = useState(false);
@@ -60,14 +61,14 @@ export default function Jobs({ navigation, route }) {
 
     const renderJobItem = ({ item }) => (
         <TouchableOpacity key={item.id} onPress={() => navigation.navigate('JobDetails', { jobData: item.data, jobCategory: item.category, jobId: item.id })}>
-            <View style={[styles.jobCard, styles.borderStyle]}>
+            <View style={[styles.jobCard, common.borderStyle]}>
                 <View style={styles.jobOtherPart}>
-                    <Text style={[styles.jobTitles, styles.boldFont]}>{item.data.company}</Text>
-                    <Text style={[styles.jobTitles, styles.lightFont]}>{item.category ? item.category.name : 'No category!'}</Text>
+                    <Text style={[styles.jobTitles, common.boldFont, common.darkBrownColor]}>{item.data.company}</Text>
+                    <Text style={[styles.jobTitles, common.lightFont, common.darkBrownColor]}>{item.category ? item.category.name : 'No category!'}</Text>
                 </View>
                 <View style={styles.jobOtherPart}>
-                    <Text style={[styles.jobTitles, styles.regularFont]}>{item.data.name}</Text>
-                    <Text style={[styles.jobTitles, styles.regularFont]}>{item.data.city}</Text>
+                    <Text style={[styles.jobTitles, common.regularFont, common.darkBrownColor]}>{item.data.name}</Text>
+                    <Text style={[styles.jobTitles, common.regularFont, common.darkBrownColor]}>{item.data.city}</Text>
                 </View>
             </View>
         </TouchableOpacity>
@@ -84,11 +85,11 @@ export default function Jobs({ navigation, route }) {
     ))*/
 
     return (
-        <View style={styles.main}>
+        <View style={common.main}>
             <StatusBar backgroundColor='#373B2C' barStyle={'light-content'}/>
-            <View style={[styles.header, styles.borderStyle]}>
-                <Text style={[styles.boldFont, styles.headerWelcome]}>Aktuális munkáink</Text>
-                <Text style={[styles.regularFont, styles.headerName]}>Aktív: {jobSum} db</Text>
+            <View style={[styles.header, common.borderStyle]}>
+                <Text style={[common.boldFont, styles.headerWelcome, common.darkBrownColor]}>Aktuális munkáink</Text>
+                <Text style={[common.regularFont, styles.headerName, common.darkBrownColor]}>Aktív: {jobSum} db</Text>
                 <FlatList>
 
                 </FlatList>
@@ -98,7 +99,7 @@ export default function Jobs({ navigation, route }) {
                             (categories.map((category) =>
                                 <TouchableOpacity key={category.id} onPress={() => setSelectedCategory(prevCategory => prevCategory === category.id ? null : category.id)}>
                                     <View key={category.id} style={[styles.categoryCard]}>
-                                        <Text style={[styles.categoryTitles, styles.boldFont]}>{category.data.name}</Text>
+                                        <Text style={[styles.categoryTitles, common.boldFont]}>{category.data.name}</Text>
                                     </View>
                                 </TouchableOpacity>
 
@@ -120,24 +121,6 @@ export default function Jobs({ navigation, route }) {
 }
 
 const styles = StyleSheet.create({
-    lightFont: {
-        fontFamily: 'Quicksand-Light',
-    },
-    regularFont: {
-        fontFamily: 'Quicksand-Regular',
-    },
-    semiBoldFont: {
-        fontFamily: 'Quicksand-SemiBold',
-    },
-    boldFont: {
-        fontFamily: 'Quicksand-Bold',
-    },
-    main: {
-        flex: 1,
-        justifyContent: 'flex-start',
-        alignItems: 'center',
-        backgroundColor: '#B4FB01',
-    },
     header: {
         paddingHorizontal: 20,
         paddingTop: 30,
@@ -162,25 +145,11 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         paddingTop: 10
     },
-    /*firstCategoryCard: {
-        width: 200,
-        alignItems: 'center',
-        flexDirection: 'column',
-        backgroundColor: '#687A3C',
-        marginTop: 5,
-        marginLeft: 20,
-        marginRight: 7,
-        paddingHorizontal: 20,
-        paddingVertical: 10,
-        borderRadius: 15,
-    },*/
     categoryCard: {
-        //width: 100,
         alignItems: 'center',
         flexDirection: 'column',
         backgroundColor: '#687A3C',
         marginTop: 5,
-        //marginHorizontal: 7,
         marginRight: 7,
         paddingHorizontal: 15,
         paddingVertical: 10,
@@ -219,10 +188,6 @@ const styles = StyleSheet.create({
         fontSize: 18,
         color: '#FFFFFF'
     },
-    borderStyle: {
-        borderColor: '#373B2C',
-        borderWidth: 2,
-    }
 });
 
 
