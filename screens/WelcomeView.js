@@ -1,13 +1,15 @@
 import React from 'react';
 import { StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
+import common from '../styles/common';
+
 export default function Welcome({ navigation }) {
   return (
     <View style={styles.main}>
       <StatusBar backgroundColor='#B4FB01' barStyle={'dark-content'} />
       <View style={[styles.greenBox, styles.borderStyle]}>
-        <Text style={[styles.appNameText, styles.boldFont]}>DIÁKMESTEREK</Text>
-        <Text style={[styles.welcomeText, styles.boldFont]}>ÜDVÖZÖLLEK</Text>
+        <Text style={[styles.appNameText, common.boldFont]}>DIÁKMESTEREK</Text>
+        <Text style={[styles.welcomeText, common.boldFont]}>ÜDVÖZÖLLEK</Text>
       </View>
       <View style={styles.buttonBox}>
         <TouchableOpacity onPress={() => navigation.navigate('SignUp')}>
@@ -16,7 +18,7 @@ export default function Welcome({ navigation }) {
           </View>
         </TouchableOpacity>
         <TouchableOpacity style={[styles.button]} onPress={() => navigation.navigate('Login')}>
-          <Text style={[styles.buttonText, styles.boldFont]}>Már van fiókom</Text>
+          <Text style={[styles.buttonText, common.boldFont]}>Már van fiókom</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -24,23 +26,8 @@ export default function Welcome({ navigation }) {
 };
 
 const styles = StyleSheet.create({
-  lightFont: {
-    fontFamily: 'Quicksand-Light',
-  },
-  regularFont: {
-    fontFamily: 'Quicksand-Regular',
-  },
-  semiBoldFont: {
-    fontFamily: 'Quicksand-SemiBold',
-  },
-  boldFont: {
-    fontFamily: 'Quicksand-Bold',
-  },
   mediumText: {
     fontSize: 20,
-  },
-  bigText: {
-
   },
   borderStyle: {
     borderBottomLeftRadius: 500,

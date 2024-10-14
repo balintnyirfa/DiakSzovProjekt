@@ -1,12 +1,13 @@
 import { getAuth } from "firebase/auth";
 import { collection, getDocs, query } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
-import { FlatList, Image, Pressable, ScrollView, StatusBar, StyleSheet, Text, View } from "react-native";
+import { FlatList, Image, Pressable, StatusBar, StyleSheet, Text, View } from "react-native";
 import { db } from "../config/firebase";
+
+import common from "../styles/common";
 
 export default function AppliedJobs({ navigation }) {
     const auth = getAuth();
-    //const user = auth.currentUser; asdasd
     const userId = auth.currentUser ? auth.currentUser.uid : null;
 
     const [application, setApplication] = useState([]);
@@ -45,30 +46,30 @@ export default function AppliedJobs({ navigation }) {
         const acceptedText = item.data.accepted ? 'Elfogadva' : 'Nincs elfogadva';
 
         return (
-            <View style={[styles.jobCard, styles.borderStyle]}>
+            <View style={[styles.jobCard, common.borderStyle]}>
                 <View style={styles.jobOtherPart}>
-                    <Text style={[styles.jobTitles, styles.boldFont]}>{item.data.job_name}</Text>
-                    <Text style={[styles.jobTitles, styles.regularFont]}>{acceptedText}</Text>
+                    <Text style={[styles.jobTitles, common.boldFont, common.darkBrownColor]}>{item.data.job_name}</Text>
+                    <Text style={[styles.jobTitles, common.regularFont, common.darkBrownColor]}>{acceptedText}</Text>
                 </View>
                 <View style={styles.jobOtherPart}>
-                    <Text style={[styles.jobTitles, styles.regularFont]}>{item.data.company_name}</Text>
-                    <Text style={[styles.jobTitles, styles.lightFont]}>{formattedDate}</Text>
+                    <Text style={[styles.jobTitles, common.regularFont, common.darkBrownColor]}>{item.data.company_name}</Text>
+                    <Text style={[styles.jobTitles, common.lightFont, common.darkBrownColor]}>{formattedDate}</Text>
                 </View>
             </View>
         );
     };
 
     return (
-        <View style={styles.main}>
+        <View style={common.main}>
             <StatusBar backgroundColor='#B4FB01' barStyle={'dark-content'} />
             <View style={[styles.topView]}>
                 <Pressable style={[styles.returnButton]} onPress={() => navigation.goBack()}>
                     <Image source={{ uri: 'https://i.postimg.cc/mkjYJVQY/arrow-sm-left-svgrepo-com-1.png' }} style={styles.arrow} />
-                    <Text>Vissza</Text>
+                    <Text style={[common.boldFont, common.darkBrownColor]}>Vissza</Text>
                 </Pressable>
                 <View style={{ width: '100%', alignItems: 'center', paddingVertical: 10 }}>
-                    <Text style={[styles.boldFont, styles.bigSize]}>Jelentkezéseim</Text>
-                    <Text style={[styles.regularFont, styles.mediumSize]}>Munkák száma: {applicationSum} db</Text>
+                    <Text style={[common.boldFont, common.bigSize, common.darkBrownColor]}>Jelentkezéseim</Text>
+                    <Text style={[common.regularFont, common.mediumSize, common.darkBrownColor]}>Munkák száma: {applicationSum} db</Text>
                 </View>
             </View>
             <View style={styles.jobs}>
@@ -83,41 +84,6 @@ export default function AppliedJobs({ navigation }) {
 };
 
 const styles = StyleSheet.create({
-    lightFont: {
-        fontFamily: 'Quicksand-Light',
-    },
-    regularFont: {
-        fontFamily: 'Quicksand-Regular',
-    },
-    semiBoldFont: {
-        fontFamily: 'Quicksand-SemiBold',
-    },
-    boldFont: {
-        fontFamily: 'Quicksand-Bold',
-    },
-    regularSize: {
-        fontSize: 17
-    },
-    mediumSize: {
-        fontSize: 22
-    },
-    bigSize: {
-        fontSize: 30
-    },
-    whiteText: {
-        color: '#FFFFFF',
-    },
-    borderStyle: {
-        borderColor: '#373B2C',
-        borderWidth: 2,
-    },
-
-    main: {
-        flex: 1,
-        alignItems: 'center',
-        fontSize: 200,
-        backgroundColor: '#B4FB01',
-    },
     jobs: {
         flex: 1,
         width: '100%',
@@ -162,8 +128,4 @@ const styles = StyleSheet.create({
         fontSize: 18,
         color: '#373B2C'
     },
-    borderStyle: {
-        borderColor: '#373B2C',
-        borderWidth: 2,
-    }
 });

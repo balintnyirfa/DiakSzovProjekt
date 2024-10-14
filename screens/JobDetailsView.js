@@ -1,14 +1,13 @@
-import { getAuth } from "firebase/auth";
-import { setDoc, query, collection, getDocs, setCategories, doc, getDoc, where } from "firebase/firestore";
+import { setDoc, query, doc, getDoc, where } from "firebase/firestore";
 import { auth, db } from "../config/firebase";
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { View, Text, ScrollView, Pressable, Image, StyleSheet, StatusBar, Alert } from 'react-native';
 import uuid from 'react-native-uuid';
 import 'react-native-get-random-values';
+import common from "../styles/common";
 
 export default function JobDetails({ navigation, route }) {
     const { jobData, jobCategory, jobId } = route.params;
-    const auth = getAuth();
     const userId = auth.currentUser ? auth.currentUser.uid : null;
 
     const createAlert = () => {
@@ -50,38 +49,38 @@ export default function JobDetails({ navigation, route }) {
     }
 
     return (
-        <View style={styles.main}>
+        <View style={common.main}>
             <StatusBar backgroundColor='#373B2C' barStyle={'light-content'} />
-            <View style={[styles.header, styles.borderStyle]}>
-                <Text style={[styles.boldFont, styles.headerText]}>{jobData.company}</Text>
-                <Text style={[styles.regularFont, styles.headerName]}>{jobData.city}</Text>
+            <View style={[styles.header, common.borderStyle]}>
+                <Text style={[common.boldFont, styles.headerText, common.darkBrownColor]}>{jobData.company}</Text>
+                <Text style={[common.regularFont, styles.headerName, common.darkBrownColor]}>{jobData.city}</Text>
                 <Pressable style={[styles.applyButton]} onPress={applyForJob}>
-                    <Text style={[styles.applyButtonText, styles.boldFont]}>JELENTKEZEK</Text>
+                    <Text style={[styles.applyButtonText, common.boldFont]}>JELENTKEZEK</Text>
                 </Pressable>
             </View>
             <ScrollView style={styles.scrollView}>
                 <View style={styles.jobs}>
-                    <View style={[styles.jobCard, styles.boxes, styles.borderStyle]}>
-                        <Text style={[styles.boldFont, styles.jobTitles]}>Pozíció: </Text>
-                        <Text style={[styles.regularFont, styles.jobTitles]}>{jobData.name}</Text>
+                    <View style={[styles.jobCard, styles.boxes, common.borderStyle]}>
+                        <Text style={[common.boldFont, styles.jobTitles, common.darkBrownColor]}>Pozíció: </Text>
+                        <Text style={[common.regularFont, styles.jobTitles, common.darkBrownColor]}>{jobData.name}</Text>
                     </View>
-                    <View style={[styles.jobCard, styles.boxes, styles.borderStyle]}>
-                        <Text style={[styles.boldFont, styles.jobTitles]}>Fizetés: </Text>
-                        <Text style={[styles.regularFont, styles.jobTitles]}>{jobData.payment} Forint/óra</Text>
+                    <View style={[styles.jobCard, styles.boxes, common.borderStyle]}>
+                        <Text style={[common.boldFont, styles.jobTitles, common.darkBrownColor]}>Fizetés: </Text>
+                        <Text style={[common.regularFont, styles.jobTitles, common.darkBrownColor]}>{jobData.payment} Forint/óra</Text>
                     </View>
-                    <View style={[styles.jobCard, styles.boxes, styles.borderStyle]}>
-                        <Text style={[styles.boldFont, styles.jobTitles]}>Kategória:</Text>
-                        <Text style={[styles.regularFont, styles.jobTitles]}>{jobCategory.name}</Text>
+                    <View style={[styles.jobCard, styles.boxes, common.borderStyle]}>
+                        <Text style={[common.boldFont, styles.jobTitles, common.darkBrownColor]}>Kategória:</Text>
+                        <Text style={[common.regularFont, styles.jobTitles, common.darkBrownColor]}>{jobCategory.name}</Text>
                     </View>
-                    <View style={[styles.boxes, styles.borderStyle, styles.jobCard]}>
-                        <Text style={[styles.boldFont, styles.headerText]}>Leírás</Text>
-                        <Text style={[styles.regularFont, styles.jobTitles]}>{jobData.description}</Text>
+                    <View style={[styles.boxes, common.borderStyle, styles.jobCard]}>
+                        <Text style={[common.boldFont, styles.headerText, common.darkBrownColor]}>Leírás</Text>
+                        <Text style={[common.regularFont, styles.jobTitles, common.darkBrownColor]}>{jobData.description}</Text>
                     </View>
                 </View>
                 <View style={styles.returnBox}>
                     <Pressable style={[styles.returnButton]} onPress={() => navigation.goBack()}>
                         <Image source={{ uri: 'https://i.postimg.cc/mkjYJVQY/arrow-sm-left-svgrepo-com-1.png' }} style={styles.arrow} />
-                        <Text style={[styles.returnBtnText, styles.boldFont]}>Vissza</Text>
+                        <Text style={[styles.returnBtnText, common.boldFont]}>Vissza</Text>
                     </Pressable>
                 </View>
             </ScrollView>
@@ -92,24 +91,6 @@ export default function JobDetails({ navigation, route }) {
 }
 
 const styles = StyleSheet.create({
-    lightFont: {
-        fontFamily: 'Quicksand-Light',
-    },
-    regularFont: {
-        fontFamily: 'Quicksand-Regular',
-    },
-    semiBoldFont: {
-        fontFamily: 'Quicksand-SemiBold',
-    },
-    boldFont: {
-        fontFamily: 'Quicksand-Bold',
-    },
-    main: {
-        flex: 1,
-        justifyContent: 'flex-start',
-        alignItems: 'center',
-        backgroundColor: '#B4FB01',
-    },
     scrollView: {
         width: '100%'
     },
@@ -155,10 +136,6 @@ const styles = StyleSheet.create({
     jobTitles: {
         fontSize: 22,
         color: '#373B2C'
-    },
-    borderStyle: {
-        borderColor: '#373B2C',
-        borderWidth: 2,
     },
     returnBox: {
         width: '100%',

@@ -5,6 +5,8 @@ import React, { useState } from 'react';
 import { StyleSheet, Text, View, StatusBar, TextInput, Pressable, Alert, ScrollView } from 'react-native';
 import { db } from '../config/firebase';
 
+import common from '../styles/common';
+
 export default function OtherDataView({ navigation, route }) {
     const [name, setName] = useState('');
     const [telephone, setTelephone] = useState('');
@@ -81,34 +83,34 @@ export default function OtherDataView({ navigation, route }) {
     }
 
     return (
-        <View style={styles.main}>
+        <View style={common.main}>
             <StatusBar backgroundColor='#B4FB01' />
-            <View style={[styles.whiteBox, styles.borderStyle]}>
+            <View style={[styles.whiteBox, common.borderStyle]}>
                 <ScrollView showsVerticalScrollIndicator={false}>
-                    <Text style={[styles.header, styles.boldFont]}>KÖVETKEZŐ</Text>
-                    <Text style={[styles.importantText, styles.regularFont]}>Add meg a személyes adataid a regisztrációd folytatásához!</Text>
+                    <Text style={[styles.header, common.boldFont]}>KÖVETKEZŐ</Text>
+                    <Text style={[styles.importantText, common.regularFont]}>Add meg a személyes adataid a regisztrációd folytatásához!</Text>
                     <View style={[styles.insideBox]}>
-                        <Text style={[styles.inputText, styles.regularFont]}>Név</Text>
+                        <Text style={[styles.inputText, common.regularFont]}>Név</Text>
                         <TextInput
-                            style={styles.inputField}
+                            style={[common.inputField, common.darkBrownColor]}
                             keyboardType='default'
                             autoCapitalize='words'
                             onChangeText={text => setName(text)}
                             placeholder='Teljes neved'
                             value={name} />
 
-                        <Text style={[styles.inputText, styles.regularFont]}>Telefon</Text>
+                        <Text style={[styles.inputText, common.regularFont]}>Telefon</Text>
                         <TextInput
-                            style={styles.inputField}
+                            style={[common.inputField, common.darkBrownColor, common.regularFont]}
                             keyboardType='phone-pad'
                             onChangeText={text => setTelephone(text)}
                             placeholder='pl. 06112223333'
                             value={telephone} />
 
-                        <Text style={[styles.inputText, styles.regularFont]}>Születésnap</Text>
+                        <Text style={[styles.inputText, common.regularFont]}>Születésnap</Text>
                         <Pressable style={{ width: '100%' }} onPress={showDatepicker}>
                             <TextInput
-                                style={styles.inputField}
+                                style={[common.inputField, common.darkBrownColor, common.regularFont]}
                                 editable={false}
                                 value={formattedBirthday}
                                 placeholder='Válassz dátumot!'
@@ -126,23 +128,23 @@ export default function OtherDataView({ navigation, route }) {
                             )
                         }
 
-                        <Text style={[styles.inputText, styles.regularFont]}>Lakcím</Text>
+                        <Text style={[styles.inputText, common.regularFont]}>Lakcím</Text>
                         <View style={[styles.postalCity]}>
                             <TextInput
-                                style={[styles.inputField, { flex: 1 }]}
+                                style={[common.inputField, common.darkBrownColor, common.regularFont, { flex: 1 }]}
                                 keyboardType='number-pad'
                                 onChangeText={text => setPostalCode(text)}
                                 placeholder='Irsz.'
                                 value={postalCode.toString()} />
                             <TextInput
-                                style={[styles.inputField, { marginLeft: 10, flex: 4 }]}
+                                style={[common.inputField, common.darkBrownColor, common.regularFont, { marginLeft: 10, flex: 4 }]}
                                 keyboardType='default'
                                 onChangeText={text => setCity(text)}
                                 placeholder='Település'
                                 value={city} />
                         </View>
                         <TextInput
-                            style={[styles.inputField]}
+                            style={[common.inputField, common.darkBrownColor, common.regularFont]}
                             keyboardType='default'
                             onChangeText={text => setAddress(text)}
                             placeholder='Közterület'
@@ -151,7 +153,7 @@ export default function OtherDataView({ navigation, route }) {
                     </View>
                     <View style={{width: '100%', alignItems: 'center'}}>
                         <Pressable style={styles.loginBtn} onPress={() => saveData()}>
-                            <Text style={[styles.loginBtnText, styles.boldFont]}>BEFEJEZÉS</Text>
+                            <Text style={[styles.loginBtnText, common.boldFont]}>BEFEJEZÉS</Text>
                         </Pressable>
                     </View>
                 </ScrollView>
@@ -161,28 +163,6 @@ export default function OtherDataView({ navigation, route }) {
 };
 
 const styles = StyleSheet.create({
-    lightFont: {
-        fontFamily: 'Quicksand-Light',
-    },
-    regularFont: {
-        fontFamily: 'Quicksand-Regular',
-    },
-    semiBoldFont: {
-        fontFamily: 'Quicksand-SemiBold',
-    },
-    boldFont: {
-        fontFamily: 'Quicksand-Bold',
-    },
-    borderStyle: {
-        borderColor: '#373B2C',
-        borderWidth: 2,
-    },
-
-    main: {
-        flex: 1,
-        justifyContent: 'flex-end',
-        backgroundColor: '#B4FB01',
-    },
     whiteBox: {
         width: '100%',
         paddingVertical: 30,
@@ -200,7 +180,6 @@ const styles = StyleSheet.create({
         alignItems: 'flex-start',
         justifyContent: 'flex-end',
     },
-
     header: {
         fontSize: 24,
         color: '#373B2C',
@@ -210,13 +189,6 @@ const styles = StyleSheet.create({
         fontSize: 15,
         textAlign: 'left',
         marginTop: 25
-    },
-    inputField: {
-        borderRadius: 10,
-        width: '100%',
-        paddingHorizontal: 10,
-        backgroundColor: '#E0E0E0',
-        marginBottom: 12,
     },
     inputText: {
         fontSize: 18,
