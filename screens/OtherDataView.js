@@ -3,11 +3,14 @@ import { doc, setDoc } from 'firebase/firestore';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import React, { useState } from 'react';
 import { StyleSheet, Text, View, StatusBar, TextInput, Pressable, Alert, ScrollView } from 'react-native';
+import { Dropdown } from 'react-native-element-dropdown'
 import { db } from '../config/firebase';
 
 import common from '../styles/common';
 
 export default function OtherDataView({ navigation, route }) {
+    const auth = getAuth();
+
     const [name, setName] = useState('');
     const [telephone, setTelephone] = useState('');
     const [postalCode, setPostalCode] = useState('');
@@ -40,10 +43,23 @@ export default function OtherDataView({ navigation, route }) {
         day: 'numeric',
     });
 
-
-    const auth = getAuth();
-
     const phoneRegex = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{2}[-\s\.]?[0-9]{4,6}$/;
+
+    const data = [
+        { label: 'Férfi', value: 'Férfi' },
+        { label: 'Nő', value: 'Nő' },
+    ];
+
+    const [gender, setGender] = useState(null);
+    const [isFocus, setIsFocus] = useState(false);
+
+    const renderGenders = item => {
+        return (
+          <View style={styles.dropdownList}>
+            <Text style={[common.darkBrownColor, common.regularFont]}>{item.label}</Text>
+          </View>
+        );
+      };
 
     const saveData = async () => {
         if (!name || !telephone || !birthday) {
@@ -65,6 +81,7 @@ export default function OtherDataView({ navigation, route }) {
             const newUser = {
                 id: auth.currentUser?.uid,
                 name: name,
+                gender: gender,
                 email: auth.currentUser?.email,
                 telephone: telephone,
                 birthdate: formattedBirthday,
@@ -103,7 +120,21 @@ export default function OtherDataView({ navigation, route }) {
                                 value={name} />
 
                             <Text style={[styles.inputText, common.regularFont, common.darkBrownColor]}>Nem</Text>
-                                                        
+                            <Dropdown
+                                style={[styles.dropdown, common.inputField, common.darkBrownColor]}
+                                placeholderStyle={[common.placeHolderColor, common.regularFont]}
+                                selectedTextStyle={[common.darkBrownColor, common.regularFont]}
+                                data={data}
+                                labelField="label"
+                                valueField="value"
+                                placeholder={!isFocus ? 'Select item' : '...'}
+                                value={gender}
+                                renderItem={renderGenders} 
+                                onChange={item => { 
+                                    setGender(item.value);
+                                    setIsFocus(false);
+                                }}
+                            />
 
                             <Text style={[styles.inputText, common.regularFont, common.darkBrownColor]}>Telefon</Text>
                             <TextInput
@@ -225,4 +256,17 @@ const styles = StyleSheet.create({
         color: '#FFF',
         fontSize: 20
     },
+    dropdown: {
+        width: '100%',
+        height: 50,
+        borderColor: 'gray',
+        borderWidth: 0.5,
+        borderRadius: 8,
+        paddingHorizontal: 8,
+        borderWidth: 0,
+    },
+    dropdownList: {
+        paddingHorizontal: 10,
+        paddingVertical: 15,
+    }
 });
