@@ -66,44 +66,55 @@ export default function SignUpEnd({ navigation }) {
 
     return (
         <View style={common.main}>
-            <StatusBar backgroundColor='#B4FB01' barStyle={'light-content'} />
+            <StatusBar backgroundColor='#B4FB01' barStyle={'dark-content'} />
+            <View style={styles.illustrationBox}></View>
             <View style={[styles.whiteBox, common.borderStyle]}>
+                <Text style={[styles.header, common.boldFont, common.darkBrownColor]}>BEFEJEZÉS</Text>
                 <ScrollView showsVerticalScrollIndicator={false}>
-                    <Text style={[styles.header, common.boldFont]}>BEFEJEZÉS</Text>
-                    <Text style={[styles.importantText, common.regularFont]}>Add meg az alábbi adatokat a regisztráció befejezéséhez!</Text>
                     <View style={styles.insideBox}>
-                        <Text style={[styles.inputText, common.regularFont]}>Személyi igazolvány szám</Text>
-                        <TextInput
-                            style={[common.inputField, common.darkBrownColor, common.regularFont]}
-                            keyboardType='default'
-                            onChangeText={text => setIdCardNum(text)}
-                            value={idCardNum} />
+                        <Text style={[styles.importantText, common.regularFont, common.darkBrownColor]}>Add meg az alábbi adatokat a regisztráció befejezéséhez!</Text>
+                        <View style={styles.insideBox}>
+                            <Text style={[styles.inputText, common.regularFont, common.darkBrownColor]}>Személyi igazolvány szám</Text>
+                            <TextInput
+                                style={[common.inputField, common.darkBrownColor, common.regularFont]}
+                                keyboardType='default'
+                                onChangeText={text => setIdCardNum(text)}
+                                placeholder='pl. 123456AB'
+                                placeholderTextColor={'#606E3C'}
+                                value={idCardNum} />
 
-                        <Text style={[styles.inputText, common.regularFont]}>Diákigazolvány szám</Text>
-                        <TextInput
-                            style={[common.inputField, common.darkBrownColor, common.regularFont]}
-                            keyboardType='number-pad'
-                            onChangeText={text => setStudentIdNum(text)}
-                            value={studentIdNum} />
+                            <Text style={[styles.inputText, common.regularFont, common.darkBrownColor]}>Diákigazolvány szám</Text>
+                            <TextInput
+                                style={[common.inputField, common.darkBrownColor, common.regularFont]}
+                                keyboardType='number-pad'
+                                onChangeText={text => setStudentIdNum(text)}
+                                placeholder='pl. 71612345678'
+                                placeholderTextColor={'#606E3C'}
+                                value={studentIdNum} />
 
-                        <Text style={[styles.inputText, common.regularFont]}>Adószám</Text>
-                        <TextInput
-                            style={[common.inputField, common.darkBrownColor, common.regularFont]}
-                            keyboardType='number-pad'
-                            onChangeText={text => setTaxIdNum(text)}
-                            value={taxIdNum} />
+                            <Text style={[styles.inputText, common.regularFont, common.darkBrownColor]}>Adószám</Text>
+                            <TextInput
+                                style={[common.inputField, common.darkBrownColor, common.regularFont]}
+                                keyboardType='number-pad'
+                                onChangeText={text => setTaxIdNum(text)}
+                                placeholder='pl. 1234567890'
+                                placeholderTextColor={'#606E3C'}
+                                value={taxIdNum} />
 
-                        <Text style={[styles.inputText, common.regularFont]}>TAJ szám</Text>
-                        <TextInput
-                            style={[common.inputField, common.darkBrownColor, common.regularFont]}
-                            keyboardType='number-pad'
-                            onChangeText={text => setTajNum(text)}
-                            value={tajNum} />
-                    </View>
-                    <View style={{ width: '100%', alignItems: 'center' }}>
-                        <Pressable style={styles.loginBtn} onPress={() => saveData()}>
-                            <Text style={[styles.loginBtnText, common.boldFont]}>KÖVETKEZŐ</Text>
-                        </Pressable>
+                            <Text style={[styles.inputText, common.regularFont, common.darkBrownColor]}>TAJ szám</Text>
+                            <TextInput
+                                style={[common.inputField, common.darkBrownColor, common.regularFont]}
+                                keyboardType='number-pad'
+                                onChangeText={text => setTajNum(text)}
+                                placeholder='pl. 123-456-789'
+                                placeholderTextColor={'#606E3C'}
+                                value={tajNum} />
+                        </View>
+                        <View style={{ width: '100%', alignItems: 'center' }}>
+                            <Pressable style={styles.button} onPress={() => saveData()}>
+                                <Text style={[styles.buttonText, common.boldFont]}>BEFEJEZÉS</Text>
+                            </Pressable>
+                        </View>
                     </View>
                 </ScrollView>
             </View>
@@ -112,9 +123,12 @@ export default function SignUpEnd({ navigation }) {
 };
 
 const styles = StyleSheet.create({
+    illustrationBox: {
+        flex: 1,
+    },
     whiteBox: {
+        flex: 2,
         width: '100%',
-        flex: 3,
         paddingHorizontal: 30,
         paddingVertical: 30,
         borderTopLeftRadius: 25,
@@ -139,20 +153,20 @@ const styles = StyleSheet.create({
     importantText: {
         fontSize: 15,
         textAlign: 'left',
-        marginTop: 25
+        marginTop: 15
     },
     inputText: {
         fontSize: 18,
         marginBottom: 8,
     },
-    loginBtn: {
+    button: {
         backgroundColor: '#687A3C',
         borderRadius: 20,
         marginBottom: 70,
         paddingHorizontal: 30,
         paddingVertical: 10,
     },
-    loginBtnText: {
+    buttonText: {
         color: '#FFF',
         fontSize: 20
     },

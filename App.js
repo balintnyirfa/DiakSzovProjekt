@@ -19,6 +19,7 @@ import AppliedJobs from './screens/AppliedJobsView';
 import AttendanceSheetFirst from './screens/AttendanceSheetFirstView';
 import AttendanceSheetSecond from './screens/AttendanceSheetSecondView';
 import PaymentCalculator from './screens/PaymentCalculator';
+import InterestedCategories from './screens/InterestedCategories';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -140,6 +141,10 @@ export default function App() {
         <Stack.Screen
           name='PaymentCalculator'
           component={PaymentCalculator}
+          options={{ headerShown: false }} />
+        <Stack.Screen
+          name='InterestedCategories'
+          component={InterestedCategories}
           options={{ headerShown: false }} />
       </Stack.Navigator>
     </NavigationContainer>

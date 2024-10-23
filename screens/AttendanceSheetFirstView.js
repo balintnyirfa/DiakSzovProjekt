@@ -46,12 +46,12 @@ export default function AttendanceSheetFirst({ navigation }) {
         const acceptedText = item.data.accepted ? 'Elfogadva' : 'Nincs elfogadva';
 
         return (
-            <TouchableOpacity style={[styles.jobCard, common.borderStyle]} onPress={() => navigation.navigate('AttendanceSheetSecond', { jobData: item.data })}>
-                <View style={styles.jobOtherPart}>
+            <TouchableOpacity style={[common.itemBoxBase, common.borderStyle]} onPress={() => navigation.navigate('AttendanceSheetSecond', { jobData: item.data })}>
+                <View style={common.itemBoxSides}>
                     <Text style={[styles.jobTitles, common.boldFont, common.darkBrownColor]}>{item.data.job_name}</Text>
                     <Text style={[styles.jobTitles, common.regularFont, common.darkBrownColor]}>{acceptedText}</Text>
                 </View>
-                <View style={styles.jobOtherPart}>
+                <View style={common.itemBoxSides}>
                     <Text style={[styles.jobTitles, common.regularFont, common.darkBrownColor]}>{item.data.company_name}</Text>
                     <Text style={[styles.jobTitles, common.lightFont, common.darkBrownColor]}>{formattedDate}</Text>
                 </View>
@@ -109,21 +109,6 @@ const styles = StyleSheet.create({
     arrow: {
         height: 30,
         width: 30,
-    },
-    jobCard: {
-        width: '100%',
-        flexDirection: 'column',
-        backgroundColor: '#FFFFFF',
-        marginVertical: 7,
-        paddingHorizontal: 20,
-        paddingVertical: 20,
-        borderRadius: 25,
-    },
-    jobOtherPart: {
-        flexDirection: 'row',
-        alignItems: 'baseline',
-        justifyContent: 'space-between',
-        width: '100%'
     },
     jobTitles: {
         fontSize: 18,

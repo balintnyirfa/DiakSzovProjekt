@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Alert, FlatList, Image, Pressable, RefreshControl, ScrollView, StatusBar, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { auth, db } from "../config/firebase";
@@ -24,6 +24,13 @@ export default function AttendanceSheetSecond({ navigation, route }) {
     const [showWorkDate, setShowWorkDate] = useState(false);
     const [showCheckInPicker, setShowCheckInPicker] = useState(false);
     const [showCheckOutPicker, setShowCheckOutPicker] = useState(false);
+
+    const [refreshing, setRefreshing] = useState(false);
+
+    const onRefresh = useCallback(() => {
+        setRefreshing(true);
+        fetchAttendance().then(() => setRefreshing(false));
+    }, []);
 
     const onChangeDate = (event, selectedDate) => {
         const currentDate = selectedDate || workDate;
@@ -65,35 +72,27 @@ export default function AttendanceSheetSecond({ navigation, route }) {
     const formattedCheckIn = checkIn.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
     const formattedCheckOut = checkOut.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
 
-    const uploadAlert = () => {
-        Alert.alert('Siker!', 'Sikeres rögzítés!', [
-            { text: 'OK', onPress: () => console.log('OK Pressed') },
-        ]);
-    };
-
-    const timeValidationAlert = () => {
-        Alert.alert('Hiba!', 'A kijelentkezési időnek későbbinek kell lennie, mint a bejelentkezési idő!', [
-            { text: 'OK', onPress: () => console.log('OK Pressed') },
-        ]);
-    };
-
     const uploadAttendance = async () => {
         if (checkOut <= checkIn) {
-            timeValidationAlert();
-            return; s
+            Alert.alert('Hiba!', 'A kijelentkezési időnek későbbinek kell lennie, mint a bejelentkezési idő!');
+            return;
         }
+
+        calculateWorkHours();
 
         try {
             const attendanceId = uuid.v4();
             const newAttendance = {
                 employee_id: userId,
+                job_id: jobData.job_id,
                 work_date: formattedWorkDate,
                 check_in: checkIn,
-                check_out: checkOut
+                check_out: checkOut,
+                total_hours: totalHours
             }
             setDoc(doc(db, "attendance", attendanceId), newAttendance)
                 .then(() => {
-                    uploadAlert();
+                    Alert.alert('Siker!', 'Sikeres rögzítés!');
                 });
         } catch (error) {
             console.log('Failed upload: ', error)
@@ -105,31 +104,43 @@ export default function AttendanceSheetSecond({ navigation, route }) {
             await deleteDoc(doc(db, 'attendance', attendanceId));
             Alert.alert('Siker!', 'A törlés megtörtént!')
         } catch (error) {
-            console.log('Error',error);
+            console.log('Error', error);
         }
     }
 
-    useEffect(() => {
-        const fetchAttendance = async () => {
-            try {
-                const q = query(collection(db, 'attendance'));
-                const querySnapshot = await getDocs(q);
-                const data = querySnapshot.docs.map(doc => ({
-                    id: doc.id,
-                    data: doc.data(),
-                }));
-
-                const filteredData = data.filter(item => item.data.employee_id === userId);
-
-                console.log(filteredData.length)
-                setAttendance(filteredData);
-            } catch (error) {
-                console.log("Error while fetching attendance sheet: ", error)
-            }
+    const calculateWorkHours = () => {
+        let workHours = 0;
+        if (checkOut <= checkIn) {
+            workHours = checkIn - checkOut;
+        } else {
+            workHours = checkOut - checkIn;
         }
+        const hours = Math.floor(workHours / (1000 * 60 * 60));
+        const minutes = Math.floor((workHours % (1000 * 60 * 60)) / (1000 * 60));
+        let formattedTime = `${hours} óra ${minutes} perc`;
+        setTotalHours(formattedTime);
+    }
 
+    useEffect(() => {
         fetchAttendance();
     }, [])
+
+    const fetchAttendance = async () => {
+        try {
+            const q = query(collection(db, 'attendance'));
+            const querySnapshot = await getDocs(q);
+            const data = querySnapshot.docs.map(doc => ({
+                id: doc.id,
+                data: doc.data(),
+            }));
+
+            const filteredData = data.filter(item => item.data.employee_id === userId);
+
+            setAttendance(filteredData);
+        } catch (error) {
+            console.log("Error while fetching attendance sheet: ", error)
+        }
+    }
 
     const renderAttendance = ({ item }) => {
         const checkIn = item.data.check_in.toDate();
@@ -139,20 +150,20 @@ export default function AttendanceSheetSecond({ navigation, route }) {
         const formattedCheckOut = checkOut.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
 
         return (
-            <View style={[styles.jobCard, common.borderStyle]}>
-                <View style={styles.lefty}>
-                    <View style={styles.jobOtherPart}>
+            <View style={[common.itemBoxBase, common.borderStyle, common.itemBoxWithTwoColumns]}>
+                <View style={common.itemBoxLeftSide}>
+                    <View style={common.itemBoxSides}>
                         <Text style={[common.boldFont, common.regularSize, common.darkBrownColor]}>{item.data.work_date}</Text>
                     </View>
-                    <View style={styles.jobOtherPart}>
+                    <View style={common.itemBoxSides}>
                         <Text style={[common.regularFont, common.regularSize, common.darkBrownColor]}>{formattedCheckIn}-tól</Text>
                         <Text style={[common.regularFont, common.regularSize, common.darkBrownColor]}>{formattedCheckOut}-ig</Text>
                     </View>
                 </View>
-                <View style={styles.divider} />
-                <View style={styles.righty}>
+                <View style={common.divider} />
+                <View style={common.itemBoxRightSide}>
                     <TouchableOpacity onPress={() => deleteAttendance(item.id)}>
-                        <Text style={[common.boldFont, common.regularSize, styles.deleteBtn]}>TÖRLÉS</Text>
+                        <Text style={[common.boldFont, common.regularSize, common.redColor]}>TÖRLÉS</Text>
                     </TouchableOpacity>
                 </View>
             </View>
@@ -247,29 +258,15 @@ export default function AttendanceSheetSecond({ navigation, route }) {
                     data={attendance}
                     renderItem={renderAttendance}
                     showsVerticalScrollIndicator={false}
-                    keyExtractor={item => item.id} />
+                    keyExtractor={item => item.id}
+                    refreshing={refreshing}
+                    onRefresh={onRefresh} />
             </View>
         </View>
     )
 }
 
 const styles = StyleSheet.create({
-    divider: {
-        width: 1,
-        backgroundColor: '#373B2C',
-        marginHorizontal: 20,
-    },
-    deleteBtn: {
-        color: '#F5443F'
-    },
-    lefty: {
-        flex: 3
-    },
-    righty: {
-        flex: 1,
-        alignItems: "center",
-        justifyContent: "center",
-    },
     actualMonth: {
         width: "100%",
         alignItems: "center",

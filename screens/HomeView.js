@@ -98,12 +98,12 @@ export default function Home({ navigation }) {
                     {
                         (jobs.map((job) =>
                             <TouchableOpacity key={job.id} onPress={() => navigation.navigate('JobDetails', { jobData: job.data, jobCategory: job.category, jobId: job.id })}>
-                                <View key={job.id} style={[styles.jobCard, common.borderStyle]}>
-                                    <View style={styles.jobOtherPart}>
+                                <View key={job.id} style={[common.itemBoxBase, common.borderStyle]}>
+                                    <View style={common.itemBoxSides}>
                                         <Text style={[styles.jobTitles, common.boldFont, common.darkBrownColor]}>{job.data.company}</Text>
                                         <Text style={[styles.jobTitles, common.lightFont, common.darkBrownColor]}>{job.category.name}</Text>
                                     </View>
-                                    <View style={styles.jobOtherPart}>
+                                    <View style={common.itemBoxSides}>
                                         <Text style={[styles.jobTitles, common.regularFont, common.darkBrownColor]}>{job.data.name}</Text>
                                         <Text style={[styles.jobTitles, common.regularFont, common.darkBrownColor]}>{job.data.city}</Text>
                                     </View>

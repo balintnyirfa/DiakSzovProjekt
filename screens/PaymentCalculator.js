@@ -10,7 +10,7 @@ export default function PaymentCalculator({ navigation }) {
     const [gross, setGross] = useState(0);
     const [net, setNet] = useState(0);
 
-    function calculatePayment() {
+    const calculatePayment = () => {
         let payment = workHours * gross;
         let finalPayment = payment;
         if (is25Selected) {

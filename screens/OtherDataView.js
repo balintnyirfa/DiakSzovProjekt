@@ -67,7 +67,7 @@ export default function OtherDataView({ navigation, route }) {
                 name: name,
                 email: auth.currentUser?.email,
                 telephone: telephone,
-                birthdate: birthday,
+                birthdate: formattedBirthday,
                 postal_code: postalCode,
                 city: city,
                 address: address
@@ -84,77 +84,89 @@ export default function OtherDataView({ navigation, route }) {
 
     return (
         <View style={common.main}>
-            <StatusBar backgroundColor='#B4FB01' />
+            <StatusBar backgroundColor='#B4FB01' barStyle={'dark-content'} />
+            <View style={styles.illustrationBox}></View>
             <View style={[styles.whiteBox, common.borderStyle]}>
+                <Text style={[styles.header, common.boldFont, common.darkBrownColor]}>KÖVETKEZŐ</Text>
                 <ScrollView showsVerticalScrollIndicator={false}>
-                    <Text style={[styles.header, common.boldFont]}>KÖVETKEZŐ</Text>
-                    <Text style={[styles.importantText, common.regularFont]}>Add meg a személyes adataid a regisztrációd folytatásához!</Text>
-                    <View style={[styles.insideBox]}>
-                        <Text style={[styles.inputText, common.regularFont]}>Név</Text>
-                        <TextInput
-                            style={[common.inputField, common.darkBrownColor]}
-                            keyboardType='default'
-                            autoCapitalize='words'
-                            onChangeText={text => setName(text)}
-                            placeholder='Teljes neved'
-                            value={name} />
-
-                        <Text style={[styles.inputText, common.regularFont]}>Telefon</Text>
-                        <TextInput
-                            style={[common.inputField, common.darkBrownColor, common.regularFont]}
-                            keyboardType='phone-pad'
-                            onChangeText={text => setTelephone(text)}
-                            placeholder='pl. 06112223333'
-                            value={telephone} />
-
-                        <Text style={[styles.inputText, common.regularFont]}>Születésnap</Text>
-                        <Pressable style={{ width: '100%' }} onPress={showDatepicker}>
+                    <View style={styles.insideBox}>
+                        <Text style={[styles.importantText, common.regularFont, common.darkBrownColor]}>Add meg a személyes adataid a regisztrációd folytatásához!</Text>
+                        <View style={[styles.insideBox]}>
+                            <Text style={[styles.inputText, common.regularFont, common.darkBrownColor]}>Név</Text>
                             <TextInput
                                 style={[common.inputField, common.darkBrownColor, common.regularFont]}
-                                editable={false}
-                                value={formattedBirthday}
-                                placeholder='Válassz dátumot!'
-                                onChangeText={text => setBirthday(text)} />
-                        </Pressable>
-                        {
-                            show && (
-                                <DateTimePicker
-                                    testID='dateTimePicker'
-                                    value={birthday}
-                                    mode={mode}
-                                    display='spinner'
-                                    minimumDate={new Date(1980, 1, 1)}
-                                    onChange={onChange} />
-                            )
-                        }
-
-                        <Text style={[styles.inputText, common.regularFont]}>Lakcím</Text>
-                        <View style={[styles.postalCity]}>
-                            <TextInput
-                                style={[common.inputField, common.darkBrownColor, common.regularFont, { flex: 1 }]}
-                                keyboardType='number-pad'
-                                onChangeText={text => setPostalCode(text)}
-                                placeholder='Irsz.'
-                                value={postalCode.toString()} />
-                            <TextInput
-                                style={[common.inputField, common.darkBrownColor, common.regularFont, { marginLeft: 10, flex: 4 }]}
                                 keyboardType='default'
-                                onChangeText={text => setCity(text)}
-                                placeholder='Település'
-                                value={city} />
-                        </View>
-                        <TextInput
-                            style={[common.inputField, common.darkBrownColor, common.regularFont]}
-                            keyboardType='default'
-                            onChangeText={text => setAddress(text)}
-                            placeholder='Közterület'
-                            value={address} />
+                                autoCapitalize='words'
+                                onChangeText={text => setName(text)}
+                                placeholder='Teljes neved'
+                                placeholderTextColor={'#606E3C'}
+                                value={name} />
 
-                    </View>
-                    <View style={{width: '100%', alignItems: 'center'}}>
-                        <Pressable style={styles.loginBtn} onPress={() => saveData()}>
-                            <Text style={[styles.loginBtnText, common.boldFont]}>BEFEJEZÉS</Text>
-                        </Pressable>
+                            <Text style={[styles.inputText, common.regularFont, common.darkBrownColor]}>Nem</Text>
+                                                        
+
+                            <Text style={[styles.inputText, common.regularFont, common.darkBrownColor]}>Telefon</Text>
+                            <TextInput
+                                style={[common.inputField, common.darkBrownColor, common.regularFont]}
+                                keyboardType='phone-pad'
+                                onChangeText={text => setTelephone(text)}
+                                placeholder='pl. 06301234567'
+                                placeholderTextColor={'#606E3C'}
+                                value={telephone} />
+
+                            <Text style={[styles.inputText, common.regularFont, common.darkBrownColor]}>Születésnap</Text>
+                            <Pressable style={{ width: '100%' }} onPress={showDatepicker}>
+                                <TextInput
+                                    style={[common.inputField, common.darkBrownColor, common.regularFont]}
+                                    editable={false}
+                                    value={formattedBirthday}
+                                    placeholder='Válassz dátumot!'
+                                    placeholderTextColor={'#606E3C'}
+                                    onChangeText={text => setBirthday(text)} />
+                            </Pressable>
+                            {
+                                show && (
+                                    <DateTimePicker
+                                        testID='dateTimePicker'
+                                        value={birthday}
+                                        mode={mode}
+                                        display='spinner'
+                                        minimumDate={new Date(1980, 1, 1)}
+                                        onChange={onChange} />
+                                )
+                            }
+
+                            <Text style={[styles.inputText, common.regularFont, common.darkBrownColor]}>Lakcím</Text>
+                            <View style={[styles.postalCity]}>
+                                <TextInput
+                                    style={[common.inputField, common.darkBrownColor, common.regularFont, { flex: 1 }]}
+                                    keyboardType='number-pad'
+                                    onChangeText={text => setPostalCode(text)}
+                                    placeholder='Irsz.'
+                                    placeholderTextColor={'#606E3C'}
+                                    value={postalCode.toString()} />
+                                <TextInput
+                                    style={[common.inputField, common.darkBrownColor, common.regularFont, { marginLeft: 10, flex: 4 }]}
+                                    keyboardType='default'
+                                    onChangeText={text => setCity(text)}
+                                    placeholder='Település'
+                                    placeholderTextColor={'#606E3C'}
+                                    value={city} />
+                            </View>
+                            <TextInput
+                                style={[common.inputField, common.darkBrownColor, common.regularFont]}
+                                keyboardType='default'
+                                onChangeText={text => setAddress(text)}
+                                placeholder='Közterület'
+                                placeholderTextColor={'#606E3C'}
+                                value={address} />
+
+                        </View>
+                        <View style={{ width: '100%', alignItems: 'center' }}>
+                            <Pressable style={styles.button} onPress={() => saveData()}>
+                                <Text style={[styles.buttonText, common.boldFont]}>TOVÁBB</Text>
+                            </Pressable>
+                        </View>
                     </View>
                 </ScrollView>
             </View>
@@ -163,8 +175,13 @@ export default function OtherDataView({ navigation, route }) {
 };
 
 const styles = StyleSheet.create({
+    illustrationBox: {
+        flex: 1,
+    },
     whiteBox: {
+        flex: 2,
         width: '100%',
+        paddingHorizontal: 30,
         paddingVertical: 30,
         borderTopLeftRadius: 25,
         borderTopRightRadius: 25,
@@ -188,24 +205,23 @@ const styles = StyleSheet.create({
     importantText: {
         fontSize: 15,
         textAlign: 'left',
-        marginTop: 25
+        marginTop: 15
     },
     inputText: {
         fontSize: 18,
-        color: '#000',
         marginBottom: 8,
     },
     postalCity: {
         flexDirection: 'row'
     },
-    loginBtn: {
+    button: {
         backgroundColor: '#687A3C',
         borderRadius: 20,
         marginBottom: 70,
         paddingHorizontal: 30,
         paddingVertical: 10,
     },
-    loginBtnText: {
+    buttonText: {
         color: '#FFF',
         fontSize: 20
     },

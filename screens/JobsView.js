@@ -1,5 +1,5 @@
 import { collection, doc, getDoc, getDocs, query } from 'firebase/firestore';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { FlatList, ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { db } from '../config/firebase';
 import common from '../styles/common';
@@ -11,6 +11,43 @@ export default function Jobs({ navigation, route }) {
     const [jobSum, setJobSum] = useState(0);
     const [selectedCategory, setSelectedCategory] = useState(null);
     const [categories, setCategories] = useState([]);
+
+    const [refreshing, setRefreshing] = useState(false);
+
+    const onRefresh = useCallback(() => {
+        setRefreshing(true);
+        fetchJobData().then(() => setRefreshing(false));
+    }, []);
+
+    const fetchJobData = async () => {
+        try {
+            const q = query(collection(db, 'jobs'));
+            const querySnapshot = await getDocs(q);
+            const jobsData = querySnapshot.docs.map(doc => ({
+                id: doc.id,
+                data: doc.data(),
+            }));
+
+            const jobsWithCategoryData = await Promise.all(jobsData.map(async job => {
+                const categoryDoc = await getDoc(doc(db, 'job_categories', job.data.category_id));
+                const categoryData = categoryDoc.exists() ? categoryDoc.data() : null;
+                return { ...job, category: categoryData };
+            }));
+
+            setJobs(jobsWithCategoryData);
+            setJobSum(jobsWithCategoryData.length);
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    const fetchPreferredCategoriesJob = async () => {
+        try {
+            const q = query(collection(db, 'preferred_categories'))
+        } catch (error) {
+            console.log(error)
+        }
+    }
 
     useEffect(() => {
         const fetchCategories = async () => {
@@ -28,28 +65,6 @@ export default function Jobs({ navigation, route }) {
             }
         };
 
-        const fetchJobData = async () => {
-            try {
-                const q = query(collection(db, 'jobs'));
-                const querySnapshot = await getDocs(q);
-                const jobsData = querySnapshot.docs.map(doc => ({
-                    id: doc.id,
-                    data: doc.data(),
-                }));
-
-                const jobsWithCategoryData = await Promise.all(jobsData.map(async job => {
-                    const categoryDoc = await getDoc(doc(db, 'job_categories', job.data.category_id));
-                    const categoryData = categoryDoc.exists() ? categoryDoc.data() : null;
-                    return { ...job, category: categoryData };
-                }));
-
-                setJobs(jobsWithCategoryData);
-                setJobSum(jobsWithCategoryData.length);
-            } catch (error) {
-                console.log(error);
-            }
-        };
-
         fetchJobData();
         fetchCategories();
     }, []);
@@ -61,12 +76,12 @@ export default function Jobs({ navigation, route }) {
 
     const renderJobItem = ({ item }) => (
         <TouchableOpacity key={item.id} onPress={() => navigation.navigate('JobDetails', { jobData: item.data, jobCategory: item.category, jobId: item.id })}>
-            <View style={[styles.jobCard, common.borderStyle]}>
-                <View style={styles.jobOtherPart}>
+            <View style={[common.itemBoxBase, common.borderStyle]}>
+                <View style={common.itemBoxSides}>
                     <Text style={[styles.jobTitles, common.boldFont, common.darkBrownColor]}>{item.data.company}</Text>
                     <Text style={[styles.jobTitles, common.lightFont, common.darkBrownColor]}>{item.category ? item.category.name : 'No category!'}</Text>
                 </View>
-                <View style={styles.jobOtherPart}>
+                <View style={common.itemBoxSides}>
                     <Text style={[styles.jobTitles, common.regularFont, common.darkBrownColor]}>{item.data.name}</Text>
                     <Text style={[styles.jobTitles, common.regularFont, common.darkBrownColor]}>{item.data.city}</Text>
                 </View>
@@ -74,27 +89,20 @@ export default function Jobs({ navigation, route }) {
         </TouchableOpacity>
     );
 
-
-    /*(categories.map((category, index) =>
-        <TouchableOpacity key={category.id} onPress={() => setSelectedCategory(prevCategory => prevCategory === category.id ? null : category.id)}>
-            <View key={category.id} style={[styles.categoryCard, index === 0 && styles.firstCategoryCard]}>
-                <Text style={[styles.categoryTitles, styles.boldFont]}>{category.data.name}</Text>
-            </View>
-        </TouchableOpacity>
-
-    ))*/
-
     return (
         <View style={common.main}>
-            <StatusBar backgroundColor='#373B2C' barStyle={'light-content'}/>
+            <StatusBar backgroundColor='#373B2C' barStyle={'light-content'} />
             <View style={[styles.header, common.borderStyle]}>
                 <Text style={[common.boldFont, styles.headerWelcome, common.darkBrownColor]}>Aktuális munkáink</Text>
                 <Text style={[common.regularFont, styles.headerName, common.darkBrownColor]}>Aktív: {jobSum} db</Text>
-                <FlatList>
-
-                </FlatList>
                 <View style={styles.categories}>
                     <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
+                        <TouchableOpacity onPress={fetchPreferredCategoriesJob}>
+                            <View style={[styles.categoryCard]}>
+                                <Text style={[styles.categoryTitles, common.boldFont]}>Egyéni</Text>
+                            </View>
+                        </TouchableOpacity>
+                        <View style={styles.divider}></View>
                         {
                             (categories.map((category) =>
                                 <TouchableOpacity key={category.id} onPress={() => setSelectedCategory(prevCategory => prevCategory === category.id ? null : category.id)}>
@@ -113,7 +121,8 @@ export default function Jobs({ navigation, route }) {
                     data={filteredJobs}
                     renderItem={renderJobItem}
                     keyExtractor={(item, index) => `${item.id}-${index}`}
-                />
+                    refreshing={refreshing}
+                    onRefresh={onRefresh} />
             </View>
 
         </View>
@@ -162,24 +171,6 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20,
         paddingVertical: 10
     },
-    jobCard: {
-        width: '100%',
-        flexDirection: 'column',
-        backgroundColor: '#FFFFFF',
-        marginVertical: 7,
-        paddingHorizontal: 20,
-        paddingVertical: 20,
-        borderRadius: 25,
-    },
-    jobNamePart: {
-        width: '100%'
-    },
-    jobOtherPart: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignContent: 'space-between',
-        width: '100%'
-    },
     jobTitles: {
         fontSize: 22,
         color: '#373B2C'
@@ -188,24 +179,9 @@ const styles = StyleSheet.create({
         fontSize: 18,
         color: '#FFFFFF'
     },
+    divider: {
+        width: 1,
+        backgroundColor: '#373B2C',
+        marginRight: 7,
+    }, 
 });
-
-
-/*<ScrollView horizontal={false} showsVerticalScrollIndicator={false}>
-                    {
-                        (filteredJobs.map((job) =>
-                            <TouchableOpacity key={job.id} onPress={() => navigation.navigate('JobDetails', { jobData: job.data, jobCategory: job.category })}>
-                                <View key={job.id} style={[styles.jobCard, styles.borderStyle]}>
-                                    <View style={styles.jobOtherPart}>
-                                        <Text style={[styles.jobTitles, styles.boldFont]}>{job.data.company}</Text>
-                                        <Text style={[styles.jobTitles, styles.lightFont]}>{job.category ? job.category.name : 'No category!'}</Text>
-                                    </View>
-                                    <View style={styles.jobOtherPart}>
-                                        <Text style={[styles.jobTitles, styles.regularFont]}>{job.data.name}</Text>
-                                        <Text style={[styles.jobTitles, styles.regularFont]}>{job.data.city}</Text>
-                                    </View>
-                                </View>
-                            </TouchableOpacity>
-                        ))
-                    }
-                </ScrollView>*/

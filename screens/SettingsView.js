@@ -4,12 +4,15 @@ import { signOut, getAuth } from 'firebase/auth';
 import { getDownloadURL, getStorage, ref } from 'firebase/storage';
 
 import common from '../styles/common';
+import { doc, getDoc } from 'firebase/firestore';
+import { db } from '../config/firebase';
 
 export default function Settings({ navigation }) {
     const auth = getAuth();
     const userId = auth.currentUser ? auth.currentUser.uid : null;
 
     const [profileImage, setProfileImage] = useState('');
+    const [name, setName] = useState('');
 
     useEffect(() => {
         const fetchProfileImage = async () => {
@@ -24,6 +27,17 @@ export default function Settings({ navigation }) {
             }
         }
 
+        const fetchUserData = async () => {
+            const userDocRef = doc(db, 'users', userId);
+            const userDocSnap = await getDoc(userDocRef);
+
+            if (userDocSnap.exists()) {
+                setName(userDocSnap.data().name);
+            } else {
+                console.log('No such document!');
+            }
+        }
+        fetchUserData();
         fetchProfileImage();
     }, [userId]) 
 
@@ -44,7 +58,7 @@ export default function Settings({ navigation }) {
                         profileImage ? { uri: profileImage } : require("../assets/images/profile.png")
                     }
                     style={[styles.profileImage, common.borderStyle]} />
-                <Text style={[common.boldFont, styles.nameText]}>Bálint</Text>
+                <Text style={[common.boldFont, styles.nameText]}>{name}</Text>
             </View>
             <View style={[styles.bottomView]}>
                 <ScrollView showsVerticalScrollIndicator={false}>
@@ -54,7 +68,7 @@ export default function Settings({ navigation }) {
                             <Text style={[styles.text, common.regularFont]}>Fiók adatok</Text>
                         </TouchableOpacity>
                         <TouchableOpacity>
-                            <Text style={[styles.text, common.regularFont]}>Értesítések</Text>
+                            <Text style={[styles.text, common.regularFont]}>Kapcsolat</Text>
                         </TouchableOpacity>
                         <TouchableOpacity onPress={handleLogout}>
                             <Text style={[styles.text, common.regularFont]}>Kijelentkezés</Text>
@@ -68,7 +82,7 @@ export default function Settings({ navigation }) {
                         <TouchableOpacity onPress={() => navigation.navigate('AttendanceSheetFirst')}>
                             <Text style={[styles.text, common.regularFont]}>Jelenlétim</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity>
+                        <TouchableOpacity onPress={() => navigation.navigate('InterestedCategories')}>
                             <Text style={[styles.text, common.regularFont]}>Érdeklődési köreim</Text>
                         </TouchableOpacity>
                         <TouchableOpacity onPress={() => navigation.navigate('PaymentCalculator')}>
