@@ -55,11 +55,11 @@ export default function OtherDataView({ navigation, route }) {
 
     const renderGenders = item => {
         return (
-          <View style={styles.dropdownList}>
-            <Text style={[common.darkBrownColor, common.regularFont]}>{item.label}</Text>
-          </View>
+            <View style={styles.dropdownList}>
+                <Text style={[common.darkBrownColor, common.regularFont]}>{item.label}</Text>
+            </View>
         );
-      };
+    };
 
     const saveData = async () => {
         if (!name || !telephone || !birthday) {
@@ -127,10 +127,10 @@ export default function OtherDataView({ navigation, route }) {
                                 data={data}
                                 labelField="label"
                                 valueField="value"
-                                placeholder={!isFocus ? 'Select item' : '...'}
+                                placeholder={!isFocus ? 'Válassz nemet...' : '...'}
                                 value={gender}
-                                renderItem={renderGenders} 
-                                onChange={item => { 
+                                renderItem={renderGenders}
+                                onChange={item => {
                                     setGender(item.value);
                                     setIsFocus(false);
                                 }}

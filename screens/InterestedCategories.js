@@ -5,18 +5,21 @@ import { Alert, FlatList, Image, StatusBar, StyleSheet, Text, TouchableOpacity, 
 import { collection, doc, getDocs, query, setDoc } from "firebase/firestore";
 import { auth, db } from "../config/firebase";
 import uuid from 'react-native-uuid';
+import { Dropdown, MultiSelect } from "react-native-element-dropdown";
 
 export default function InterestedCategories({ navigation }) {
     const userId = auth.currentUser ? auth.currentUser.uid : null;
-    const [categories, setCategories] = useState('');
+    const [categories, setCategories] = useState([]);
+    const [selectedCategories, setSelectedCategories] = useState(null);
+    const [isFocus, setIsFocus] = useState(false);
 
     const fetchCategories = async () => {
         try {
             const q = query(collection(db, 'job_categories'));
             const querySnapshot = await getDocs(q);
             const categoriesData = querySnapshot.docs.map(doc => ({
-                id: doc.id,
-                data: doc.data(),
+                value: doc.id,
+                label: doc.data().name,
             }));
 
             setCategories(categoriesData)
@@ -25,18 +28,24 @@ export default function InterestedCategories({ navigation }) {
         }
     }
 
+    const renderCategories = item => {
+        return (
+            <View style={styles.dropdownList}>
+                <Text style={[common.darkBrownColor, common.regularFont]}>{item.label}</Text>
+            </View>
+        );
+    };
+
     useEffect(() => {
         fetchCategories();
     }, [])
 
-    const addToPreferedCategories = async (id) => {
+    const addToPreferedCategories = async () => {
         try {
-            const categoryId = uuid.v4();
             const newData = {
-                user_id: userId,
-                category_id: id
+                selected_categories: selectedCategories,
             }
-            setDoc(doc(db, 'preferred_categories', categoryId), newData)
+            setDoc(doc(db, 'preferred_categories', userId), newData)
                 .then(() => {
                     Alert.alert('Siker!', 'Kategória mentve!')
                 })
@@ -45,17 +54,17 @@ export default function InterestedCategories({ navigation }) {
         }
     }
 
-    const renderCategories = ({ item }) => {
-        return (
-            <View style={[styles.category]}>
-                <Text style={[common.darkBrownColor, common.regularFont, common.regularSize]}>{item.data.name}</Text>
-                <View style={common.divider}></View>
-                <TouchableOpacity onPress={() => addToPreferedCategories(item.id)}>
-                    <Text style={[common.redColor, common.regularFont, common.regularSize]}>Hozzáad</Text>
-                </TouchableOpacity>
-            </View>
-        )
-    }
+    //const renderCategories = ({ item }) => {
+    //    return (
+    //        <View style={[styles.category]}>
+    //            <Text style={[common.darkBrownColor, common.regularFont, common.regularSize]}>{item.data.name}</Text>
+    //            <View style={common.divider}></View>
+    //            <TouchableOpacity onPress={() => addToPreferedCategories(item.id)}>
+    //                <Text style={[common.redColor, common.regularFont, common.regularSize]}>Hozzáad</Text>
+    //            </TouchableOpacity>
+    //        </View>
+    //    )
+    //}
 
     return (
         <View style={styles.main}>
@@ -71,13 +80,33 @@ export default function InterestedCategories({ navigation }) {
             </View>
             <View style={[styles.bottomView]}>
                 <Text style={[common.regularFont, common.regularSize, common.darkBrownColor]}>Válaszd ki azokat a kategóriákat, amelyek számodra érdekesek lehetnek!</Text>
-                <FlatList
+                <MultiSelect
+                    style={[styles.dropdown, common.inputField, common.darkBrownColor]}
+                    placeholderStyle={[common.placeHolderColor, common.regularFont]}
+                    selectedTextStyle={[common.darkBrownColor, common.regularFont]}
                     data={categories}
-                    renderItem={renderCategories}
-                //keyExtractor={(item, index) => `${item.id}-${index}`}
-                //refreshing={refreshing}
-                //onRefresh={onRefresh} 
-                />
+                    labelField="label"
+                    valueField="value"
+                    placeholder="Válassz kategóriát..."
+                    value={selectedCategories}
+                    renderItem={(item) => (
+                        <View style={styles.item}>
+                            <Text style={[common.regularFont, common.darkBrownColor]}>{item.label}</Text>
+                        </View>
+                    )}
+                    renderSelectedItem={(item, unSelect) => (
+                        <TouchableOpacity onPress={() => unSelect && unSelect(item)}>
+                            <View style={styles.selectedStyle}>
+                                <Text style={styles.textSelectedStyle}>{item.label}</Text>
+                            </View>
+                        </TouchableOpacity>
+                    )}
+                    onChange={item => {
+                        setSelectedCategories(item);
+                    }} />
+                <TouchableOpacity onPress={() => addToPreferedCategories(selectedCategories)}>
+                    <Text style={[common.boldFont, common.regularSize, styles.saveBtn]}>Mentés</Text>
+                </TouchableOpacity>
             </View>
         </View>
     )
@@ -118,4 +147,17 @@ const styles = StyleSheet.create({
     category: {
         flexDirection: "row"
     },
+    dropdown: {
+        width: '100%',
+        height: 50,
+        borderColor: 'gray',
+        borderWidth: 0.5,
+        borderRadius: 8,
+        paddingHorizontal: 8,
+        borderWidth: 0,
+    },
+    dropdownList: {
+        paddingHorizontal: 10,
+        paddingVertical: 15,
+    }
 })

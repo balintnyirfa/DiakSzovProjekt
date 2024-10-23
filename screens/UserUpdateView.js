@@ -198,7 +198,7 @@ export default function UserUpdateView({ navigation }) {
                 <View style={[styles.boxes]}>
                     <View style={[styles.box, styles.greenBox, common.borderStyle]}>
                         <Pressable style={styles.button} onPress={() => navigation.navigate('PasswordReset')}>
-                            <Text style={[styles.boldFont, styles.mediumSize, common.whiteText]}>Jelszó módosítás</Text>
+                            <Text style={[styles.boldFont, styles.mediumSize, common.whiteText]}>JELSZÓ MÓDOSÍTÁS</Text>
                         </Pressable>
                     </View>
                     <View style={[styles.box, common.borderStyle]}>

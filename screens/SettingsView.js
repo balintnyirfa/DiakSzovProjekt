@@ -39,7 +39,7 @@ export default function Settings({ navigation }) {
         }
         fetchUserData();
         fetchProfileImage();
-    }, [userId]) 
+    }, [userId])
 
     const handleLogout = () => {
         signOut(auth).then(() => {
@@ -54,9 +54,7 @@ export default function Settings({ navigation }) {
             <StatusBar backgroundColor="#373B2C" barStyle={'light-content'} />
             <View style={[styles.topView, common.borderStyle]}>
                 <Image
-                    source={
-                        profileImage ? { uri: profileImage } : require("../assets/images/profile.png")
-                    }
+                    source={profileImage ? { uri: profileImage } : require("../assets/images/profile.png")}
                     style={[styles.profileImage, common.borderStyle]} />
                 <Text style={[common.boldFont, styles.nameText]}>{name}</Text>
             </View>

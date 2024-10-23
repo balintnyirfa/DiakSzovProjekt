@@ -1,16 +1,19 @@
-import { collection, doc, getDoc, getDocs, query } from 'firebase/firestore';
+import { collection, doc, getDoc, getDocs, query, where } from 'firebase/firestore';
 import React, { useCallback, useEffect, useState } from 'react';
 import { FlatList, ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { db } from '../config/firebase';
+import { auth, db } from '../config/firebase';
 import common from '../styles/common';
 
 export default function Jobs({ navigation, route }) {
     //const [loading, setLoading] = useState(false);
+    const userId = auth.currentUser ? auth.currentUser.uid : null;
 
     const [jobs, setJobs] = useState([]);
     const [jobSum, setJobSum] = useState(0);
     const [selectedCategory, setSelectedCategory] = useState(null);
     const [categories, setCategories] = useState([]);
+
+    const [preferredCategories, setPreferredCategories] = useState([]);
 
     const [refreshing, setRefreshing] = useState(false);
 
@@ -43,7 +46,18 @@ export default function Jobs({ navigation, route }) {
 
     const fetchPreferredCategoriesJob = async () => {
         try {
-            const q = query(collection(db, 'preferred_categories'))
+            setSelectedCategory("egyéni")
+            //const q = query(collection(db, 'preferred_categories'), where('user_id', '==', userId));
+            //const querySnapshot = await getDocs(collection(db, 'preferred_categories'));
+            //querySnapshot.forEach((doc) => {
+            //    setPreferredCategories(doc.data());
+            //})
+            //console.log(preferredCategories)
+            const q = query(collection(db, 'preferred_categories'), where('user_id', '==', userId));
+            const querySnapshot = await getDocs(collection(db, 'preferred_categories'), where('user_id', '==', userId));
+            const preferredCategoriesData = querySnapshot.docs.map(doc => doc.data().selected_categories);
+            setPreferredCategories(preferredCategoriesData);
+            console.log(preferredCategoriesData);
         } catch (error) {
             console.log(error)
         }
@@ -67,11 +81,15 @@ export default function Jobs({ navigation, route }) {
 
         fetchJobData();
         fetchCategories();
+
+        //fetchPreferredCategoriesJob();
     }, []);
 
-    const filteredJobs = selectedCategory
-        ? jobs.filter(job => job.data.category_id === selectedCategory)
-        : jobs;
+    const filteredJobs = selectedCategory === 'Egyéni'
+        ? jobs.filter(job => preferredCategories.flat().includes(job.data.category_id))
+        : selectedCategory
+            ? jobs.filter(job => job.data.category_id === selectedCategory)
+            : jobs;
 
 
     const renderJobItem = ({ item }) => (
@@ -183,5 +201,5 @@ const styles = StyleSheet.create({
         width: 1,
         backgroundColor: '#373B2C',
         marginRight: 7,
-    }, 
+    },
 });
