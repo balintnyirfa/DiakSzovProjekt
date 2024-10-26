@@ -5,7 +5,6 @@ import { auth, db } from '../config/firebase';
 import common from '../styles/common';
 
 export default function Jobs({ navigation, route }) {
-    //const [loading, setLoading] = useState(false);
     const userId = auth.currentUser ? auth.currentUser.uid : null;
 
     const [jobs, setJobs] = useState([]);
@@ -46,22 +45,31 @@ export default function Jobs({ navigation, route }) {
 
     const fetchPreferredCategoriesJob = async () => {
         try {
-            setSelectedCategory("egyéni")
-            //const q = query(collection(db, 'preferred_categories'), where('user_id', '==', userId));
-            //const querySnapshot = await getDocs(collection(db, 'preferred_categories'));
-            //querySnapshot.forEach((doc) => {
-            //    setPreferredCategories(doc.data());
-            //})
-            //console.log(preferredCategories)
-            const q = query(collection(db, 'preferred_categories'), where('user_id', '==', userId));
-            const querySnapshot = await getDocs(collection(db, 'preferred_categories'), where('user_id', '==', userId));
-            const preferredCategoriesData = querySnapshot.docs.map(doc => doc.data().selected_categories);
-            setPreferredCategories(preferredCategoriesData);
-            console.log(preferredCategoriesData);
+            setSelectedCategory("custom")
+
+            const q = query(collection(db, 'preferred_categories'));
+            const querySnapshot = await getDocs(q);
+            const preferredCategories = querySnapshot.docs.map(doc => doc.data().selected_categories).flat();
+
+            if (preferredCategories.length > 0) {
+                const batchSize = 10;
+                for (let i = 0; i < preferredCategories.length; i += batchSize) {
+                    const batch = preferredCategories.slice(i, i + batchSize);
+                    const jobsQuery = query(collection(db, 'jobs'), where('category_id', 'in', batch));
+                    const jobsSnapshot = await getDocs(jobsQuery);
+
+                    const jobsData = jobsSnapshot.docs.map(doc => ({
+                        id: doc.id,
+                        data: doc.data(),
+                    }));
+                    setPreferredCategories(jobsData);
+                }
+
+            }
         } catch (error) {
-            console.log(error)
+            console.log(error);
         }
-    }
+    };
 
     useEffect(() => {
         const fetchCategories = async () => {
@@ -81,12 +89,10 @@ export default function Jobs({ navigation, route }) {
 
         fetchJobData();
         fetchCategories();
-
-        //fetchPreferredCategoriesJob();
     }, []);
 
-    const filteredJobs = selectedCategory === 'Egyéni'
-        ? jobs.filter(job => preferredCategories.flat().includes(job.data.category_id))
+    const filteredJobs = selectedCategory === 'custom'
+        ? jobs.filter(job => preferredCategories.map(job => job.data.category_id).includes(job.data.category_id))
         : selectedCategory
             ? jobs.filter(job => job.data.category_id === selectedCategory)
             : jobs;
@@ -115,7 +121,7 @@ export default function Jobs({ navigation, route }) {
                 <Text style={[common.regularFont, styles.headerName, common.darkBrownColor]}>Aktív: {jobSum} db</Text>
                 <View style={styles.categories}>
                     <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-                        <TouchableOpacity onPress={fetchPreferredCategoriesJob}>
+                        <TouchableOpacity onPress={fetchPreferredCategoriesJob} data-tag="custom">
                             <View style={[styles.categoryCard]}>
                                 <Text style={[styles.categoryTitles, common.boldFont]}>Egyéni</Text>
                             </View>
