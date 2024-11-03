@@ -92,7 +92,13 @@ export default function UserUpdateView({ navigation }) {
                 const reference = ref(storage, `profileImages/${userId}/profile.jpg`);
                 getDownloadURL(reference).then((url) => {
                     setProfileImage(url);
-                })
+                }).catch((error) => {
+                    if (error.code === 'storage/object-not-found') {
+                        console.log('Profile image does not exist.');
+                    } else {
+                        console.log('Error fetching profile image:', error);
+                    }
+                });
             } catch (error) {
                 console.log(error);
             }
@@ -166,6 +172,8 @@ export default function UserUpdateView({ navigation }) {
                     await uploadBytes(uploadRef, blob);
                     const url = await getDownloadURL(uploadRef);
                     setProfileImage(url);
+                    Alert.alert('Megjegyzés', 'Ajánlott újra bejelentkezni, hogy mindenhol firssüljön a profilképed!');
+                    Alert.alert('Siker!', 'Sikeres kép feltöltés!');
                 } catch (error) {
                     console.log("Error 2: ", error)
                     return;

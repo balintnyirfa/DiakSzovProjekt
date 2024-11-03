@@ -248,7 +248,7 @@ export default function AttendanceSheetSecond({ navigation, route }) {
                             </View>
                         </View>
                         <TouchableOpacity style={styles.button} onPress={uploadAttendance}>
-                            <Text style={[styles.buttonText, common.boldFont]}>MENTÉS</Text>
+                            <Text style={[common.regularSize, common.boldFont, common.whiteText]}>MENTÉS</Text>
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -369,7 +369,6 @@ const styles = StyleSheet.create({
         borderRadius: 15,
     },
     buttonText: {
-        color: '#FFF',
         fontSize: 20
     },
 });

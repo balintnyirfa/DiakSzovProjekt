@@ -13,6 +13,8 @@ export default function InterestedCategories({ navigation }) {
     const [selectedCategories, setSelectedCategories] = useState(null);
     const [isFocus, setIsFocus] = useState(false);
 
+    const [preferredCategories, setPreferredCategories] = useState([])
+
     const fetchCategories = async () => {
         try {
             const q = query(collection(db, 'job_categories'));
@@ -28,11 +30,22 @@ export default function InterestedCategories({ navigation }) {
         }
     }
 
-    const renderCategories = item => {
-        return (
-            <View style={styles.dropdownList}>
-                <Text style={[common.darkBrownColor, common.regularFont]}>{item.label}</Text>
-            </View>
+    const fetchPreferredCategories = async () => {
+        const q = query(collection(db, 'preferred_categories'));
+        const querySnapshot = await getDocs(q);
+        const preferredCategories = querySnapshot.docs.map(doc => doc.data().selected_categories).flat();
+
+        setPreferredCategories(preferredCategories)
+        console.log(preferredCategories)
+    }
+
+    const renderCategories = () => {
+        return (item, unSelect) => (
+            <TouchableOpacity onPress={() => unSelect && unSelect(item)}>
+                <View style={[styles.selectedCategory, common.borderStyle]}>
+                    <Text style={[common.regularFont, common.regularSize, common.darkBrownColor,]}>{item.label}</Text>
+                </View>
+            </TouchableOpacity>
         );
     };
 
@@ -54,18 +67,6 @@ export default function InterestedCategories({ navigation }) {
         }
     }
 
-    //const renderCategories = ({ item }) => {
-    //    return (
-    //        <View style={[styles.category]}>
-    //            <Text style={[common.darkBrownColor, common.regularFont, common.regularSize]}>{item.data.name}</Text>
-    //            <View style={common.divider}></View>
-    //            <TouchableOpacity onPress={() => addToPreferedCategories(item.id)}>
-    //                <Text style={[common.redColor, common.regularFont, common.regularSize]}>Hozzáad</Text>
-    //            </TouchableOpacity>
-    //        </View>
-    //    )
-    //}
-
     return (
         <View style={styles.main}>
             <StatusBar backgroundColor='#B4FB01' barStyle={'dark-content'} />
@@ -75,38 +76,41 @@ export default function InterestedCategories({ navigation }) {
                     <Text style={[common.boldFont, common.darkBrownColor]}>Vissza</Text>
                 </TouchableOpacity>
                 <View style={{ width: '100%', alignItems: 'center', paddingVertical: 10 }}>
-                    <Text style={[common.boldFont, common.bigSize, common.darkBrownColor]}>Bérkalkulátor</Text>
+                    <Text style={[common.boldFont, common.bigSize, common.darkBrownColor]}>Érdeklődési köreim</Text>
                 </View>
             </View>
             <View style={[styles.bottomView]}>
                 <Text style={[common.regularFont, common.regularSize, common.darkBrownColor]}>Válaszd ki azokat a kategóriákat, amelyek számodra érdekesek lehetnek!</Text>
-                <MultiSelect
-                    style={[styles.dropdown, common.inputField, common.darkBrownColor]}
-                    placeholderStyle={[common.placeHolderColor, common.regularFont]}
-                    selectedTextStyle={[common.darkBrownColor, common.regularFont]}
-                    data={categories}
-                    labelField="label"
-                    valueField="value"
-                    placeholder="Válassz kategóriát..."
-                    value={selectedCategories}
-                    renderItem={(item) => (
-                        <View style={styles.item}>
-                            <Text style={[common.regularFont, common.darkBrownColor]}>{item.label}</Text>
-                        </View>
-                    )}
-                    renderSelectedItem={(item, unSelect) => (
-                        <TouchableOpacity onPress={() => unSelect && unSelect(item)}>
-                            <View style={styles.selectedStyle}>
-                                <Text style={styles.textSelectedStyle}>{item.label}</Text>
+                <View style={[styles.box, common.borderStyle]}>
+                    <MultiSelect
+                        style={[styles.dropdown, common.inputField, common.darkBrownColor]}
+                        placeholderStyle={[common.placeHolderColor, common.regularFont, common.darkBrownColor]}
+                        selectedTextStyle={[common.darkBrownColor, common.regularFont, common.boldFont]}
+                        data={categories}
+                        labelField="label"
+                        valueField="value"
+                        placeholder="Válassz kategóriát..."
+                        value={selectedCategories}
+                        renderItem={(item) => (
+                            <View style={styles.item}>
+                                <Text style={[common.regularFont, common.darkBrownColor, common.regularSize]}>{item.label}</Text>
                             </View>
-                        </TouchableOpacity>
-                    )}
-                    onChange={item => {
-                        setSelectedCategories(item);
-                    }} />
-                <TouchableOpacity onPress={() => addToPreferedCategories(selectedCategories)}>
-                    <Text style={[common.boldFont, common.regularSize, styles.saveBtn]}>Mentés</Text>
-                </TouchableOpacity>
+                        )}
+                        renderSelectedItem={(item, unSelect) => {
+                            return (
+                                <TouchableOpacity onPress={() => unSelect && unSelect(item)}>
+                                    <View style={[styles.selectedCategory, common.borderStyle]}>
+                                        <Text style={[common.regularFont, common.regularSize, common.darkBrownColor,]}>{item.label}</Text>
+                                    </View>
+                                </TouchableOpacity>)
+                        }}
+                        onChange={item => {
+                            setSelectedCategories(item);
+                        }} />
+                    <TouchableOpacity style={[styles.button]} onPress={() => addToPreferedCategories(selectedCategories)}>
+                        <Text style={[common.boldFont, common.regularSize, common.whiteText]}>MENTÉS</Text>
+                    </TouchableOpacity>
+                </View>
             </View>
         </View>
     )
@@ -136,6 +140,14 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20,
         paddingTop: 10
     },
+    box: {
+        width: '100%',
+        marginVertical: 15,
+        paddingVertical: 18,
+        paddingHorizontal: 18,
+        borderRadius: 30,
+        backgroundColor: '#373B2C'
+    },
     returnButton: {
         flexDirection: 'row',
         alignItems: 'center'
@@ -143,6 +155,16 @@ const styles = StyleSheet.create({
     arrow: {
         height: 30,
         width: 30,
+    },
+    button: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: '100%',
+        marginTop: 10,
+        paddingVertical: 10,
+        paddingHorizontal: 15,
+        borderRadius: 15,
+        backgroundColor: '#687A3C',
     },
     category: {
         flexDirection: "row"
@@ -159,5 +181,19 @@ const styles = StyleSheet.create({
     dropdownList: {
         paddingHorizontal: 10,
         paddingVertical: 15,
+    },
+    item: {
+        paddingHorizontal: 7,
+        paddingVertical: 5,
+    },
+    selectedCategory: {
+        borderRadius: 10,
+        backgroundColor: '#E0E0E0',
+        marginRight: 5,
+        marginVertical: 5,
+        paddingHorizontal: 10,
+        paddingVertical: 5,
+        alignItems: "center",
+        justifyContent: "center"
     }
 })

@@ -1,6 +1,6 @@
 import { collection, doc, getDoc, getDocs, query, where } from 'firebase/firestore';
 import React, { useCallback, useEffect, useState } from 'react';
-import { FlatList, ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Alert, FlatList, ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { auth, db } from '../config/firebase';
 import common from '../styles/common';
 
@@ -47,9 +47,12 @@ export default function Jobs({ navigation, route }) {
         try {
             setSelectedCategory("custom")
 
-            const q = query(collection(db, 'preferred_categories'));
-            const querySnapshot = await getDocs(q);
-            const preferredCategories = querySnapshot.docs.map(doc => doc.data().selected_categories).flat();
+            //const q = query(collection(db, 'preferred_categories', userId));
+            const q = doc(db, 'preferred_categories', userId);
+            //const querySnapshot = await getDocs(q);
+            const querySnapshot = await getDoc(q);
+            //const preferredCategories = querySnapshot.docs.map(doc => doc.data().selected_categories).flat();
+            const preferredCategories = querySnapshot.data().selected_categories.flat();
 
             if (preferredCategories.length > 0) {
                 const batchSize = 10;
@@ -64,7 +67,8 @@ export default function Jobs({ navigation, route }) {
                     }));
                     setPreferredCategories(jobsData);
                 }
-
+            } else {
+                Alert.alert('Hiba!', 'Még nem állítottál be preferált kategóriákat!')
             }
         } catch (error) {
             console.log(error);

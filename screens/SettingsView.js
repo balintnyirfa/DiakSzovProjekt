@@ -21,7 +21,13 @@ export default function Settings({ navigation }) {
                 const reference = ref(storage, `profileImages/${userId}/profile.jpg`);
                 getDownloadURL(reference).then((url) => {
                     setProfileImage(url);
-                })
+                }).catch((error) => {
+                    if (error.code === 'storage/object-not-found') {
+                        console.log('Profile image does not exist.');
+                    } else {
+                        console.log('Error fetching profile image:', error);
+                    }
+                });
             } catch (error) {
                 console.log(error);
             }
