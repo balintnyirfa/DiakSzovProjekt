@@ -71,7 +71,7 @@ export default function Settings({ navigation }) {
                         <TouchableOpacity onPress={() => navigation.navigate('UserUpdate')}>
                             <Text style={[styles.text, common.regularFont]}>Fiók adatok</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity>
+                        <TouchableOpacity onPress={() => navigation.navigate('Contact')}>
                             <Text style={[styles.text, common.regularFont]}>Kapcsolat</Text>
                         </TouchableOpacity>
                         <TouchableOpacity onPress={handleLogout}>

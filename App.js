@@ -20,6 +20,7 @@ import AttendanceSheetFirst from './screens/AttendanceSheetFirstView';
 import AttendanceSheetSecond from './screens/AttendanceSheetSecondView';
 import PaymentCalculator from './screens/PaymentCalculator';
 import InterestedCategories from './screens/InterestedCategories';
+import Contact from './screens/ContactView';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -145,6 +146,10 @@ export default function App() {
         <Stack.Screen
           name='InterestedCategories'
           component={InterestedCategories}
+          options={{ headerShown: false }} />
+        <Stack.Screen
+          name='Contact'
+          component={Contact}
           options={{ headerShown: false }} />
       </Stack.Navigator>
     </NavigationContainer>
