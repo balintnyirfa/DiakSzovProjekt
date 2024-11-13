@@ -11,9 +11,7 @@ export default function JobDetails({ navigation, route }) {
     const userId = auth.currentUser ? auth.currentUser.uid : null;
 
     const createAlert = () => {
-        Alert.alert('Siker!', 'Sikeres jelentkezés!', [
-            { text: 'OK', onPress: () => console.log('OK Pressed') },
-        ]);
+        Alert.alert('Siker!', 'Sikeres jelentkezés!');
     };
 
     const checkIfApplied = async () => {

@@ -20,6 +20,46 @@
     {
       "path": "assets/fonts/Quicksand-SemiBold.ttf",
       "sha1": "1f5c9cf95379bef6cee5f2a7deb393b157c91f4e"
+    },
+    {
+      "path": "assets/images/arrow.png",
+      "sha1": "8e504095063810d691cbb4eb2712c5671b9605fd"
+    },
+    {
+      "path": "assets/images/home_active.png",
+      "sha1": "ce66df8f02a8e44b68b1be600e891d9584d67649"
+    },
+    {
+      "path": "assets/images/home_inactive.png",
+      "sha1": "9a9c9bb3f7cbe15d5e22919c231c431fcd5f85d4"
+    },
+    {
+      "path": "assets/images/jobs_active.png",
+      "sha1": "7d742e1de074adf783eabc2d0c7b6621fa7824d3"
+    },
+    {
+      "path": "assets/images/jobs_inactive.png",
+      "sha1": "d485cac210d965dcd2d052ec1c8dc9ddf345c3ef"
+    },
+    {
+      "path": "assets/images/notifications_active.png",
+      "sha1": "e0e359e8b0c0782360a5910f376864d0230a5621"
+    },
+    {
+      "path": "assets/images/notifications_inactive.png",
+      "sha1": "ec364361add451328aa75bac87c54ef4bc2b1220"
+    },
+    {
+      "path": "assets/images/profile.png",
+      "sha1": "baa2a8e98cb5ae171887d5cb2cfc451a0bdf3d97"
+    },
+    {
+      "path": "assets/images/settings_active.png",
+      "sha1": "d829de4afcba8c345c057ae479a9fa82f13c71ea"
+    },
+    {
+      "path": "assets/images/settings_inactive.png",
+      "sha1": "e3558f58265e821bdf0973fd52533f9a43b6d744"
     }
   ]
 }

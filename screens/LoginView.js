@@ -83,7 +83,7 @@ export default function Login({ navigation }) {
                         autoCapitalize='none'
                         onChangeText={text => setEmail(text)}
                         value={email} />
-                    <Text style={[styles.inputText, styles.regularFont, common.darkBrownColor]}>Jelszó</Text>
+                    <Text style={[styles.inputText, common.regularFont, common.darkBrownColor]}>Jelszó</Text>
                     <TextInput
                         style={[common.inputField, styles.inputFieldB, common.darkBrownColor]}
                         secureTextEntry

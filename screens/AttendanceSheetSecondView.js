@@ -3,7 +3,7 @@ import { Alert, FlatList, Image, Pressable, RefreshControl, ScrollView, StatusBa
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { auth, db } from "../config/firebase";
 import uuid from 'react-native-uuid';
-import { collection, deleteDoc, doc, getDocs, query, setDoc } from "firebase/firestore";
+import { collection, deleteDoc, doc, getDocs, query, setDoc, where } from "firebase/firestore";
 
 import common from "../styles/common";
 
@@ -19,7 +19,6 @@ export default function AttendanceSheetSecond({ navigation, route }) {
     const [workDate, setWorkDate] = useState(new Date());
     const [checkIn, setCheckIn] = useState(new Date());
     const [checkOut, setCheckOut] = useState(new Date());
-    const [totalHours, setTotalHours] = useState(0);
 
     const [showWorkDate, setShowWorkDate] = useState(false);
     const [showCheckInPicker, setShowCheckInPicker] = useState(false);
@@ -78,8 +77,6 @@ export default function AttendanceSheetSecond({ navigation, route }) {
             return;
         }
 
-        calculateWorkHours();
-
         try {
             const attendanceId = uuid.v4();
             const newAttendance = {
@@ -87,8 +84,7 @@ export default function AttendanceSheetSecond({ navigation, route }) {
                 job_id: jobData.job_id,
                 work_date: formattedWorkDate,
                 check_in: checkIn,
-                check_out: checkOut,
-                total_hours: totalHours
+                check_out: checkOut
             }
             setDoc(doc(db, "attendance", attendanceId), newAttendance)
                 .then(() => {
@@ -108,26 +104,13 @@ export default function AttendanceSheetSecond({ navigation, route }) {
         }
     }
 
-    const calculateWorkHours = () => {
-        let workHours = 0;
-        if (checkOut <= checkIn) {
-            workHours = checkIn - checkOut;
-        } else {
-            workHours = checkOut - checkIn;
-        }
-        const hours = Math.floor(workHours / (1000 * 60 * 60));
-        const minutes = Math.floor((workHours % (1000 * 60 * 60)) / (1000 * 60));
-        let formattedTime = `${hours} óra ${minutes} perc`;
-        setTotalHours(formattedTime);
-    }
-
     useEffect(() => {
         fetchAttendance();
     }, [])
 
     const fetchAttendance = async () => {
         try {
-            const q = query(collection(db, 'attendance'));
+            const q = query(collection(db, 'attendance'), where('job_id', '==', jobData.job_id));
             const querySnapshot = await getDocs(q);
             const data = querySnapshot.docs.map(doc => ({
                 id: doc.id,
