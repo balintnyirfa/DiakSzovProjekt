@@ -4,14 +4,23 @@ import Login from '../screens/LoginView';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../config/firebase';
 
-jest.mock('firebase/auth');
+jest.mock('firebase/auth', () => ({
+    ...jest.requireActual('firebase/auth'),
+    signInWithEmailAndPassword: jest.fn(),
+}));
 
 describe('Login successfully', () => {
-    it('navigates to Login on successful sign up', async () => {
+    it('Executes a successful login action', async () => {
         const { getByText, getByPlaceholderText } = render(<Login navigation={{ navigate }} />);
 
         fireEvent.changeText(getByPlaceholderText('Email'), 'test@example.com');
         fireEvent.changeText(getByPlaceholderText('Password'), 'Example1234');
+
+        expect(getByPlaceholderText('Email').props.value).toBeTruthy();
+        expect(getByPlaceholderText('Password').props.value).toBeTruthy();
+        expect(getByPlaceholderText('Email').props.value).toContain('@');;
+        expect(getByPlaceholderText('Password').props.value).toBeGreaterThanOrEqual(6);
+
         fireEvent.press(getByText('Sign Up'));
 
         fireEvent.press(getByText('BEJELENTKEZEK'));

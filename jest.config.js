@@ -1,10 +1,11 @@
 module.exports = {
   preset: 'react-native',
-  transform: {
-    "^.+\\.jsx?$": "babel-jest",
-    //"^.+\\.tsx?$": "ts-jest"
-  },
+  collectCoverage: true,
+  collectCoverageFrom: ['src/**/*.{js,jsx}'],
+  coverageDirectory: 'coverage',
+  testEnvironment: 'jsdom',
+  setupFilesAfterEnv: ['./jest.setup.js'],
   transformIgnorePatterns: [
-    "node_modules/(?!react-native|@react-navigation|@react-native-async-storage/async-storage)/"
+    "node_modules/(?!react-native|@react-native|@react-navigation|react-native-element-dropdown)"
   ]
 };
